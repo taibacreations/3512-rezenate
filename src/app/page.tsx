@@ -14,9 +14,9 @@ export default function Page() {
 
   return (
     <>
-      {/* {isLoading && (
+      {isLoading && (
         <LoadingScreen onComplete={() => setIsLoading(false)} />
-      )} */}
+      )}
       <Banner />
       <Section2 />
       <Section3 />
