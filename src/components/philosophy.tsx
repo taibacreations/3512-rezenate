@@ -11,8 +11,7 @@ const BRAND_COLOR = "#9564F4";
 
 const items = [
   {
-    heading:
-      "Every leader influences a culture long before they change a strategy",
+    heading: "Every leader influences a culture long before they change a strategy",
     align: "text-left" as const,
   },
   {
@@ -28,8 +27,7 @@ const items = [
     align: "text-right" as const,
   },
   {
-    heading:
-      "People buy into the leader before they buy into the vision. — John C Maxwell",
+    heading: "People buy into the leader before they buy into the vision. — John C Maxwell",
     align: "text-left" as const,
   },
   {
@@ -44,11 +42,11 @@ const logoPaths = [
   "M323.437 451V323.437H451L323.437 451Z",
 ];
 
-// How much of the timeline each item occupies.
-// Entrance = first ENTER_FRAC of the step, hold = middle, exit = last EXIT_FRAC.
-const ENTER_FRAC = 0.32; // wider entrance window — animations have room to breathe
-const EXIT_FRAC  = 0.10; // quick clean exit
-// Hold window = 1 - 0.32 - 0.10 = 0.58 — content sits fully visible for 58% of its step
+// Fraction of each step's scroll distance used for entrance and exit.
+// The remaining (1 - ENTER_FRAC - EXIT_FRAC) is the hold window where
+// content sits fully visible with nothing animating.
+const ENTER_FRAC = 0.30;
+const EXIT_FRAC  = 0.22; // longer exit so it fades out gently, not abruptly
 
 const Section2 = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -61,9 +59,6 @@ const Section2 = () => {
 
     const ctx = gsap.context(() => {
       const totalSteps = items.length;
-
-      // More scroll distance per step so the user has time to read each quote
-      // before the next one arrives. Was 100vh per step, now 150vh.
       const PIN_END = `+=${totalSteps * 150}%`;
 
       const tl = gsap.timeline({
@@ -73,7 +68,7 @@ const Section2 = () => {
           trigger: sectionRef.current,
           start: "top top",
           end: PIN_END,
-          scrub: 2,           // heavier scrub = slower, more intentional feel
+          scrub: 2.5,  // heavier scrub = animations lag behind scroll = feel slower/smoother
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
@@ -83,95 +78,111 @@ const Section2 = () => {
       tl.to(bgRef.current, { backgroundPositionY: "100%", ease: "none" }, 0);
 
       itemRefs.current.forEach((el, i) => {
-        const paths = el.querySelectorAll("path");
+        const paths   = el.querySelectorAll("path");
         const heading = el.querySelector(".s2-heading");
-        const line = el.querySelector(".s2-line");
-        const glow = el.querySelector(".s2-glow");
+        const line    = el.querySelector(".s2-line");
+        const glow    = el.querySelector(".s2-glow");
 
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0 });
+        // All items are visible in the DOM at all times (no autoAlpha toggle).
+        // Opacity of individual elements controls visibility.
+        // This removes the "pop" caused by the instant autoAlpha wrapper switch.
+        gsap.set(el, { visibility: "visible" });
 
         if (i === 0) {
-          gsap.set(paths, { scale: 1, opacity: 1, rotate: 0, transformOrigin: "center center" });
+          gsap.set(paths,   { scale: 1, opacity: 1, transformOrigin: "center center" });
           gsap.set(heading, { y: 0, opacity: 1 });
-          gsap.set(line, { scaleX: 1, transformOrigin: "left center" });
-          gsap.set(glow, { scale: 1, opacity: 0.25 });
+          gsap.set(line,    { scaleX: 1, transformOrigin: "left center" });
+          gsap.set(glow,    { scale: 1, opacity: 0.25 });
         } else {
-          gsap.set(paths, { scale: 0, opacity: 0, rotate: 0, transformOrigin: "center center" });
-          gsap.set(heading, { y: 20, opacity: 0 });
-          gsap.set(line, { scaleX: 0, transformOrigin: "left center" });
-          gsap.set(glow, { scale: 0.6, opacity: 0 });
+          // Start fully invisible — opacity 0, no scale/rotation tricks
+          // so the transition is a pure opacity crossfade, nothing snapping
+          gsap.set(paths,   { scale: 1, opacity: 0, transformOrigin: "center center" });
+          gsap.set(heading, { y: 0, opacity: 0 }); // no y offset — pure fade, no movement snap
+          gsap.set(line,    { scaleX: 0, transformOrigin: "left center" });
+          gsap.set(glow,    { scale: 1, opacity: 0 });
         }
 
         const stepStart = i / totalSteps;
         const stepEnd   = (i + 1) / totalSteps;
-        const enterEnd  = stepStart + (stepEnd - stepStart) * ENTER_FRAC;
-        const exitStart = stepEnd   - (stepEnd - stepStart) * EXIT_FRAC;
+        const stepSize  = stepEnd - stepStart;
+        const enterEnd  = stepStart + stepSize * ENTER_FRAC;
+        const exitStart = stepEnd   - stepSize * EXIT_FRAC;
 
         if (i > 0) {
-          const win = enterEnd - stepStart; // total entrance window size
+          const win = enterEnd - stepStart;
 
           // -- ENTRANCE --
-          tl.to(el, { autoAlpha: 1, duration: 0.01 }, stepStart)
+          // "none" easing = linear relative to scrub position.
+          // Combined with scrub:2.5 this makes the fade feel tied
+          // directly to how fast the user scrolls — no sudden snap.
 
-            // Glow — spreads slowly across the full entrance window
-            .to(
-              glow,
-              { scale: 1, opacity: 0.25, duration: win, ease: "power1.out" },
-              stepStart,
-            )
+          // Glow fades in first, very gently
+          tl.to(glow, {
+            opacity: 0.25,
+            duration: win,
+            ease: "none",
+          }, stepStart)
 
-            // Logo path 0 — starts early, takes 70% of the window
-            .to(
-              paths[0],
-              { scale: 1, opacity: 1, duration: win * 0.70, ease: "power1.out" },
-              stepStart + win * 0.00,
-            )
+          // Logo paths fade in sequentially — pure opacity, no scale snap
+          .to(paths[0], {
+            opacity: 1,
+            duration: win * 0.75,
+            ease: "none",
+          }, stepStart + win * 0.00)
 
-            // Logo path 1 — starts slightly after path 0
-            .to(
-              paths[1],
-              { scale: 1, opacity: 1, duration: win * 0.65, ease: "power1.out" },
-              stepStart + win * 0.12,
-            )
+          .to(paths[1], {
+            opacity: 1,
+            duration: win * 0.70,
+            ease: "none",
+          }, stepStart + win * 0.10)
 
-            // Logo path 2 — last path, gentle fade in
-            .to(
-              paths[2],
-              { scale: 1, opacity: 1, duration: win * 0.60, ease: "power1.out" },
-              stepStart + win * 0.24,
-            )
+          .to(paths[2], {
+            opacity: 1,
+            duration: win * 0.65,
+            ease: "none",
+          }, stepStart + win * 0.20)
 
-            // Accent line draws in after logo starts appearing
-            .to(
-              line,
-              { scaleX: 1, duration: win * 0.55, ease: "power2.out" },
-              stepStart + win * 0.20,
-            )
+          // Accent line draws in
+          .to(line, {
+            scaleX: 1,
+            duration: win * 0.60,
+            ease: "none",
+          }, stepStart + win * 0.18)
 
-            // Heading rises last — feels like the logo arrives first, then the quote
-            .to(
-              heading,
-              { y: 0, opacity: 1, duration: win * 0.60, ease: "power2.out" },
-              stepStart + win * 0.28,
-            );
+          // Heading fades in last — no y movement, just opacity
+          .to(heading, {
+            opacity: 1,
+            duration: win * 0.65,
+            ease: "none",
+          }, stepStart + win * 0.25);
         }
 
-        // -- HOLD: nothing happens between enterEnd and exitStart --
+        // -- HOLD: nothing animates between enterEnd and exitStart --
 
-        // -- EXIT: fade the whole item out before the next one arrives --
+        // -- EXIT --
+        // Fade everything out together as one unit — prevents individual
+        // elements popping out at different times which reads as "sudden"
         if (i < totalSteps - 1) {
-          tl.to(
-            el,
-            { autoAlpha: 0, duration: (stepEnd - stepStart) * EXIT_FRAC, ease: "power1.in" },
-            exitStart,
-          );
+          const exitWin = stepSize * EXIT_FRAC;
+
+          tl.to([paths[0], paths[1], paths[2], heading, glow], {
+            opacity: 0,
+            duration: exitWin,
+            ease: "none",
+          }, exitStart)
+
+          .to(line, {
+            scaleX: 0,
+            duration: exitWin * 0.8,
+            ease: "none",
+          }, exitStart);
         }
       });
 
-      // Scroll cue — appears once last item has fully entered, pulses until section unpins
+      // Scroll cue
       gsap.set(cueRef.current, { opacity: 0 });
       const lastEnterEnd = ((totalSteps - 1) / totalSteps) + (1 / totalSteps) * ENTER_FRAC;
-      tl.to(cueRef.current, { opacity: 1, duration: 0.05 }, lastEnterEnd);
+      tl.to(cueRef.current, { opacity: 1, duration: (1 / totalSteps) * 0.05, ease: "none" }, lastEnterEnd);
 
       const cuePulse = gsap.to(cueRef.current, {
         y: 8,
@@ -187,16 +198,10 @@ const Section2 = () => {
         trigger: sectionRef.current,
         start: "top top",
         end: PIN_END,
-        onEnter: () => cuePulse.play(),
-        onEnterBack: () => cuePulse.play(),
-        onLeave: () => {
-          cuePulse.pause();
-          gsap.set(cueRef.current, { opacity: 0 });
-        },
-        onLeaveBack: () => {
-          cuePulse.pause();
-          gsap.set(cueRef.current, { opacity: 0 });
-        },
+        onEnter:      () => cuePulse.play(),
+        onEnterBack:  () => cuePulse.play(),
+        onLeave:      () => { cuePulse.pause(); gsap.set(cueRef.current, { opacity: 0 }); },
+        onLeaveBack:  () => { cuePulse.pause(); gsap.set(cueRef.current, { opacity: 0 }); },
       });
     }, sectionRef);
 
@@ -241,10 +246,8 @@ const Section2 = () => {
           return (
             <div
               key={i}
-              ref={(el) => {
-                if (el) itemRefs.current[i] = el;
-              }}
-              className={`absolute inset-0 flex gap-10 
+              ref={(el) => { if (el) itemRefs.current[i] = el; }}
+              className={`absolute inset-0 flex gap-10
                 flex-col items-center pt-[12vh]
                 md:pt-[18vh] md:items-start md:justify-between
                 ${logoFirst ? "md:flex-row" : "md:flex-row-reverse"}`}
