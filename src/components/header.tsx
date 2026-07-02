@@ -4,14 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Logo from "./ui/logo";
+import { client } from "../sanity/lib/client";
+import { siteSettingsQuery } from "@/sanity/lib/queries";
 
 gsap.registerPlugin(ScrollTrigger);
 
 type HeaderTheme = "light" | "dark";
 
-// Section ids must match the actual id="" attributes in your JSX.
-// prevOf = which section is visible when THIS section leaves back upward.
-// This is needed because pinned sections don't reliably fire onEnterBack.
 const SECTION_THEMES: { id: string; theme: HeaderTheme; prevOf?: string }[] = [
   { id: "home",           theme: "dark"  },
   { id: "philosophy",     theme: "light", prevOf: "home"           },
@@ -27,11 +26,19 @@ const THEME_MAP = Object.fromEntries(
 ) as Record<string, HeaderTheme>;
 
 const Header = () => {
-  const headerRef = useRef<HTMLElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const headerRef    = useRef<HTMLElement>(null);
+  const menuRef      = useRef<HTMLDivElement>(null);
   const menuLinksRef = useRef<HTMLAnchorElement[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<HeaderTheme>("dark");
+  const [theme, setTheme]           = useState<HeaderTheme>("dark");
+  const [logoImage, setLogoImage]   = useState<{ asset: { _ref: string } } | undefined>();
+
+  // Fetch site settings client-side (logo only — lightweight)
+  useEffect(() => {
+    client.fetch(siteSettingsQuery).then((data) => {
+      if (data?.logoImage) setLogoImage(data.logoImage);
+    });
+  }, []);
 
   // Entrance animation
   useEffect(() => {
@@ -51,19 +58,15 @@ const Header = () => {
       const el = document.querySelector(`#${id}`);
       if (!el) return;
 
-      // Forward + reverse entry → apply this section's theme
       const st = ScrollTrigger.create({
         trigger: el,
         start: "top 10%",
         end: "bottom 10%",
-        onEnter:      () => setTheme(sectionTheme),
-        onEnterBack:  () => setTheme(sectionTheme),
+        onEnter:     () => setTheme(sectionTheme),
+        onEnterBack: () => setTheme(sectionTheme),
       });
       triggers.push(st);
 
-      // When scrolling back UP past this section's top, the section above
-      // becomes active — apply its theme. This reliably catches reverse-scroll
-      // re-entry for pinned sections (like #philosophy) that miss onEnterBack.
       if (prevOf) {
         const prevTheme = THEME_MAP[prevOf];
         if (prevTheme !== undefined) {
@@ -83,22 +86,16 @@ const Header = () => {
   // Menu open/close
   useEffect(() => {
     if (!menuRef.current) return;
-
     if (isMenuOpen) {
       gsap.set(menuRef.current, { display: "flex" });
-      gsap.fromTo(menuRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.7, ease: "power2.out" },
-      );
+      gsap.fromTo(menuRef.current, { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" });
       gsap.fromTo(menuLinksRef.current,
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, delay: 0.2, ease: "power2.out" },
       );
     } else {
       gsap.to(menuRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.in",
+        opacity: 0, duration: 0.5, ease: "power2.in",
         onComplete: () => { gsap.set(menuRef.current, { display: "none" }); },
       });
     }
@@ -106,7 +103,6 @@ const Header = () => {
 
   const isDark = theme === "dark";
 
-  // Hardcoded hrefs so labels and ids don't have to match
   const navLinks = [
     { label: "Home",           href: "#home"           },
     { label: "Philosophy",     href: "#philosophy"     },
@@ -122,7 +118,6 @@ const Header = () => {
           ref={headerRef}
           className="flex justify-between items-center max-w-[1435px] mx-auto xl:px-10 md:px-6 px-4 md:mt-[20px] relative opacity-0"
         >
-          {/* Contact us */}
           <div className="flex-1 justify-start hidden md:flex">
             <button
               className={`font-boldonse font-normal lg:text-[14.66px] text-[12px] leading-[100%]
@@ -137,12 +132,10 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Logo */}
           <div className={`flex flex-1 justify-start md:justify-center scale-[0.7] sm:scale-90 md:scale-100 transition-[filter] duration-500 ${isDark ? "" : "invert"}`}>
-            <Logo />
+            <Logo logoImage={logoImage} />
           </div>
 
-          {/* Menu toggle */}
           <div className="flex flex-1 justify-end">
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -164,7 +157,6 @@ const Header = () => {
           </div>
         </header>
 
-        {/* Full-screen menu overlay */}
         <div
           ref={menuRef}
           className="hidden fixed inset-0 z-40 bg-black/95 flex-col items-center justify-center gap-6 sm:gap-10"

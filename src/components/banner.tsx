@@ -1,25 +1,33 @@
-// Banner.tsx
+// components/banner.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-// DotField is a plain JSX file — @ts-ignore suppresses the missing-types error.
-// Place DotField.d.ts (provided separately) next to DotField.jsx to remove it.
 // @ts-ignore
 import DotField from "./DotField";
+import { urlFor } from "../sanity/lib/image";
 
-const Banner = () => {
-  const sectionRef    = useRef<HTMLElement>(null);
-  const gradientRef   = useRef<HTMLDivElement>(null);
-  const logoWrapRef   = useRef<HTMLDivElement>(null);
-  const logoRef       = useRef<HTMLImageElement>(null);
-  const glowRef       = useRef<HTMLDivElement>(null);
-  const headingRef    = useRef<HTMLHeadingElement>(null);
+interface BannerData {
+  heading: string;
+  bannerLogo?: { asset: { _ref: string } };
+  bannerWaveImage?: { asset: { _ref: string } };
+}
+
+interface Props {
+  data: BannerData;
+}
+
+const Banner = ({ data }: Props) => {
+  const sectionRef         = useRef<HTMLElement>(null);
+  const gradientRef        = useRef<HTMLDivElement>(null);
+  const logoWrapRef        = useRef<HTMLDivElement>(null);
+  const logoRef            = useRef<HTMLImageElement>(null);
+  const glowRef            = useRef<HTMLDivElement>(null);
+  const headingRef         = useRef<HTMLHeadingElement>(null);
   const bannerContainerRef = useRef<HTMLDivElement>(null);
   const bannerTrackRef     = useRef<HTMLDivElement>(null);
-  const dotFieldRef   = useRef<HTMLDivElement>(null);
+  const dotFieldRef        = useRef<HTMLDivElement>(null);
 
-  // ── entrance ──────────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(logoRef.current,     { opacity: 0, scale: 0.85, filter: "blur(8px)" });
@@ -47,7 +55,6 @@ const Banner = () => {
     return () => ctx.revert();
   }, []);
 
-  // ── ambient gradient drift ─────────────────────────────────────────────────
   useEffect(() => {
     const gradient = gradientRef.current;
     if (!gradient) return;
@@ -56,7 +63,6 @@ const Banner = () => {
     return () => { tl.kill(); };
   }, []);
 
-  // ── banner image breathe ───────────────────────────────────────────────────
   useEffect(() => {
     const track = bannerTrackRef.current;
     if (!track) return;
@@ -67,7 +73,6 @@ const Banner = () => {
     return () => { tl.kill(); };
   }, []);
 
-  // ── logo mouse tilt ────────────────────────────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     const wrap    = logoWrapRef.current;
@@ -83,42 +88,35 @@ const Banner = () => {
     const quickGlowY = gsap.quickTo(glow, "y",       { duration: 1.4, ease: "power3.out" });
 
     const handleMove = (e: MouseEvent) => {
-      const rect    = wrap.getBoundingClientRect();
-      const relX    = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
-      const relY    = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
-      const cx      = Math.max(-1, Math.min(1, relX));
-      const cy      = Math.max(-1, Math.min(1, relY));
+      const rect = wrap.getBoundingClientRect();
+      const cx = Math.max(-1, Math.min(1, (e.clientX - rect.left - rect.width / 2) / (rect.width / 2)));
+      const cy = Math.max(-1, Math.min(1, (e.clientY - rect.top - rect.height / 2) / (rect.height / 2)));
       quickX(cx * 6); quickY(cy * -6);
       quickLogoX(cx * 8); quickLogoY(cy * 8);
       quickGlowX(cx * 10); quickGlowY(cy * 10);
     };
     const handleLeave = () => {
-      quickX(0); quickY(0);
-      quickLogoX(0); quickLogoY(0);
-      quickGlowX(0); quickGlowY(0);
+      quickX(0); quickY(0); quickLogoX(0); quickLogoY(0); quickGlowX(0); quickGlowY(0);
     };
-
-    section.addEventListener("mousemove",  handleMove);
+    section.addEventListener("mousemove", handleMove);
     section.addEventListener("mouseleave", handleLeave);
     return () => {
-      section.removeEventListener("mousemove",  handleMove);
+      section.removeEventListener("mousemove", handleMove);
       section.removeEventListener("mouseleave", handleLeave);
     };
   }, []);
 
+  const logoSrc     = data?.bannerLogo     ? urlFor(data.bannerLogo).url()     : "/banner-logo.webp";
+  const waveSrc     = data?.bannerWaveImage ? urlFor(data.bannerWaveImage).url() : "/banner.webp";
+  const heading     = data?.heading ?? "Lead The Way";
+
   return (
-    /*
-      The section needs an explicit height so the absolutely-positioned
-      DotField canvas has something to measure via getBoundingClientRect().
-      100vh minimum covers the full viewport; content below pushes it taller.
-    */
     <section
-      id="banner"
+      id="home"
       ref={sectionRef}
       className="relative overflow-hidden bg-black md:pb-[6vh]"
       style={{ perspective: "1000px" }}
     >
-      {/* Background gradient */}
       <div
         ref={gradientRef}
         className="absolute inset-0 pointer-events-none z-0"
@@ -132,15 +130,6 @@ const Banner = () => {
         }}
       />
 
-      {/*
-        DotField wrapper — key rules:
-        1. position:absolute + inset:0  →  fills the section completely
-        2. width/height explicit px via JS after mount  →  canvas gets real numbers
-        3. pointerEvents:none  →  mouse events fall through to logo tilt handler
-        4. DotField.css sets .dot-field-container to position:relative; w/h 100%
-           which is 100% of THIS div — so THIS div must have a real pixel height,
-           which it gets from being absolute inset-0 inside a min-h-screen section.
-      */}
       <div
         ref={dotFieldRef}
         className="absolute inset-0 z-[1]"
@@ -162,7 +151,6 @@ const Banner = () => {
         />
       </div>
 
-      {/* Logo + glow */}
       <div
         ref={logoWrapRef}
         className="flex justify-center absolute xl:top-20 lg:top-30 top-40 left-1/2 -translate-x-1/2 z-10"
@@ -178,14 +166,13 @@ const Banner = () => {
         />
         <img
           ref={logoRef}
-          src="/banner-logo.webp"
-          alt="logo"
+          src={logoSrc}
+          alt="Rezenate logo"
           className="relative z-10 2xl:w-[729px] 2xl:h-[729px] xl:w-[600px] xl:h-[600px] lg:w-[500px] lg:h-[500px] md:w-[400px] md:h-[400px] w-[250px] h-[250px] will-change-transform"
           style={{ transformStyle: "preserve-3d" }}
         />
       </div>
 
-      {/* Banner wave image */}
       <div
         ref={bannerContainerRef}
         className="absolute top-[46vh] w-full overflow-hidden z-10"
@@ -193,7 +180,7 @@ const Banner = () => {
       >
         <div ref={bannerTrackRef} className="flex" style={{ willChange: "transform" }}>
           <img
-            src="/banner.webp"
+            src={waveSrc}
             alt="banner"
             className="banner-image w-full md:h-[504px] h-[180px] object-cover"
             style={{ willChange: "transform", transformOrigin: "center center" }}
@@ -201,13 +188,12 @@ const Banner = () => {
         </div>
       </div>
 
-      {/* Heading */}
       <div className="flex justify-center items-center mt-[69.5vh] relative z-10">
         <h1
           ref={headingRef}
           className="font-boldonse font-normal 2xl:text-[125px] xl:text-[100px] md:text-[80px] text-[10vw] leading-[152%] uppercase text-white mt-[-10vh] md:mt-0"
         >
-          Lead The Way
+          {heading}
         </h1>
       </div>
     </section>
