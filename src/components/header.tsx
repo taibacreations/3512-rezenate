@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Logo from "./ui/logo";
 import { client } from "../sanity/lib/client";
-import { siteSettingsQuery } from "@/sanity/lib/queries";
+import { headerQuery } from "@/sanity/lib/queries";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,19 +25,42 @@ const THEME_MAP = Object.fromEntries(
   SECTION_THEMES.map(({ id, theme }) => [id, theme])
 ) as Record<string, HeaderTheme>;
 
+const FALLBACK_NAV = [
+  { label: "Home",           href: "#home"           },
+  { label: "Philosophy",     href: "#philosophy"     },
+  { label: "How We Partner", href: "#how-we-partner" },
+  { label: "Founders",       href: "#founders"       },
+  { label: "Contact",        href: "#footer"         },
+];
+
+interface HeaderData {
+  logoImage?: { asset: { _ref: string } };
+  contactButtonText?: string;
+  navLinks?: { label: string; href: string }[];
+}
+
 const Header = () => {
   const headerRef    = useRef<HTMLElement>(null);
   const menuRef      = useRef<HTMLDivElement>(null);
   const menuLinksRef = useRef<HTMLAnchorElement[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme]           = useState<HeaderTheme>("dark");
-  const [logoImage, setLogoImage]   = useState<{ asset: { _ref: string } } | undefined>();
+  const [headerData, setHeaderData] = useState<HeaderData>({});
+  const [loaded, setLoaded]         = useState(false);
 
-  // Fetch site settings client-side (logo only — lightweight)
+  // Fetch header content from Sanity
   useEffect(() => {
-    client.fetch(siteSettingsQuery).then((data) => {
-      if (data?.logoImage) setLogoImage(data.logoImage);
-    });
+    client
+      .fetch(headerQuery, {}, { cache: "no-store" })
+      .then((data: HeaderData) => {
+        console.log("[Header] Sanity data:", data); // ← check browser console
+        if (data) setHeaderData(data);
+        setLoaded(true);
+      })
+      .catch((err) => {
+        console.error("[Header] Sanity fetch error:", err);
+        setLoaded(true);
+      });
   }, []);
 
   // Entrance animation
@@ -102,14 +125,8 @@ const Header = () => {
   }, [isMenuOpen]);
 
   const isDark = theme === "dark";
-
-  const navLinks = [
-    { label: "Home",           href: "#home"           },
-    { label: "Philosophy",     href: "#philosophy"     },
-    { label: "How We Partner", href: "#how-we-partner" },
-    { label: "Founders",       href: "#founders"       },
-    { label: "Contact",        href: "#footer"         },
-  ];
+  const contactButtonText = headerData.contactButtonText ?? "Contact us";
+  const navLinks          = headerData.navLinks?.length ? headerData.navLinks : FALLBACK_NAV;
 
   return (
     <div>
@@ -128,12 +145,12 @@ const Header = () => {
                   : "text-black border-black/30 hover:bg-black hover:text-white hover:border-black"
                 }`}
             >
-              Contact us
+              {contactButtonText}
             </button>
           </div>
 
           <div className={`flex flex-1 justify-start md:justify-center scale-[0.7] sm:scale-90 md:scale-100 transition-[filter] duration-500 ${isDark ? "" : "invert"}`}>
-            <Logo logoImage={logoImage} />
+            <Logo logoImage={headerData.logoImage} />
           </div>
 
           <div className="flex flex-1 justify-end">

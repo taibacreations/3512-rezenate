@@ -7,7 +7,8 @@ import partners from "./partners";
 import founders from "./founders";
 import footer from "./footer";
 import cta from './cta';
+import header from './header';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [siteSettings, banner, philosophy, values, partners, founders, cta, footer],
+  types: [siteSettings, header, banner, philosophy, values, partners, founders, cta, footer],
 }
