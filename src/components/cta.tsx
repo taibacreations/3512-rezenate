@@ -179,8 +179,8 @@ const Cta = ({ data }: { data: CtaData }) => {
         }}
       />
 
-      <div ref={bgWrapRef} className="absolute top-0 right-0">
-        <img ref={bgRef} src={bgSrc} alt="" className="pointer-events-none" />
+      <div ref={bgWrapRef} className="absolute top-0 right-0 h-full">
+        <img ref={bgRef} src={bgSrc} alt="" className="pointer-events-none h-full" />
       </div>
 
       <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4">

@@ -260,7 +260,10 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               <div className={`xl:max-w-[517px] max-w-[480px] text-center ${item.align === "left" ? "md:text-left" : "md:text-right"}`}>
                 <div
                   className="s2-line h-[2px] w-12 mb-6 mx-auto md:mx-0"
-                  style={{ backgroundColor: BRAND_COLOR, marginLeft: item.align === "right" ? "auto" : 0 }}
+                  style={{ 
+                    backgroundColor: BRAND_COLOR,
+                    marginLeft: item.align === "right" ? "auto" : undefined,
+                  }}
                 />
                 <h3
                   className="s2-heading font-boldonse font-normal 2xl:text-[34px] xl:text-[30px] lg:text-[26px] text-[24px] text-black leading-[140%]"
