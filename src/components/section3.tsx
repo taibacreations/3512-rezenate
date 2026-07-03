@@ -243,11 +243,11 @@ const Section3 = ({ data }: { data: ValuesData }) => {
                 <h3 className="card-text-in font-bartie font-normal xl:text-[18px] text-[16px] uppercase mb-2">{value.name}</h3>
 
                 {/* Animated line — draws in from center on hover, retracts on leave */}
-                <div className="card-text-in relative w-[48px] h-[1px] my-1 overflow-hidden">
+                <div className="card-text-in relative w-full h-[1px] mt-1 mb-3.5">
                   {/* Base line — always visible at low opacity */}
-                  <span className="absolute inset-0 bg-white/20" />
+                  <span className="absolute inset-0 w-[48px] mx-auto bg-white/20" />
                   {/* Active line — slides in from left on hover */}
-                  <span className="absolute inset-0 bg-white origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+                  <span className="absolute inset-0 bg-white origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
                 </div>
 
                 <h5 className="card-text-in font-boldonse font-normal xl:text-[16px] text-[15px] leading-[164%] max-w-[230px] w-full">{value.shortDescription}</h5>
