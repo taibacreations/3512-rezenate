@@ -18,8 +18,8 @@ const logoPaths = [
 
 // Entrance = 22% of step, Hold = 56%, Exit = 22%
 // During hold we add parallax so scroll always has visible response
-const ENTER_FRAC  = 0.22;
-const EXIT_FRAC   = 0.22;
+const ENTER_FRAC  = 0.5;
+const EXIT_FRAC   = 0.5;
 // How much the logo drifts vertically during the hold window (px, scrubbed)
 const HOLD_DRIFT_Y  = -28; // logo floats upward slightly while held
 const HOLD_DRIFT_X  =  12; // logo drifts right very slightly
@@ -71,7 +71,7 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
           trigger: sectionRef.current,
           start: "top top",
           end: PIN_END,
-          scrub: 2.5,
+          scrub: 1.5,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
