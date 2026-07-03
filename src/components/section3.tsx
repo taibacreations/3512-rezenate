@@ -90,6 +90,7 @@ const Section3 = ({ data }: { data: ValuesData }) => {
   const mobileCardRefs   = useRef<HTMLButtonElement[]>([]);
   const overlayRef       = useRef<HTMLDivElement>(null);
   const overlayContentRef = useRef<HTMLDivElement>(null);
+  const overlayLineRef   = useRef<HTMLSpanElement>(null);
 
   const getImgSrc = (value: ValueItem) =>
     value.image ? urlFor(value.image).width(800).url() : (value._fallbackImg ?? "/card1.webp");
@@ -194,11 +195,16 @@ const Section3 = ({ data }: { data: ValuesData }) => {
   useEffect(() => {
     if (activeIndex === null) return;
     const ctx = gsap.context(() => {
-      gsap.set(overlayRef.current,     { opacity: 0, display: "flex" });
+      gsap.set(overlayRef.current,        { opacity: 0, display: "flex" });
       gsap.set(overlayContentRef.current, { opacity: 0, y: 16 });
+      // Reset line to zero before animating so it always draws from scratch
+      gsap.set(overlayLineRef.current,    { scaleX: 0, transformOrigin: "left center" });
+
       gsap.timeline()
-        .to(overlayRef.current,     { opacity: 1, duration: 0.6, ease: "power2.out" })
-        .to(overlayContentRef.current, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.3");
+        .to(overlayRef.current,        { opacity: 1, duration: 0.6, ease: "power2.out" })
+        .to(overlayContentRef.current, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.3")
+        // Line draws left → right after the content fades in
+        .to(overlayLineRef.current,    { scaleX: 1, duration: 0.6, ease: "power3.out" }, "-=0.3");
     });
     return () => ctx.revert();
   }, [activeIndex]);
@@ -233,9 +239,17 @@ const Section3 = ({ data }: { data: ValuesData }) => {
               <img src={getImgSrc(value)} alt={value.name} className="card-image absolute inset-0 w-full h-full object-cover z-0" />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors duration-700 z-10" />
               <div className="card-reveal absolute inset-0 z-30" style={{ backgroundColor: BRAND_COLOR }} />
-              <div className="absolute bottom-10 w-full text-center flex justify-center items-center flex-col z-20">
-                <h3 className="card-text-in font-bartie font-normal xl:text-[18px] text-[16px] uppercase">{value.name}</h3>
-                <span className="card-text-in block h-[1px] bg-white/60 w-0 group-hover:w-[48px] transition-all duration-700 my-2" />
+              <div className="absolute bottom-10 w-full text-center flex justify-center items-center flex-col z-20 px-4">
+                <h3 className="card-text-in font-bartie font-normal xl:text-[18px] text-[16px] uppercase mb-2">{value.name}</h3>
+
+                {/* Animated line — draws in from center on hover, retracts on leave */}
+                <div className="card-text-in relative w-[48px] h-[1px] my-1 overflow-hidden">
+                  {/* Base line — always visible at low opacity */}
+                  <span className="absolute inset-0 bg-white/20" />
+                  {/* Active line — slides in from left on hover */}
+                  <span className="absolute inset-0 bg-white origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+                </div>
+
                 <h5 className="card-text-in font-boldonse font-normal xl:text-[16px] text-[15px] leading-[164%] max-w-[230px] w-full">{value.shortDescription}</h5>
               </div>
             </button>
@@ -272,9 +286,18 @@ const Section3 = ({ data }: { data: ValuesData }) => {
               <path d="M1 1L17 17M17 1L1 17" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
             </svg>
           </button>
-          <div ref={overlayContentRef} className="relative z-10 max-w-[620px] text-center text-white">
-            <div className="h-[1px] w-10 mx-auto mb-8" style={{ backgroundColor: BRAND_COLOR }} />
-            <h3 className="font-bartie font-normal lg:text-[40px] md:text-[30px] text-[22px] mb-8 uppercase tracking-widest">{activeValue.name}</h3>
+          <div ref={overlayContentRef} className="relative z-10 max-w-[620px] text-center text-white px-4">
+            <h3 className="font-bartie font-normal lg:text-[40px] md:text-[30px] text-[18px] uppercase tracking-widest mb-4">{activeValue.name}</h3>
+
+            {/* Animated underline — driven by GSAP when overlay opens, ref set below */}
+            <div className="overflow-hidden mx-auto mb-8" style={{ width: "48px", height: "1px" }}>
+              <span
+                ref={overlayLineRef}
+                className="block w-full h-full"
+                style={{ backgroundColor: BRAND_COLOR, transform: "scaleX(0)", transformOrigin: "left center" }}
+              />
+            </div>
+
             <p className="font-boldonse font-normal md:text-[17px] text-[14px] leading-[190%] text-white/80">{activeValue.longDescription}</p>
             <button onClick={closeOverlay} className="mt-12 text-xs uppercase tracking-[0.2em] border-b border-white/25 pb-1 text-white/60 hover:text-white hover:border-white/60 transition-colors duration-500">
               Back to Values

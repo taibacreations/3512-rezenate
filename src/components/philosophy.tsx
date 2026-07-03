@@ -1,4 +1,4 @@
-// components/philosophy.tsx  (was Section2)
+// components/philosophy.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -16,10 +16,16 @@ const logoPaths = [
   "M323.437 451V323.437H451L323.437 451Z",
 ];
 
-const ENTER_FRAC = 0.30;
-const EXIT_FRAC  = 0.22;
+// Entrance = 22% of step, Hold = 56%, Exit = 22%
+// During hold we add parallax so scroll always has visible response
+const ENTER_FRAC  = 0.22;
+const EXIT_FRAC   = 0.22;
+// How much the logo drifts vertically during the hold window (px, scrubbed)
+const HOLD_DRIFT_Y  = -28; // logo floats upward slightly while held
+const HOLD_DRIFT_X  =  12; // logo drifts right very slightly
+// How much heading drifts during hold
+const HEADING_DRIFT = -14;
 
-// Fallback quotes if Sanity returns nothing
 const FALLBACK_QUOTES = [
   { text: "Every leader influences a culture long before they change a strategy", align: "left" },
   { text: "Some support people to become more of themselves", align: "right" },
@@ -33,6 +39,13 @@ interface Quote { text: string; align: "left" | "right"; }
 interface PhilosophyData {
   backgroundImage?: { asset: { _ref: string } };
   quotes?: Quote[];
+}
+
+// Splits "Some text. — Attribution" so the name stays on one line
+function renderText(text: string): React.ReactNode {
+  const match = text.match(/^(.+?)\s*([\u2013\u2014-]\s*[A-Z].*)$/);
+  if (!match) return text;
+  return <>{match[1]} <span className="whitespace-nowrap">{match[2]}</span></>;
 }
 
 const Section2 = ({ data }: { data: PhilosophyData }) => {
@@ -65,13 +78,17 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
         },
       });
 
+      // Background parallax — always moving, provides constant scroll feedback
       tl.to(bgRef.current, { backgroundPositionY: "100%", ease: "none" }, 0);
 
       itemRefs.current.forEach((el, i) => {
+        if (!el) return;
+
         const paths   = el.querySelectorAll("path");
         const heading = el.querySelector(".s2-heading");
         const line    = el.querySelector(".s2-line");
         const glow    = el.querySelector(".s2-glow");
+        const logoEl  = el.querySelector("svg");
 
         gsap.set(el, { visibility: "visible" });
 
@@ -80,37 +97,95 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
           gsap.set(heading, { y: 0, opacity: 1 });
           gsap.set(line,    { scaleX: 1, transformOrigin: "left center" });
           gsap.set(glow,    { scale: 1, opacity: 0.25 });
+          gsap.set(logoEl,  { y: 0, x: 0 });
         } else {
           gsap.set(paths,   { scale: 1, opacity: 0, transformOrigin: "center center" });
           gsap.set(heading, { y: 0, opacity: 0 });
           gsap.set(line,    { scaleX: 0, transformOrigin: "left center" });
           gsap.set(glow,    { scale: 1, opacity: 0 });
+          gsap.set(logoEl,  { y: 0, x: 0 });
         }
 
-        const stepStart = i / totalSteps;
-        const stepEnd   = (i + 1) / totalSteps;
-        const stepSize  = stepEnd - stepStart;
-        const enterEnd  = stepStart + stepSize * ENTER_FRAC;
-        const exitStart = stepEnd   - stepSize * EXIT_FRAC;
+        const stepStart  = i / totalSteps;
+        const stepEnd    = (i + 1) / totalSteps;
+        const stepSize   = stepEnd - stepStart;
+        const enterEnd   = stepStart + stepSize * ENTER_FRAC;
+        const exitStart  = stepEnd   - stepSize * EXIT_FRAC;
+        const holdStart  = enterEnd;
+        const holdEnd    = exitStart;
+        const holdSize   = holdEnd - holdStart;
 
+        // ── ENTRANCE ──────────────────────────────────────────────────
         if (i > 0) {
           const win = enterEnd - stepStart;
+
           tl.to(glow,     { opacity: 0.25, duration: win,        ease: "none" }, stepStart)
             .to(paths[0], { opacity: 1,    duration: win * 0.75, ease: "none" }, stepStart + win * 0.00)
             .to(paths[1], { opacity: 1,    duration: win * 0.70, ease: "none" }, stepStart + win * 0.10)
             .to(paths[2], { opacity: 1,    duration: win * 0.65, ease: "none" }, stepStart + win * 0.20)
             .to(line,     { scaleX: 1,     duration: win * 0.60, ease: "none" }, stepStart + win * 0.18)
             .to(heading,  { opacity: 1,    duration: win * 0.65, ease: "none" }, stepStart + win * 0.25);
+
+          // Reset drift from any previous hold so entrance starts clean
+          tl.set(logoEl,  { y: 0, x: 0 }, stepStart)
+            .set(heading, { y: 0 },        stepStart);
         }
 
+        // ── HOLD — continuous parallax drift ──────────────────────────
+        // Logo and heading move slowly through the hold window so the
+        // user always sees motion tied to their scroll position.
+        // ease:"none" = perfectly linear = directly scrubbed by scroll.
+        if (holdSize > 0) {
+          tl.to(logoEl, {
+            y: HOLD_DRIFT_Y,
+            x: HOLD_DRIFT_X,
+            duration: holdSize,
+            ease: "none",
+          }, holdStart)
+            .to(heading, {
+              y: HEADING_DRIFT,
+              duration: holdSize,
+              ease: "none",
+            }, holdStart)
+            // Glow scale pulses slightly during hold — adds depth
+            .to(glow, {
+              scale: 1.15,
+              opacity: 0.35,
+              duration: holdSize * 0.5,
+              ease: "none",
+            }, holdStart)
+            .to(glow, {
+              scale: 1,
+              opacity: 0.25,
+              duration: holdSize * 0.5,
+              ease: "none",
+            }, holdStart + holdSize * 0.5);
+        }
+
+        // ── EXIT ──────────────────────────────────────────────────────
         if (i < totalSteps - 1) {
           const exitWin = stepSize * EXIT_FRAC;
+
+          // Reset positions first so exit fades from wherever hold left them
           tl.to([paths[0], paths[1], paths[2], heading, glow],
             { opacity: 0, duration: exitWin, ease: "none" }, exitStart)
-            .to(line, { scaleX: 0, duration: exitWin * 0.8, ease: "none" }, exitStart);
+            .to(line, { scaleX: 0, duration: exitWin * 0.8, ease: "none" }, exitStart)
+            // Drift continues through exit so motion doesn't stop at exit boundary
+            .to(logoEl, {
+              y: HOLD_DRIFT_Y * 1.4,
+              x: HOLD_DRIFT_X * 1.2,
+              duration: exitWin,
+              ease: "none",
+            }, exitStart)
+            .to(heading, {
+              y: HEADING_DRIFT * 1.5,
+              duration: exitWin,
+              ease: "none",
+            }, exitStart);
         }
       });
 
+      // Scroll cue
       gsap.set(cueRef.current, { opacity: 0 });
       const lastEnterEnd = ((totalSteps - 1) / totalSteps) + (1 / totalSteps) * ENTER_FRAC;
       tl.to(cueRef.current, { opacity: 1, duration: (1 / totalSteps) * 0.05, ease: "none" }, lastEnterEnd);
@@ -138,6 +213,7 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
     let resizeTimeout: ReturnType<typeof setTimeout>;
     const handleResize = () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(refresh, 200); };
     window.addEventListener("resize", handleResize);
+
     return () => {
       ctx.revert();
       window.removeEventListener("load", refresh);
@@ -149,7 +225,11 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
 
   return (
     <section id="philosophy" ref={sectionRef} className="relative min-h-[140vh] text-black overflow-hidden xl:px-10 md:px-6 px-4">
-      <div ref={bgRef} className="absolute inset-0 -z-10 bg-cover bg-top" style={{ backgroundImage: `url(${bgSrc})`, backgroundPositionY: "0%" }} />
+      <div
+        ref={bgRef}
+        className="absolute inset-0 -z-10 bg-cover bg-top"
+        style={{ backgroundImage: `url(${bgSrc})`, backgroundPositionY: "0%" }}
+      />
 
       <div className="max-w-[1435px] mx-auto xl:px-10 md:px-6 px-4 mt-[4vh] relative h-full">
         {items.map((item, i) => {
@@ -161,19 +241,32 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               className={`absolute inset-0 flex gap-10 flex-col items-center pt-[12vh] md:pt-[18vh] md:items-start md:justify-between ${logoFirst ? "md:flex-row" : "md:flex-row-reverse"}`}
             >
               <div className="relative flex justify-center shrink-0">
-                <div className="s2-glow absolute inset-0 m-auto w-[300px] h-[300px] rounded-full"
+                <div
+                  className="s2-glow absolute inset-0 m-auto w-[300px] h-[300px] rounded-full"
                   style={{ background: `radial-gradient(circle, rgba(149,100,244,0.18) 0%, rgba(149,100,244,0) 70%)`, filter: "blur(24px)" }}
                 />
-                <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 451 452" fill="none"
-                  className="relative 2xl:w-[452px] 2xl:h-[452px] xl:w-[380px] xl:h-[380px] lg:w-[340px] lg:h-[340px] md:w-[270px] md:h-[270px] w-[220px] h-[220px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="192" height="192"
+                  viewBox="0 0 451 452"
+                  fill="none"
+                  className="relative 2xl:w-[452px] 2xl:h-[452px] xl:w-[380px] xl:h-[380px] lg:w-[340px] lg:h-[340px] md:w-[270px] md:h-[270px] w-[220px] h-[220px]"
+                  style={{ willChange: "transform" }}
+                >
                   {logoPaths.map((d, idx) => <path key={idx} d={d} fill={BRAND_COLOR} />)}
                 </svg>
               </div>
+
               <div className={`xl:max-w-[517px] max-w-[480px] text-center ${item.align === "left" ? "md:text-left" : "md:text-right"}`}>
-                <div className="s2-line h-[2px] w-12 mb-6 mx-auto md:mx-0"
-                  style={{ backgroundColor: BRAND_COLOR, marginLeft: item.align === "right" ? "auto" : 0 }} />
-                <h3 className="s2-heading font-boldonse font-normal 2xl:text-[34px] xl:text-[30px] lg:text-[26px] text-[24px] text-black leading-[140%]">
-                  {item.text}
+                <div
+                  className="s2-line h-[2px] w-12 mb-6 mx-auto md:mx-0"
+                  style={{ backgroundColor: BRAND_COLOR, marginLeft: item.align === "right" ? "auto" : 0 }}
+                />
+                <h3
+                  className="s2-heading font-boldonse font-normal 2xl:text-[34px] xl:text-[30px] lg:text-[26px] text-[24px] text-black leading-[140%]"
+                  style={{ willChange: "transform" }}
+                >
+                  {renderText(item.text)}
                 </h3>
               </div>
             </div>
