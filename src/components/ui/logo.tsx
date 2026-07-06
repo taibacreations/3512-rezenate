@@ -29,7 +29,7 @@ const Logo = ({ logoImage }: Props) => {
 
   return (
     <section>
-      <Link href="#home" className="flex flex-col justify-center items-center md:gap-1.5">
+      <Link href="#home" className="flex justify-center items-center md:gap-1.5">
         <div>
           <svg
             ref={svgRef}
@@ -43,15 +43,15 @@ const Logo = ({ logoImage }: Props) => {
           >
             <path
               d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
-              fill="white"
+              fill="#9564f4"
             />
             <path
               d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
-              fill="white"
+              fill="#9564f4"
             />
             <path
               d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
-              fill="white"
+              fill="#9564f4"
             />
           </svg>
         </div>
