@@ -223,7 +223,7 @@ const Founders = ({ data }: { data: FoundersData }) => {
   };
 
   return (
-    <section id="founders" ref={sectionRef} className="bg-black min-h-[100vh] md:mt-[16.5vh] mt-[10vh] relative overflow-hidden px-4">
+    <section id="founders" ref={sectionRef} className="bg-black min-h-[100vh] relative overflow-hidden px-4">
 
       {/* Purple entry overlay */}
       <div
@@ -303,11 +303,11 @@ const Founders = ({ data }: { data: FoundersData }) => {
           />
 
           <a href={ctaButtonLink}>
-            <button className="group relative font-boldonse font-normal text-[13px] md:text-[14px] px-10 h-[48px] md:h-[52px] rounded-full border-2 border-white/30 text-white overflow-hidden transition-colors duration-500 hover:border-white">
+            <button className="group relative font-boldonse font-normal text-[13px] md:text-[14px] px-10 h-[48px] md:h-[52px] rounded-full border-2 border-white/30 text-white overflow-hidden transition-colors duration-250 hover:border-white">
               {/* Hover fill */}
-              <span className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out rounded-full" />
+              <span className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-250 ease-out rounded-full" />
               {/* Text */}
-              <span className="relative z-10 group-hover:text-black transition-colors duration-500">
+              <span className="relative z-10 group-hover:text-black transition-colors duration-250">
                 {ctaButtonText}
               </span>
             </button>

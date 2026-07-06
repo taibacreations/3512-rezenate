@@ -305,7 +305,7 @@ const Section3 = ({ data }: { data: ValuesData }) => {
                 </h3>
                 <div className="card-text-in relative w-full h-[1px] mt-1 mb-3.5">
                   <span className="absolute inset-0 w-[48px] mx-auto bg-white/20" />
-                  <span className="absolute inset-0 bg-white origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+                  <span className="absolute inset-0 bg-white origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-250 ease-out" />
                 </div>
                 <h5 className="card-text-in font-boldonse font-normal xl:text-[16px] text-[15px] leading-[164%] max-w-[230px] w-full">
                   {value.shortDescription}
@@ -353,7 +353,7 @@ const Section3 = ({ data }: { data: ValuesData }) => {
           <button
             onClick={closeOverlay}
             aria-label="Close"
-            className="absolute top-8 right-8 z-10 w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-colors duration-500"
+            className="absolute top-8 right-8 z-10 w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-colors duration-250"
           >
             <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
               <path d="M1 1L17 17M17 1L1 17" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
@@ -375,7 +375,7 @@ const Section3 = ({ data }: { data: ValuesData }) => {
             </p>
             <button
               onClick={closeOverlay}
-              className="mt-12 text-xs uppercase tracking-[0.2em] border-b border-white/25 pb-1 text-white/60 hover:text-white hover:border-white/60 transition-colors duration-500"
+              className="mt-12 text-xs uppercase tracking-[0.2em] border-b border-white/25 pb-1 text-white/60 hover:text-white hover:border-white/60 transition-colors duration-250"
             >
               Back to Values
             </button>

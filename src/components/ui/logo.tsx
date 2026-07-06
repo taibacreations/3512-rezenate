@@ -73,7 +73,7 @@ const Logo = ({ logoImage, isDark = true }: Props) => {
           <img
             src={wordmarkSrc}
             alt="Rezenate"
-            className="lg:w-[237.74px] md:w-[150px] w-[180px] lg:h-[39.93px] h-auto transition-[filter] duration-500"
+            className="lg:w-[237.74px] md:w-[150px] w-[180px] lg:h-[39.93px] h-auto transition-[filter] duration-250"
             style={{ filter: isDark ? "invert(0)" : "invert(1)" }}
           />
         </div>

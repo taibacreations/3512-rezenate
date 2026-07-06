@@ -240,7 +240,7 @@ const Partners = ({ data }: { data: PartnersData }) => {
       <div className="max-w-[1420px] mx-auto xl:px-10 md:px-6 px-4">
 
         {/* Intro */}
-        <div ref={introWrapRef} className="text-center max-w-[728px] mx-auto md:my-[13.5vh] mt-[13vh] mb-[8vh]">
+        <div ref={introWrapRef} className="text-center max-w-[728px] mx-auto md:my-[13.5vh] md:mt-[13vh] my-[13vh] mb-[8vh]">
           <h2 className="font-boldonse font-normal 2xl:text-[48px] xl:text-[42px] md:text-[36px] text-[30px] leading-[151%] text-black">
             {heading}
           </h2>
@@ -256,7 +256,7 @@ const Partners = ({ data }: { data: PartnersData }) => {
             return (
               <div key={i} ref={(el) => { rowOuterRefs.current[i] = el; }}>
                 <div onMouseEnter={() => setHoveredId(s.title)} className="flex justify-between items-center relative py-[3.2vh] cursor-pointer">
-                  <h4 className="p-title font-boldonse font-normal lg:text-[28px] md:text-[22px] leading-[151%] transition-colors duration-500" style={{ color: isActive ? BRAND_COLOR : "#000" }}>
+                  <h4 className="p-title font-boldonse font-normal lg:text-[28px] md:text-[22px] leading-[151%] transition-colors duration-250" style={{ color: isActive ? BRAND_COLOR : "#000" }}>
                     {s.title}
                   </h4>
                   <div aria-hidden="true" className="invisible" style={{ marginLeft: CONTENT_LEFT, maxWidth: contentMaxWidth }}>
@@ -273,7 +273,7 @@ const Partners = ({ data }: { data: PartnersData }) => {
                       {s.text}
                     </p>
                   </div>
-                  <h4 className="p-number font-boldonse font-normal lg:text-[28px] md:text-[22px] leading-[151%] text-black shrink-0 transition-all duration-500" style={{ opacity: isActive ? 0 : 1, transform: isActive ? "translateX(8px)" : "translateX(0)" }}>
+                  <h4 className="p-number font-boldonse font-normal lg:text-[28px] md:text-[22px] leading-[151%] text-black shrink-0 transition-all duration-250" style={{ opacity: isActive ? 0 : 1, transform: isActive ? "translateX(8px)" : "translateX(0)" }}>
                     {s.number}
                   </h4>
                 </div>
@@ -293,19 +293,19 @@ const Partners = ({ data }: { data: PartnersData }) => {
                 const isLast     = i === stages.length - 1;
                 return (
                   <div key={i} ref={(el) => { mobileCardRefs.current[i] = el; }} className={`snap-start relative ${isLast ? "pb-2" : "mb-5"}`}>
-                    <div className="absolute left-[-26px] top-[18px] w-[6px] h-[6px] rounded-full border transition-all duration-500" style={{ backgroundColor: isExpanded ? BRAND_COLOR : "#fff", borderColor: isExpanded ? BRAND_COLOR : "#c0c0c0", boxShadow: isExpanded ? `0 0 6px ${BRAND_COLOR}` : "none" }} />
+                    <div className="absolute left-[-26px] top-[18px] w-[6px] h-[6px] rounded-full border transition-all duration-250" style={{ backgroundColor: isExpanded ? BRAND_COLOR : "#fff", borderColor: isExpanded ? BRAND_COLOR : "#c0c0c0", boxShadow: isExpanded ? `0 0 6px ${BRAND_COLOR}` : "none" }} />
                     <div onClick={() => setExpandedMobileId((prev) => prev === s.title ? null : s.title)} className="bg-white rounded-[16px] border border-black/8 active:bg-black/[0.02] transition-colors cursor-pointer">
                       <div className="flex items-start gap-3 p-4">
-                        <span className="font-boldonse font-normal text-[18px] leading-none shrink-0 pt-0.5 transition-colors duration-500 w-8" style={{ color: isExpanded ? BRAND_COLOR : "rgba(0,0,0,0.25)" }}>{s.number}</span>
+                        <span className="font-boldonse font-normal text-[18px] leading-none shrink-0 pt-0.5 transition-colors duration-250 w-8" style={{ color: isExpanded ? BRAND_COLOR : "rgba(0,0,0,0.25)" }}>{s.number}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-3">
-                            <h4 className="font-boldonse font-normal text-[17px] leading-[130%] transition-colors duration-500" style={{ color: isExpanded ? BRAND_COLOR : "#000" }}>{s.title}</h4>
-                            <span className="shrink-0 w-6 h-6 rounded-full border border-black/15 flex items-center justify-center transition-transform duration-500" style={{ transform: isExpanded ? "rotate(45deg)" : "rotate(0deg)" }}>
+                            <h4 className="font-boldonse font-normal text-[17px] leading-[130%] transition-colors duration-250" style={{ color: isExpanded ? BRAND_COLOR : "#000" }}>{s.title}</h4>
+                            <span className="shrink-0 w-6 h-6 rounded-full border border-black/15 flex items-center justify-center transition-transform duration-250" style={{ transform: isExpanded ? "rotate(45deg)" : "rotate(0deg)" }}>
                               <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="#000" strokeWidth="1.4" strokeLinecap="round" /></svg>
                             </span>
                           </div>
                           <h6 className="font-outfit font-normal text-[14px] leading-[130%] text-black/60 mt-1">{s.heading}</h6>
-                          <div className="grid transition-[grid-template-rows] duration-500 ease-out" style={{ gridTemplateRows: isExpanded ? "1fr" : "0fr" }}>
+                          <div className="grid transition-[grid-template-rows] duration-250 ease-out" style={{ gridTemplateRows: isExpanded ? "1fr" : "0fr" }}>
                             <div className="overflow-hidden">
                               <p className="font-outfit font-normal text-[13px] leading-[150%] text-black/60 pt-3">{s.text}</p>
                             </div>
