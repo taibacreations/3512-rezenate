@@ -14,19 +14,10 @@ export default defineType({
       validation: (R) => R.required(),
     }),
     defineField({
-      name: "bannerLogo",
-      title: "Banner Logo (3D graphic)",
-      type: "image",
-      description: "The large 3D logo graphic in the centre of the banner",
-      options: { hotspot: true },
-      validation: (R) => R.required(),
-    }),
-    defineField({
-      name: "bannerWaveImage",
-      title: "Banner Wave Image",
-      type: "image",
-      description: "The wave/landscape image that sits behind the heading",
-      options: { hotspot: true },
+      name: "subtitle",
+      title: "Subtitle",
+      type: "string",
+      description: 'Small text below heading — e.g. "Leadership Recruitment & Consulting"',
     }),
   ],
   preview: {

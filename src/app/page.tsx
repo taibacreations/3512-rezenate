@@ -19,6 +19,7 @@ import Founders  from "@/components/founders";
 import Cta       from "@/components/cta";
 import Footer    from "@/components/footer";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import TrustStrip from "@/components/TrustStrip";
 
 export const revalidate = 60;
 
@@ -47,6 +48,7 @@ async function PageContent() {
       <Section2 data={philosophyData} />
       <Section3 data={valuesData}     />
       <Partners data={partnersData}   />
+      <TrustStrip />
       <Founders data={foundersData}   />
       <Cta      data={ctaData}        />
       <Footer   data={footerData}     />

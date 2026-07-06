@@ -12,32 +12,52 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialise Lenis
     const lenis = new Lenis({
-      duration: 1.4,          // scroll travel time — higher = slower/smoother
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo ease-out
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
+      gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 1.5,
+      touchMultiplier: 2,
+      infinite: false,
     });
 
     lenisRef.current = lenis;
 
-    // Plug Lenis into GSAP's ticker so ScrollTrigger stays in sync
-    // Using gsap.ticker instead of requestAnimationFrame avoids double-RAF
-    // and ensures ScrollTrigger.update() fires at exactly the right moment
-    const onTick = (time: number) => {
-      lenis.raf(time * 1000); // gsap ticker gives seconds, lenis wants ms
-    };
-
-    gsap.ticker.add(onTick);
-    gsap.ticker.lagSmoothing(0); // prevent GSAP compensating for tab blur lag
-
-    // Tell ScrollTrigger to use Lenis for scroll position
+    // Sync Lenis with ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    // CRITICAL FIX: Tell ScrollTrigger to use Lenis scroll position
+    ScrollTrigger.scrollerProxy(document.body, {
+      scrollTop(value) {
+        if (arguments.length && value !== undefined) {
+          lenis.scrollTo(value, { immediate: true });
+        }
+        return lenis.scroll;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+      pinType: document.body.style.transform ? "transform" : "fixed",
+    });
+
+    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
+    ScrollTrigger.refresh();
+
     return () => {
-      gsap.ticker.remove(onTick);
+      ScrollTrigger.scrollerProxy(document.body, undefined as any);
+      ScrollTrigger.removeEventListener("refresh", () => lenis.resize());
       lenis.destroy();
       lenisRef.current = null;
     };

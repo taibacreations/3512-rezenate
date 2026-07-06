@@ -16,14 +16,10 @@ const logoPaths = [
   "M323.437 451V323.437H451L323.437 451Z",
 ];
 
-// Entrance = 22% of step, Hold = 56%, Exit = 22%
-// During hold we add parallax so scroll always has visible response
 const ENTER_FRAC  = 0.5;
 const EXIT_FRAC   = 0.5;
-// How much the logo drifts vertically during the hold window (px, scrubbed)
-const HOLD_DRIFT_Y  = -28; // logo floats upward slightly while held
-const HOLD_DRIFT_X  =  12; // logo drifts right very slightly
-// How much heading drifts during hold
+const HOLD_DRIFT_Y  = -28;
+const HOLD_DRIFT_X  =  12;
 const HEADING_DRIFT = -14;
 
 const FALLBACK_QUOTES = [
@@ -41,7 +37,6 @@ interface PhilosophyData {
   quotes?: Quote[];
 }
 
-// Splits "Some text. — Attribution" so the name stays on one line
 function renderText(text: string): React.ReactNode {
   const match = text.match(/^(.+?)\s*([\u2013\u2014-]\s*[A-Z].*)$/);
   if (!match) return text;
@@ -55,7 +50,6 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef      = useRef<HTMLDivElement>(null);
   const itemRefs   = useRef<HTMLDivElement[]>([]);
-  const cueRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !bgRef.current) return;
@@ -78,7 +72,7 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
         },
       });
 
-      // Background parallax — always moving, provides constant scroll feedback
+      // Background parallax
       tl.to(bgRef.current, { backgroundPositionY: "100%", ease: "none" }, 0);
 
       itemRefs.current.forEach((el, i) => {
@@ -126,15 +120,11 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
             .to(line,     { scaleX: 1,     duration: win * 0.60, ease: "none" }, stepStart + win * 0.18)
             .to(heading,  { opacity: 1,    duration: win * 0.65, ease: "none" }, stepStart + win * 0.25);
 
-          // Reset drift from any previous hold so entrance starts clean
           tl.set(logoEl,  { y: 0, x: 0 }, stepStart)
             .set(heading, { y: 0 },        stepStart);
         }
 
         // ── HOLD — continuous parallax drift ──────────────────────────
-        // Logo and heading move slowly through the hold window so the
-        // user always sees motion tied to their scroll position.
-        // ease:"none" = perfectly linear = directly scrubbed by scroll.
         if (holdSize > 0) {
           tl.to(logoEl, {
             y: HOLD_DRIFT_Y,
@@ -147,7 +137,6 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               duration: holdSize,
               ease: "none",
             }, holdStart)
-            // Glow scale pulses slightly during hold — adds depth
             .to(glow, {
               scale: 1.15,
               opacity: 0.35,
@@ -166,11 +155,9 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
         if (i < totalSteps - 1) {
           const exitWin = stepSize * EXIT_FRAC;
 
-          // Reset positions first so exit fades from wherever hold left them
           tl.to([paths[0], paths[1], paths[2], heading, glow],
             { opacity: 0, duration: exitWin, ease: "none" }, exitStart)
             .to(line, { scaleX: 0, duration: exitWin * 0.8, ease: "none" }, exitStart)
-            // Drift continues through exit so motion doesn't stop at exit boundary
             .to(logoEl, {
               y: HOLD_DRIFT_Y * 1.4,
               x: HOLD_DRIFT_X * 1.2,
@@ -183,25 +170,6 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               ease: "none",
             }, exitStart);
         }
-      });
-
-      // Scroll cue
-      gsap.set(cueRef.current, { opacity: 0 });
-      const lastEnterEnd = ((totalSteps - 1) / totalSteps) + (1 / totalSteps) * ENTER_FRAC;
-      tl.to(cueRef.current, { opacity: 1, duration: (1 / totalSteps) * 0.05, ease: "none" }, lastEnterEnd);
-
-      const cuePulse = gsap.to(cueRef.current, {
-        y: 8, opacity: 0.4, duration: 1.6, ease: "power1.inOut", repeat: -1, yoyo: true, paused: true,
-      });
-
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: PIN_END,
-        onEnter:     () => cuePulse.play(),
-        onEnterBack: () => cuePulse.play(),
-        onLeave:     () => { cuePulse.pause(); gsap.set(cueRef.current, { opacity: 0 }); },
-        onLeaveBack: () => { cuePulse.pause(); gsap.set(cueRef.current, { opacity: 0 }); },
       });
     }, sectionRef);
 
@@ -224,7 +192,11 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
   }, [items]);
 
   return (
-    <section id="philosophy" ref={sectionRef} className="relative min-h-[140vh] text-black overflow-hidden xl:px-10 md:px-6 px-4">
+    <section
+      id="philosophy"
+      ref={sectionRef}
+      className="relative min-h-[140vh] text-black xl:px-10 md:px-6 px-4"
+    >
       <div
         ref={bgRef}
         className="absolute inset-0 -z-10 bg-cover bg-top"
@@ -243,7 +215,10 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               <div className="relative flex justify-center shrink-0">
                 <div
                   className="s2-glow absolute inset-0 m-auto w-[300px] h-[300px] rounded-full"
-                  style={{ background: `radial-gradient(circle, rgba(149,100,244,0.18) 0%, rgba(149,100,244,0) 70%)`, filter: "blur(24px)" }}
+                  style={{
+                    background: `radial-gradient(circle, rgba(149,100,244,0.18) 0%, rgba(149,100,244,0) 70%)`,
+                    filter: "blur(24px)",
+                  }}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -260,7 +235,7 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
               <div className={`xl:max-w-[517px] max-w-[480px] text-center ${item.align === "left" ? "md:text-left" : "md:text-right"}`}>
                 <div
                   className="s2-line h-[2px] w-12 mb-6 mx-auto md:mx-0"
-                  style={{ 
+                  style={{
                     backgroundColor: BRAND_COLOR,
                     marginLeft: item.align === "right" ? "auto" : undefined,
                   }}
@@ -275,13 +250,6 @@ const Section2 = ({ data }: { data: PhilosophyData }) => {
             </div>
           );
         })}
-      </div>
-
-      <div ref={cueRef} className="fixed bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1">
-        <div className="w-[1px] h-8 rounded-full bg-gradient-to-b from-white/60 to-transparent" />
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M12 4v14m0 0l-6-6m6 6l6-6" stroke="#D8B4FE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
       </div>
     </section>
   );

@@ -25,27 +25,27 @@ const Cta = ({ data }: { data: CtaData }) => {
   const gradSrc     = data?.gradientImage ? urlFor(data.gradientImage).url() : "/cta-grad.webp";
   const bgSrc       = data?.bgImage       ? urlFor(data.bgImage).url()       : "/cta-bg.svg";
 
-  const sectionRef     = useRef<HTMLElement>(null);
-  const gradRef        = useRef<HTMLImageElement>(null);
-  const glowRef        = useRef<HTMLDivElement>(null);
-  const bgWrapRef      = useRef<HTMLDivElement>(null);
-  const bgRef          = useRef<HTMLImageElement>(null);
-  const headingRef     = useRef<HTMLHeadingElement>(null);
-  const paraRef        = useRef<HTMLParagraphElement>(null);
-  const buttonRef      = useRef<HTMLButtonElement>(null);
-  const buttonFillRef  = useRef<HTMLSpanElement>(null);
-  const buttonTextRef  = useRef<HTMLSpanElement>(null);
+  const sectionRef    = useRef<HTMLElement>(null);
+  const gradRef       = useRef<HTMLImageElement>(null);
+  const glowRef       = useRef<HTMLDivElement>(null);
+  const bgWrapRef     = useRef<HTMLDivElement>(null);
+  const bgRef         = useRef<HTMLImageElement>(null);
+  const headingRef    = useRef<HTMLHeadingElement>(null);
+  const paraRef       = useRef<HTMLParagraphElement>(null);
+  const buttonRef     = useRef<HTMLButtonElement>(null);
+  const buttonFillRef = useRef<HTMLSpanElement>(null);
+  const buttonTextRef = useRef<HTMLSpanElement>(null);
 
-  // Entrance animation — calmed down from original
+  // Entrance animation
   useEffect(() => {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.set(gradRef.current,    { opacity: 0, scale: 1.06 });        // reduced from 1.1
-      gsap.set(bgWrapRef.current,  { opacity: 0, x: 30, scale: 0.95, rotate: -3 }); // reduced from x:50, scale:0.9, rotate:-6
-      gsap.set(headingRef.current, { opacity: 0, y: 20, filter: "blur(6px)" }); // removed letterSpacing anim, reduced y/blur
+      gsap.set(gradRef.current,    { opacity: 0, scale: 1.06 });
+      gsap.set(bgWrapRef.current,  { opacity: 0, x: 30, scale: 0.95, rotate: -3 });
+      gsap.set(headingRef.current, { opacity: 0, y: 20, filter: "blur(6px)" });
       gsap.set(paraRef.current,    { opacity: 0, y: 14 });
-      gsap.set(buttonRef.current,  { opacity: 0, y: 16, scale: 0.92 }); // reduced from y:24, scale:0.85
+      gsap.set(buttonRef.current,  { opacity: 0, y: 16, scale: 0.92 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -56,11 +56,10 @@ const Cta = ({ data }: { data: CtaData }) => {
         },
       });
 
-      tl.to(gradRef.current, { opacity: 1, scale: 1, duration: 1.8, ease: "power2.out" })  // slowed, gentler ease
+      tl.to(gradRef.current,    { opacity: 1, scale: 1, duration: 1.8, ease: "power2.out" })
         .to(bgWrapRef.current,  { opacity: 1, x: 0, scale: 1, rotate: 0, duration: 1.5, ease: "power2.out" }, "<0.1")
         .to(headingRef.current, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power2.out" }, "-=1.1")
         .to(paraRef.current,    { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, "-=0.5")
-        // button: power2.out instead of back.out — no bounce
         .to(buttonRef.current,  { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power2.out" }, "-=0.4");
     }, sectionRef);
 
@@ -82,7 +81,7 @@ const Cta = ({ data }: { data: CtaData }) => {
     };
   }, []);
 
-  // Mouse-follow glow
+  // Mouse-follow glow — subtle, not futuristic
   useEffect(() => {
     const section = sectionRef.current;
     const glow    = glowRef.current;
@@ -92,7 +91,7 @@ const Cta = ({ data }: { data: CtaData }) => {
     const quickY = gsap.quickTo(glow, "y", { duration: 1, ease: "power3.out" });
 
     const handleMove  = (e: MouseEvent) => { const r = section.getBoundingClientRect(); quickX(e.clientX - r.left); quickY(e.clientY - r.top); };
-    const handleEnter = () => gsap.to(glow, { opacity: 0.7, duration: 0.8 }); // reduced from 1 → 0.7
+    const handleEnter = () => gsap.to(glow, { opacity: 0.7, duration: 0.8 });
     const handleLeave = () => gsap.to(glow, { opacity: 0,   duration: 0.8 });
 
     section.addEventListener("mousemove",  handleMove);
@@ -106,14 +105,14 @@ const Cta = ({ data }: { data: CtaData }) => {
     };
   }, []);
 
-  // Button hover — fill wipe + magnetic pull
+  // Button hover — fill wipe + subtle magnetic pull
   useEffect(() => {
     const btn  = buttonRef.current;
     const fill = buttonFillRef.current;
     const text = buttonTextRef.current;
     if (!btn || !fill || !text) return;
 
-    const quickX = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" }); // slightly slower
+    const quickX = gsap.quickTo(btn, "x", { duration: 0.5, ease: "power3.out" });
     const quickY = gsap.quickTo(btn, "y", { duration: 0.5, ease: "power3.out" });
 
     let hoverTl: gsap.core.Timeline | null = null;
@@ -122,28 +121,27 @@ const Cta = ({ data }: { data: CtaData }) => {
       hoverTl?.kill();
       hoverTl = gsap.timeline();
       hoverTl
-        .to(fill, { scaleY: 1, duration: 0.5, ease: "power2.out" }, 0)   // slowed from 0.45
+        .to(fill, { scaleY: 1, duration: 0.5, ease: "power2.out" }, 0)
         .to(text, { color: "#ffffff", duration: 0.4, ease: "power2.out" }, 0)
-        .to(btn,  { scale: 1.02, duration: 0.4, ease: "power2.out" }, 0); // reduced from 1.03
+        .to(btn,  { scale: 1.02, duration: 0.4, ease: "power2.out" }, 0);
     };
 
     const handleLeave = () => {
       hoverTl?.kill();
       hoverTl = gsap.timeline();
       hoverTl
-        .to(fill, { scaleY: 0, duration: 0.45, ease: "power2.inOut" }, 0) // slowed from 0.4
+        .to(fill, { scaleY: 0, duration: 0.45, ease: "power2.inOut" }, 0)
         .to(text, { color: "#000000", duration: 0.4, ease: "power2.out" }, 0)
         .to(btn,  { scale: 1, x: 0, y: 0, duration: 0.45, ease: "power2.out" }, 0);
     };
 
-    const handleMove = (e: MouseEvent) => {
+    const handleMove  = (e: MouseEvent) => {
       const rect = btn.getBoundingClientRect();
-      quickX((e.clientX - (rect.left + rect.width  / 2)) * 0.15); // reduced from 0.2
-      quickY((e.clientY - (rect.top  + rect.height / 2)) * 0.25); // reduced from 0.35
+      quickX((e.clientX - (rect.left + rect.width  / 2)) * 0.15);
+      quickY((e.clientY - (rect.top  + rect.height / 2)) * 0.25);
     };
-
-    const handleDown = () => gsap.to(btn, { scale: 0.97, duration: 0.15, ease: "power2.out" }); // reduced press
-    const handleUp   = () => gsap.to(btn, { scale: 1.02, duration: 0.2,  ease: "power2.out" }); // removed back.out bounce
+    const handleDown = () => gsap.to(btn, { scale: 0.97, duration: 0.15, ease: "power2.out" });
+    const handleUp   = () => gsap.to(btn, { scale: 1.02, duration: 0.2,  ease: "power2.out" });
 
     btn.addEventListener("mouseenter", handleEnter);
     btn.addEventListener("mouseleave", handleLeave);
@@ -165,7 +163,7 @@ const Cta = ({ data }: { data: CtaData }) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="bg-white md:min-h-[81.5vh] min-h-[70vh] relative flex justify-center items-center overflow-hidden"
+      className="bg-white md:min-h-[81.5vh] min-h-[70vh] relative flex justify-center items-center"
     >
       <img ref={gradRef} src={gradSrc} alt="" className="absolute bottom-0 left-0 pointer-events-none" />
 
@@ -174,8 +172,8 @@ const Cta = ({ data }: { data: CtaData }) => {
         className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-0"
         style={{
           transform: "translate(-50%, -50%)",
-          background: "radial-gradient(circle, rgba(149,100,244,0.35) 0%, rgba(149,100,244,0) 70%)", // reduced from 0.45
-          filter: "blur(12px)", // increased blur — softer
+          background: "radial-gradient(circle, rgba(149,100,244,0.35) 0%, rgba(149,100,244,0) 70%)",
+          filter: "blur(12px)",
         }}
       />
 

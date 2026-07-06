@@ -5,11 +5,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 // @ts-ignore
 import DotField from "./DotField";
-import { urlFor } from "../sanity/lib/image";
 
 interface BannerData {
-  heading: string;
-  bannerLogo?: { asset: { _ref: string } };
+  heading?: string;
+  subtitle?: string;
   bannerWaveImage?: { asset: { _ref: string } };
 }
 
@@ -20,28 +19,25 @@ interface Props {
 const Banner = ({ data }: Props) => {
   const sectionRef         = useRef<HTMLElement>(null);
   const gradientRef        = useRef<HTMLDivElement>(null);
-  const logoWrapRef        = useRef<HTMLDivElement>(null);
-  const logoRef            = useRef<HTMLImageElement>(null);
-  const glowRef            = useRef<HTMLDivElement>(null);
   const headingRef         = useRef<HTMLHeadingElement>(null);
   const bannerContainerRef = useRef<HTMLDivElement>(null);
   const bannerTrackRef     = useRef<HTMLDivElement>(null);
   const dotFieldRef        = useRef<HTMLDivElement>(null);
+  const subtitleRef        = useRef<HTMLParagraphElement>(null);
 
+  // Entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(logoRef.current,     { opacity: 0, scale: 0.85, filter: "blur(8px)" });
-      gsap.set(glowRef.current,     { opacity: 0, scale: 0.8 });
-      gsap.set(headingRef.current,  { opacity: 0, y: 20, filter: "blur(4px)" });
+      gsap.set(headingRef.current,  { opacity: 0, y: 30, filter: "blur(6px)" });
       gsap.set(gradientRef.current, { opacity: 0 });
       gsap.set(dotFieldRef.current, { opacity: 0 });
+      gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
 
       const tl = gsap.timeline({ paused: true });
-      tl.to(gradientRef.current,  { opacity: 1,   duration: 2.2, ease: "power2.out" })
-        .to(dotFieldRef.current,  { opacity: 1,   duration: 3.0, ease: "power2.out" }, "-=2.0")
-        .to(glowRef.current,      { opacity: 0.3, scale: 1, duration: 2, ease: "power2.out" }, "-=2.4")
-        .to(logoRef.current,      { opacity: 1,   scale: 1, filter: "blur(0px)", duration: 1.6, ease: "power2.out" }, "-=1.8")
-        .to(headingRef.current,   { opacity: 1,   y: 0, filter: "blur(0px)", duration: 1.4, ease: "power3.out" }, "-=0.8");
+      tl.to(gradientRef.current, { opacity: 1, duration: 2.4, ease: "power2.out" })
+        .to(dotFieldRef.current, { opacity: 1, duration: 3.0, ease: "power2.out" }, "-=2.0")
+        .to(headingRef.current,  { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.6, ease: "power3.out" }, "-=2.0")
+        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }, "-=0.8");
 
       const section = sectionRef.current;
       if (!section) return;
@@ -55,6 +51,7 @@ const Banner = ({ data }: Props) => {
     return () => ctx.revert();
   }, []);
 
+  // Subtle gradient breathing
   useEffect(() => {
     const gradient = gradientRef.current;
     if (!gradient) return;
@@ -63,6 +60,7 @@ const Banner = ({ data }: Props) => {
     return () => { tl.kill(); };
   }, []);
 
+  // Wave float
   useEffect(() => {
     const track = bannerTrackRef.current;
     if (!track) return;
@@ -73,56 +71,24 @@ const Banner = ({ data }: Props) => {
     return () => { tl.kill(); };
   }, []);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const wrap    = logoWrapRef.current;
-    const logo    = logoRef.current;
-    const glow    = glowRef.current;
-    if (!section || !wrap || !logo || !glow) return;
-
-    const quickX     = gsap.quickTo(logo, "rotateY", { duration: 0.9, ease: "power3.out" });
-    const quickY     = gsap.quickTo(logo, "rotateX", { duration: 0.9, ease: "power3.out" });
-    const quickLogoX = gsap.quickTo(logo, "x",       { duration: 1.1, ease: "power3.out" });
-    const quickLogoY = gsap.quickTo(logo, "y",       { duration: 1.1, ease: "power3.out" });
-    const quickGlowX = gsap.quickTo(glow, "x",       { duration: 1.4, ease: "power3.out" });
-    const quickGlowY = gsap.quickTo(glow, "y",       { duration: 1.4, ease: "power3.out" });
-
-    const handleMove = (e: MouseEvent) => {
-      const rect = wrap.getBoundingClientRect();
-      const cx = Math.max(-1, Math.min(1, (e.clientX - rect.left - rect.width / 2) / (rect.width / 2)));
-      const cy = Math.max(-1, Math.min(1, (e.clientY - rect.top - rect.height / 2) / (rect.height / 2)));
-      quickX(cx * 6); quickY(cy * -6);
-      quickLogoX(cx * 8); quickLogoY(cy * 8);
-      quickGlowX(cx * 10); quickGlowY(cy * 10);
-    };
-    const handleLeave = () => {
-      quickX(0); quickY(0); quickLogoX(0); quickLogoY(0); quickGlowX(0); quickGlowY(0);
-    };
-    section.addEventListener("mousemove", handleMove);
-    section.addEventListener("mouseleave", handleLeave);
-    return () => {
-      section.removeEventListener("mousemove", handleMove);
-      section.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
-
-  const logoSrc     = data?.bannerLogo     ? urlFor(data.bannerLogo).url()     : "/banner-logo.webp";
-  const waveSrc     = data?.bannerWaveImage ? urlFor(data.bannerWaveImage).url() : "/banner.webp";
-  const heading     = data?.heading ?? "Lead The Way";
+  // Static wave image — never from Sanity
+  const waveSrc = "/banner.webp";
+  const heading  = data?.heading
+  const subtitle = data?.subtitle
 
   return (
     <section
       id="home"
       ref={sectionRef}
-      className="relative overflow-hidden bg-black md:pb-[6vh]"
-      style={{ perspective: "1000px" }}
+      className="relative bg-black px-4 md:min-h-[93.5vh] h-[900px]"
     >
+      {/* Background gradient */}
       <div
         ref={gradientRef}
         className="absolute inset-0 pointer-events-none z-0"
         style={{
           backgroundImage: `
-            radial-gradient(circle at 50% 28%, rgba(149,100,244,0.22) 0%, rgba(149,100,244,0.06) 40%, rgba(0,0,0,0) 65%),
+            radial-gradient(circle at 50% 28%, rgba(149,100,244,0.20) 0%, rgba(149,100,244,0.05) 40%, rgba(0,0,0,0) 65%),
             linear-gradient(180deg, #000000 0%, #080510 50%, #000000 100%)
           `,
           backgroundSize: "140% 140%, 100% 100%",
@@ -130,6 +96,7 @@ const Banner = ({ data }: Props) => {
         }}
       />
 
+      {/* Dot field */}
       <div
         ref={dotFieldRef}
         className="absolute inset-0 z-[1]"
@@ -151,50 +118,36 @@ const Banner = ({ data }: Props) => {
         />
       </div>
 
-      <div
-        ref={logoWrapRef}
-        className="flex justify-center absolute xl:top-20 lg:top-30 top-40 left-1/2 -translate-x-1/2 z-10"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div
-          ref={glowRef}
-          className="absolute inset-0 m-auto w-[500px] h-[500px] rounded-full pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, rgba(149,100,244,0.3) 0%, rgba(149,100,244,0) 70%)",
-            filter: "blur(40px)",
-          }}
-        />
-        <img
-          ref={logoRef}
-          src={logoSrc}
-          alt="Rezenate logo"
-          className="relative z-10 2xl:w-[729px] 2xl:h-[729px] xl:w-[600px] xl:h-[600px] lg:w-[500px] lg:h-[500px] md:w-[400px] md:h-[400px] w-[250px] h-[250px] will-change-transform"
-          style={{ transformStyle: "preserve-3d" }}
-        />
-      </div>
-
+      {/* Static wave/ripple image — bottom */}
       <div
         ref={bannerContainerRef}
-        className="absolute top-[46vh] w-full overflow-hidden z-10"
-        style={{ height: "504px" }}
+        className="absolute bottom-0 w-full z-10"
+        style={{ height: "55vh", overflow: "visible" }}
       >
-        <div ref={bannerTrackRef} className="flex" style={{ willChange: "transform" }}>
+        <div ref={bannerTrackRef} className="w-full h-full">
           <img
             src={waveSrc}
-            alt="banner"
-            className="banner-image w-full md:h-[504px] h-[180px] object-cover"
-            style={{ willChange: "transform", transformOrigin: "center center" }}
+            alt="Rezenate ripple"
+            className="banner-image w-full h-full object-cover object-top"
+            style={{ willChange: "transform", transformOrigin: "center top" }}
           />
         </div>
       </div>
 
-      <div className="flex justify-center items-center mt-[69.5vh] relative z-10">
+      {/* Heading */}
+      <div className="relative z-20 flex flex-col items-center justify-center min-h-[80vh]">
         <h1
           ref={headingRef}
-          className="font-boldonse font-normal 2xl:text-[125px] xl:text-[100px] md:text-[80px] text-[10vw] leading-[152%] uppercase text-white mt-[-10vh] md:mt-0"
+          className="font-boldonse font-normal 2xl:text-[110px] xl:text-[90px] md:text-[72px] text-[11vw] md:leading-[1.1] uppercase text-white text-center px-4"
         >
           {heading}
         </h1>
+        <p
+          ref={subtitleRef}
+          className="mt-6 text-white/40 text-sm md:text-base tracking-[0.25em] uppercase font-outfit text-center"
+        >
+          {subtitle}
+        </p>
       </div>
     </section>
   );

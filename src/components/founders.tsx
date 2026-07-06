@@ -13,7 +13,6 @@ interface Founder {
   role: string;
   bio: string;
   quote: string;
-  photo?: { asset: { _ref: string } } | null;
   cardStyle?: "dark" | "light";
 }
 
@@ -62,9 +61,6 @@ const Founders = ({ data }: { data: FoundersData }) => {
     ? urlFor(data.blurImage).url()
     : "/founder-blur.webp";
 
-  const getPhotoSrc = (f: Founder, fallback: string) =>
-    f.photo ? urlFor(f.photo).width(220).height(220).url() : fallback;
-
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLImageElement>(null);
   const ringRef = useRef<HTMLImageElement>(null);
@@ -78,10 +74,10 @@ const Founders = ({ data }: { data: FoundersData }) => {
 
   const card1WrapRef = useRef<HTMLDivElement>(null);
   const card1Ref = useRef<HTMLDivElement>(null);
-  const photo1Ref = useRef<HTMLImageElement>(null);
+  const mark1Ref = useRef<HTMLDivElement>(null);
   const card2WrapRef = useRef<HTMLDivElement>(null);
   const card2Ref = useRef<HTMLDivElement>(null);
-  const photo2Ref = useRef<HTMLImageElement>(null);
+  const mark2Ref = useRef<HTMLDivElement>(null);
 
   // Spinning ring loop
   useEffect(() => {
@@ -165,7 +161,7 @@ const Founders = ({ data }: { data: FoundersData }) => {
         rotate: 2,
         scale: 0.96,
       });
-      gsap.set([photo1Ref.current, photo2Ref.current], {
+      gsap.set([mark1Ref.current, mark2Ref.current], {
         opacity: 0,
         scale: 0.85,
       });
@@ -236,12 +232,12 @@ const Founders = ({ data }: { data: FoundersData }) => {
           "<0.1",
         )
         .to(
-          photo1Ref.current,
+          mark1Ref.current,
           { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" },
           "-=0.9",
         )
         .to(
-          photo2Ref.current,
+          mark2Ref.current,
           { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" },
           "<0.15",
         )
@@ -274,6 +270,38 @@ const Founders = ({ data }: { data: FoundersData }) => {
 
   const founder1 = founders[0];
   const founder2 = founders[1];
+
+  // Logo mark used in place of a founder photo.
+  // "onPurpleCard": white circle, purple icon (sits on the purple card).
+  // "onLightCard": purple circle (matches the purple card's bg), white icon
+  //                (sits on the white card).
+  const BrandMark = ({
+    innerRef,
+    variant,
+  }: {
+    innerRef: React.Ref<HTMLDivElement>;
+    variant: "onPurpleCard" | "onLightCard";
+  }) => {
+    const circleBg = variant === "onLightCard" ? "#9564F4" : "#FAFAFC";
+    const iconFill = variant === "onLightCard" ? "#FFFFFF" : "#9564F4";
+
+    return (
+      <div
+        ref={innerRef}
+        className="2xl:w-[111px] 2xl:h-[111px] md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full absolute top-[-5.5vh] left-1/2 -translate-x-1/2 flex items-center justify-center"
+        style={{
+          backgroundColor: circleBg,
+          boxShadow: "0 8px 20px rgba(11,7,48,0.35)",
+        }}
+      >
+        <svg width="38%" height="38%" viewBox="0 0 144 145" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M143.934 0H0L24.4609 24.6053C32.1567 32.3465 42.6217 36.6994 53.5374 36.6994H106.337V89.5543C106.337 100.43 110.658 110.859 118.349 118.548L143.934 144.128V0Z" fill={iconFill} />
+          <path d="M92.099 51.6011H0.22168L25.5057 76.8803C32.8194 84.1926 42.7381 88.3004 53.0802 88.3004H55.1701V90.8272C55.1701 101.172 59.28 111.093 66.5956 118.407L92.099 143.906V51.6011Z" fill={iconFill} />
+          <path d="M40.7108 143.906V103.203H0L40.7108 143.906Z" fill={iconFill} />
+        </svg>
+      </div>
+    );
+  };
 
   return (
     <section
@@ -347,7 +375,7 @@ const Founders = ({ data }: { data: FoundersData }) => {
             <div ref={card1WrapRef} style={{ perspective: "1200px" }}>
               <div
                 ref={card1Ref}
-                className={`2xl:w-[638px] 2xl:h-[367px] xl:w-[600px] xl:h-[320px] lg:w-[470px] w-full md:h-[320px] md:min-h-0 min-h-[320px] xl:px-0 px-6 rounded-[36px] pt-[7vh] md:pb-0 pb-[2vh] relative ${founder1.cardStyle === "light" ? "bg-white" : "border-box"}`}
+                className={`2xl:w-[638px] 2xl:h-[367px] xl:w-[600px] xl:h-[320px] lg:w-[470px] w-full md:h-[320px] md:min-h-0 min-h-[320px] xl:px-0 px-6 rounded-[36px] pt-[7vh] md:pb-0 pb-[2vh] relative ${founder1.cardStyle === "light" ? "bg-white" : "bg-[#9564F4]"}`}
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <div
@@ -366,11 +394,9 @@ const Founders = ({ data }: { data: FoundersData }) => {
                     {founder1.role}
                   </h6>
                 </div>
-                <img
-                  ref={photo1Ref}
-                  src={getPhotoSrc(founder1, "/founder1.webp")}
-                  alt={founder1.name}
-                  className="2xl:w-[111px] 2xl:h-[111px] md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full absolute top-[-5.5vh] left-1/2 -translate-x-1/2"
+                <BrandMark
+                  innerRef={mark1Ref}
+                  variant={founder1.cardStyle === "light" ? "onLightCard" : "onPurpleCard"}
                 />
               </div>
             </div>
@@ -381,7 +407,7 @@ const Founders = ({ data }: { data: FoundersData }) => {
             <div ref={card2WrapRef} style={{ perspective: "1200px" }}>
               <div
                 ref={card2Ref}
-                className={`2xl:w-[638px] 2xl:h-[367px] xl:w-[600px] xl:h-[320px] lg:w-[470px] w-full md:h-[320px] md:min-h-0 min-h-[320px] xl:px-0 px-6 rounded-[36px] pt-[7vh] md:pb-0 pb-[2vh] relative ${founder2.cardStyle === "light" ? "bg-white" : "border-box"}`}
+                className={`2xl:w-[638px] 2xl:h-[367px] xl:w-[600px] xl:h-[320px] lg:w-[470px] w-full md:h-[320px] md:min-h-0 min-h-[320px] xl:px-0 px-6 rounded-[36px] pt-[7vh] md:pb-0 pb-[2vh] relative ${founder2.cardStyle === "light" ? "bg-white" : "bg-[#9564F4]"}`}
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <div
@@ -400,11 +426,9 @@ const Founders = ({ data }: { data: FoundersData }) => {
                     {founder2.role}
                   </h6>
                 </div>
-                <img
-                  ref={photo2Ref}
-                  src={getPhotoSrc(founder2, "/founder2.webp")}
-                  alt={founder2.name}
-                  className="2xl:w-[111px] 2xl:h-[111px] md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full absolute top-[-5.5vh] left-1/2 -translate-x-1/2"
+                <BrandMark
+                  innerRef={mark2Ref}
+                  variant={founder2.cardStyle === "light" ? "onLightCard" : "onPurpleCard"}
                 />
               </div>
             </div>

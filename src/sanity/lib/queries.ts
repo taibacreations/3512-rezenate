@@ -32,7 +32,10 @@ export const siteSettingsQuery = `coalesce(
   noIndex
 }`;
 
-export const bannerQuery     = `coalesce(*[_id == "banner"][0],     *[_type == "banner"][0])    { heading, bannerLogo, bannerWaveImage }`;
+export const bannerQuery = `coalesce(
+  *[_id == "banner"][0],
+  *[_type == "banner"][0]
+){ heading, subtitle }`;
 export const philosophyQuery = `coalesce(*[_id == "philosophy"][0], *[_type == "philosophy"][0]){ backgroundImage, quotes[]{ text, align } }`;
 export const valuesQuery     = `coalesce(*[_id == "values"][0],     *[_type == "values"][0])    { heading, items[]{ name, shortDescription, longDescription, image } }`;
 export const partnersQuery   = `coalesce(*[_id == "partners"][0],   *[_type == "partners"][0])  { heading, subheading, stages[]{ number, title, heading, text, image } }`;
