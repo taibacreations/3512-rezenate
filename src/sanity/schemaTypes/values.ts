@@ -1,4 +1,3 @@
-// schemas/values.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -45,10 +44,11 @@ export default defineType({
             }),
             defineField({
               name: "image",
-              title: "Card Image",
+              title: "Card Background Image (optional)",
               type: "image",
               options: { hotspot: true },
-              validation: (R) => R.required(),
+              description: "If left empty, gradient + letter overlay will be shown",
+              // no validation = optional
             }),
           ],
           preview: {

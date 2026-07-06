@@ -22,8 +22,8 @@ const Cta = ({ data }: { data: CtaData }) => {
   const paragraph   = data?.paragraph   ?? "If this resonates, let's have a conversation. We reply within a day — always personally.";
   const buttonText  = data?.buttonText  ?? "Start a Private Conversation";
   const buttonLink  = data?.buttonLink  ?? "#footer";
-  const gradSrc     = data?.gradientImage ? urlFor(data.gradientImage).url() : "/cta-grad.webp";
-  const bgSrc       = data?.bgImage       ? urlFor(data.bgImage).url()       : "/cta-bg.svg";
+  const gradSrc     = "/cta-grad.webp";
+  const bgSrc       = "/cta-bg.svg";
 
   const sectionRef    = useRef<HTMLElement>(null);
   const gradRef       = useRef<HTMLImageElement>(null);

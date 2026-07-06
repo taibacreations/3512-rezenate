@@ -29,9 +29,6 @@ const Footer = ({ data }: { data: FooterData }) => {
     "10% of every retainer supports a cause our clients care about. We also make a matching donation to a charity chosen by their new leader, because good business should always leave the world better than it found it.";
   const copyright =
     data?.copyrightText ?? "© Rezenate 2026. All rights reserved.";
-  const bgStyle = data?.backgroundImage
-    ? { backgroundImage: `url(${urlFor(data.backgroundImage).url()})` }
-    : {};
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -127,7 +124,6 @@ const Footer = ({ data }: { data: FooterData }) => {
       ref={footerRef}
       id="footer"
       className="bg-[url(/footers.webp)] bg-cover bg-center min-h-screen text-white pt-[11vh] relative overflow-hidden"
-      style={bgStyle}
     >
       <div
         ref={bgOverlayRef}

@@ -33,18 +33,6 @@ export default defineType({
       description: 'e.g. "mailto:hello@rezenate.com" or "#footer"',
       initialValue: "#footer",
     }),
-    defineField({
-      name: "gradientImage",
-      title: "Gradient Image (bottom-left)",
-      type: "image",
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: "bgImage",
-      title: "Background Image (top-right)",
-      type: "image",
-      options: { hotspot: true },
-    }),
   ],
   preview: {
     prepare: () => ({ title: "CTA Section" }),

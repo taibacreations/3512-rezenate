@@ -48,7 +48,6 @@ async function PageContent() {
       <Section2 data={philosophyData} />
       <Section3 data={valuesData}     />
       <Partners data={partnersData}   />
-      <TrustStrip />
       <Founders data={foundersData}   />
       <Cta      data={ctaData}        />
       <Footer   data={footerData}     />

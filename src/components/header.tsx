@@ -53,7 +53,6 @@ const Header = () => {
     client
       .fetch(headerQuery, {}, { cache: "no-store" })
       .then((data: HeaderData) => {
-        console.log("[Header] Sanity data:", data); // ← check browser console
         if (data) setHeaderData(data);
         setLoaded(true);
       })

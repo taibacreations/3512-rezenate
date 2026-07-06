@@ -1,4 +1,3 @@
-// schemas/partners.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -46,7 +45,6 @@ export default defineType({
               name: "heading",
               title: "Stage Heading",
               type: "string",
-              description: 'e.g. "We make your story magnetic."',
               validation: (R) => R.required(),
             }),
             defineField({
@@ -56,14 +54,6 @@ export default defineType({
               rows: 4,
               validation: (R) => R.required(),
             }),
-            defineField({
-              name: "image",
-              title: "Hover Image",
-              type: "image",
-              description: "Image shown in the floating panel on desktop hover",
-              options: { hotspot: true },
-              validation: (R) => R.required(),
-            }),
           ],
           preview: {
             select: { title: "title", subtitle: "heading", media: "image" },
@@ -71,6 +61,54 @@ export default defineType({
         },
       ],
       validation: (R) => R.required().min(1),
+    }),
+
+    // ── Trust Strip ──────────────────────────────────────────
+    defineField({
+      name: "trustSignals",
+      title: "Trust Strip Signals",
+      type: "array",
+      description: "4 trust signals shown in the strip below the stages",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              description: 'e.g. "Replacement Guarantee"',
+              validation: (R) => R.required(),
+            }),
+            defineField({
+              name: "detail",
+              title: "Detail",
+              type: "string",
+              description: 'e.g. "If it doesn\'t work out, we make it right."',
+              validation: (R) => R.required(),
+            }),
+            defineField({
+              name: "icon",
+              title: "Icon Type",
+              type: "string",
+              description: "shield-check | dollar | shield | person",
+              options: {
+                list: [
+                  { title: "Shield with Check (Guarantee)", value: "shield-check" },
+                  { title: "Dollar Sign (Fees)",            value: "dollar"       },
+                  { title: "Shield (Values)",               value: "shield"       },
+                  { title: "Person (Founder-Led)",          value: "person"       },
+                ],
+                layout: "radio",
+              },
+              validation: (R) => R.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "label", subtitle: "detail" },
+          },
+        },
+      ],
     }),
   ],
   preview: {

@@ -26,12 +26,6 @@ export default defineType({
       type: "string",
       initialValue: "© Rezenate 2026. All rights reserved.",
     }),
-    defineField({
-      name: "backgroundImage",
-      title: "Background Image",
-      type: "image",
-      options: { hotspot: true },
-    }),
   ],
   preview: {
     prepare: () => ({ title: "Footer Section" }),

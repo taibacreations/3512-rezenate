@@ -45,7 +45,7 @@ function renderText(text: string): React.ReactNode {
 
 const Section2 = ({ data }: { data: PhilosophyData }) => {
   const items = (data?.quotes?.length ? data.quotes : FALLBACK_QUOTES) as Quote[];
-  const bgSrc = data?.backgroundImage ? urlFor(data.backgroundImage).url() : "/section2-bg.webp";
+  const bgSrc = "/section2-bg.webp";
 
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef      = useRef<HTMLDivElement>(null);

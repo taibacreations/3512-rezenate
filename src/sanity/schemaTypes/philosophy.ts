@@ -7,13 +7,6 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "backgroundImage",
-      title: "Background Image",
-      type: "image",
-      description: "The background image that slowly scrolls (section2-bg.webp)",
-      options: { hotspot: true },
-    }),
-    defineField({
       name: "quotes",
       title: "Quotes",
       type: "array",
