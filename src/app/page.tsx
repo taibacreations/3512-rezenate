@@ -62,7 +62,7 @@ async function PageContent() {
 export default function Home() {
   return (
     <>
-      <LoadingScreen />
+      {/* <LoadingScreen /> */}
       <Suspense fallback={null}>
         <PageContent />
       </Suspense>
