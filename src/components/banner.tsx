@@ -80,7 +80,7 @@ const Banner = ({ data }: Props) => {
     <section
       id="home"
       ref={sectionRef}
-      className="relative bg-black px-4 md:min-h-[93.5vh] h-[900px]"
+      className="relative bg-black px-4 md:min-h-[93.5vh] h-[90vh]"
     >
       {/* Background gradient */}
       <div

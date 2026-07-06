@@ -133,7 +133,7 @@ const Header = () => {
       <div className="fixed w-full z-50">
         <header
           ref={headerRef}
-          className="flex justify-between items-center max-w-[1435px] mx-auto xl:px-10 md:px-6 px-4 md:mt-[20px] relative opacity-0"
+          className="flex justify-between items-center max-w-[1435px] mx-auto xl:px-10 md:px-6 px-4 md:mt-[20px] mt-[1.5vh] relative opacity-0"
         >
           <div className="flex-1 justify-start hidden md:flex">
             <button

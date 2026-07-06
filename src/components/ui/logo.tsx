@@ -43,7 +43,7 @@ const Logo = ({ logoImage, isDark = true }: Props) => {
 
   return (
     <section>
-      <Link href="#home" className="flex justify-center items-center md:gap-1.5">
+      <Link href="#home" className="flex justify-center items-center gap-1.5">
         <div>
           <svg
             ref={svgRef}
@@ -53,7 +53,7 @@ const Logo = ({ logoImage, isDark = true }: Props) => {
             height="51"
             viewBox="0 0 51 51"
             fill="none"
-            className="w-[30px] lg:w-[51px] md:w-[40px]"
+            className="lg:w-[51px] w-[40px]"
           >
             <path
               d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
@@ -73,7 +73,7 @@ const Logo = ({ logoImage, isDark = true }: Props) => {
           <img
             src={wordmarkSrc}
             alt="Rezenate"
-            className="lg:w-[237.74px] w-[150px] lg:h-[39.93px] h-auto transition-[filter] duration-500"
+            className="lg:w-[237.74px] md:w-[150px] w-[180px] lg:h-[39.93px] h-auto transition-[filter] duration-500"
             style={{ filter: isDark ? "invert(0)" : "invert(1)" }}
           />
         </div>
