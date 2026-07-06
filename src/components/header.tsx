@@ -149,8 +149,8 @@ const Header = () => {
             </button>
           </div>
 
-          <div className={`flex flex-1 justify-start md:justify-center scale-[0.7] sm:scale-90 md:scale-100 transition-[filter] duration-500 ${isDark ? "" : "#9564f4"}`}>
-            <Logo logoImage={headerData.logoImage} />
+          <div className="flex flex-1 justify-start md:justify-center scale-[0.7] sm:scale-90 md:scale-100">
+            <Logo logoImage={headerData.logoImage} isDark={isDark} />
           </div>
 
           <div className="flex flex-1 justify-end">
