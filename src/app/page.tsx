@@ -19,7 +19,6 @@ import Founders  from "@/components/founders";
 import Cta       from "@/components/cta";
 import Footer    from "@/components/footer";
 import LoadingScreen from "@/components/ui/LoadingScreen";
-import TrustStrip from "@/components/TrustStrip";
 
 export const revalidate = 60;
 

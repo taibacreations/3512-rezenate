@@ -17,33 +17,60 @@ interface Props {
 }
 
 const Banner = ({ data }: Props) => {
-  const sectionRef         = useRef<HTMLElement>(null);
-  const gradientRef        = useRef<HTMLDivElement>(null);
-  const headingRef         = useRef<HTMLHeadingElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const bannerContainerRef = useRef<HTMLDivElement>(null);
-  const bannerTrackRef     = useRef<HTMLDivElement>(null);
-  const dotFieldRef        = useRef<HTMLDivElement>(null);
-  const subtitleRef        = useRef<HTMLParagraphElement>(null);
+  const bannerTrackRef = useRef<HTMLDivElement>(null);
+  const dotFieldRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
 
   // Entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(headingRef.current,  { opacity: 0, y: 30, filter: "blur(6px)" });
+      gsap.set(headingRef.current, { opacity: 0, y: 30, filter: "blur(6px)" });
       gsap.set(gradientRef.current, { opacity: 0 });
       gsap.set(dotFieldRef.current, { opacity: 0 });
       gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
 
       const tl = gsap.timeline({ paused: true });
-      tl.to(gradientRef.current, { opacity: 1, duration: 2.4, ease: "power2.out" })
-        .to(dotFieldRef.current, { opacity: 1, duration: 3.0, ease: "power2.out" }, "-=2.0")
-        .to(headingRef.current,  { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.6, ease: "power3.out" }, "-=2.0")
-        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }, "-=0.8");
+      tl.to(gradientRef.current, {
+        opacity: 1,
+        duration: 2.4,
+        ease: "power2.out",
+      })
+        .to(
+          dotFieldRef.current,
+          { opacity: 1, duration: 3.0, ease: "power2.out" },
+          "-=2.0",
+        )
+        .to(
+          headingRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1.6,
+            ease: "power3.out",
+          },
+          "-=2.0",
+        )
+        .to(
+          subtitleRef.current,
+          { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
+          "-=0.8",
+        );
 
       const section = sectionRef.current;
       if (!section) return;
       const observer = new IntersectionObserver(
-        (entries) => { if (entries[0].isIntersecting) { tl.play(); observer.disconnect(); } },
-        { threshold: 0.1 }
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            tl.play();
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1 },
       );
       observer.observe(section);
       return () => observer.disconnect();
@@ -55,9 +82,15 @@ const Banner = ({ data }: Props) => {
   useEffect(() => {
     const gradient = gradientRef.current;
     if (!gradient) return;
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: "sine.inOut" } });
+    const tl = gsap.timeline({
+      repeat: -1,
+      yoyo: true,
+      defaults: { ease: "sine.inOut" },
+    });
     tl.to(gradient, { backgroundPosition: "51% 49%", duration: 16 }, 0);
-    return () => { tl.kill(); };
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   // Wave float
@@ -66,15 +99,21 @@ const Banner = ({ data }: Props) => {
     if (!track) return;
     const img = track.querySelector<HTMLImageElement>(".banner-image");
     if (!img) return;
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: "sine.inOut" } });
+    const tl = gsap.timeline({
+      repeat: -1,
+      yoyo: true,
+      defaults: { ease: "sine.inOut" },
+    });
     tl.to(img, { y: "+=8", duration: 6 }, 0);
-    return () => { tl.kill(); };
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   // Static wave image — never from Sanity
   const waveSrc = "/banner.webp";
-  const heading  = data?.heading
-  const subtitle = data?.subtitle
+  const heading = data?.heading;
+  const subtitle = data?.subtitle;
 
   return (
     <section
@@ -118,19 +157,23 @@ const Banner = ({ data }: Props) => {
         />
       </div>
 
-      {/* Static wave/ripple image — bottom */}
+      {/* Static wave/ripple — replace img with video */}
       <div
         ref={bannerContainerRef}
-        className="absolute bottom-0 w-full z-10"
-        style={{ height: "55vh", overflow: "visible" }}
+        className="absolute bottom-0 w-full z-10 h-[60vh] md:h-[70vh]"
+        style={{ overflow: "visible" }}
       >
         <div ref={bannerTrackRef} className="w-full h-full">
-          <img
-            src={waveSrc}
-            alt="Rezenate ripple"
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
             className="banner-image w-full h-full object-cover object-top"
             style={{ willChange: "transform", transformOrigin: "center top" }}
-          />
+          >
+            <source src="/banner.webm" />
+          </video>
         </div>
       </div>
 
