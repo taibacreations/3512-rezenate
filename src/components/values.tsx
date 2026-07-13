@@ -13,6 +13,12 @@ const valuesData = [
     desc: "We bring heart to everything we do",
     expanded:
       "From the Greek for 'putting your soul into your work,' Meraki means pouring soul, care, and creativity into what we do, leaving a piece of ourselves in everything we touch. That spirit runs through every detail we craft, every leader we introduce, and every relationship we nurture.",
+    icon: (
+      // Heart
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px] transition-all duration-300">
+        <path className="icon-path" d="M16 27.5S3.5 20 3.5 11.5A6.5 6.5 0 0 1 16 8.257 6.5 6.5 0 0 1 28.5 11.5C28.5 20 16 27.5 16 27.5Z" stroke="#9564F4" strokeWidth="2" strokeLinejoin="round" fill="none"/>
+      </svg>
+    ),
   },
   {
     id: "02",
@@ -20,6 +26,13 @@ const valuesData = [
     desc: "We make thoughtful decisions.",
     expanded:
       "Wisdom is not just knowledge — it is knowing when to act, when to listen, and when to step back. We draw on deep experience and careful discernment to guide our clients and partners toward decisions that stand the test of time.",
+    icon: (
+      // Lightbulb
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px] transition-all duration-300">
+        <path className="icon-path" d="M16 4a8 8 0 0 1 5 14.2V21a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-2.8A8 8 0 0 1 16 4Z" stroke="#9564F4" strokeWidth="2" fill="none"/>
+        <path className="icon-path" d="M13 25h6M14 28h4" stroke="#9564F4" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    ),
   },
   {
     id: "03",
@@ -27,6 +40,12 @@ const valuesData = [
     desc: "We believe everyone has the power to shape what happens next.",
     expanded:
       "Being Rezolutionary means refusing to accept the status quo as the ceiling. We challenge assumptions, champion bold thinking, and stand beside leaders who are courageous enough to reimagine what is possible — and then make it real.",
+    icon: (
+      // Lightning bolt / spark
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px] transition-all duration-300">
+        <path className="icon-path" d="M18 4L8 18h8l-2 10 14-16h-8L18 4Z" stroke="#9564F4" strokeWidth="2" strokeLinejoin="round" fill="none"/>
+      </svg>
+    ),
   },
   {
     id: "04",
@@ -34,6 +53,14 @@ const valuesData = [
     desc: "We meet every moment with balance.",
     expanded:
       "Upekkha is a Pali word for equanimity — the ability to remain steady and open-hearted in the face of uncertainty. We bring that calm, balanced presence to every engagement, ensuring clarity never gets lost in the noise.",
+    icon: (
+      // Balance scales
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px] transition-all duration-300">
+        <path className="icon-path" d="M16 5v22M10 27h12" stroke="#9564F4" strokeWidth="2" strokeLinecap="round"/>
+        <path className="icon-path" d="M16 7L6 12l-2 4a6 6 0 0 0 12 0L14 12 16 7Z" stroke="#9564F4" strokeWidth="2" strokeLinejoin="round" fill="none"/>
+        <path className="icon-path" d="M16 7l10 5 2 4a6 6 0 0 1-12 0l2-4 10-5Z" stroke="#9564F4" strokeWidth="2" strokeLinejoin="round" fill="none"/>
+      </svg>
+    ),
   },
   {
     id: "05",
@@ -41,6 +68,12 @@ const valuesData = [
     desc: "We move with rhythm and intention.",
     expanded:
       "Great leadership is not a sprint — it is a rhythm sustained over time. Cadence is our commitment to consistent, intentional momentum: showing up with the same energy, rigour, and care whether it is day one or year five of a partnership.",
+    icon: (
+      // Waveform / rhythm
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px] transition-all duration-300">
+        <path className="icon-path" d="M2 16h4M6 16c0-4 2-8 4-8s4 8 4 8 2 8 4 8 4-8 4-8M26 16h4" stroke="#9564F4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
   },
 ];
 
@@ -64,6 +97,7 @@ const Values = () => {
   const overlayBackRef = useRef<HTMLButtonElement>(null);
 
   const [active, setActive] = useState<(typeof valuesData)[0] | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const cardRefs = [card1Ref, card2Ref, card3Ref, card4Ref, card5Ref];
 
   // ── Entrance ──────────────────────────────────────────────────────────
@@ -74,8 +108,6 @@ const Values = () => {
       gsap.set(headingRef.current, { autoAlpha: 0, y: 40 });
       gsap.set(ballRef.current, { autoAlpha: 0, scale: 0.9, rotate: -8 });
       gsap.set(gradientRef.current, { autoAlpha: 0, x: -20 });
-
-      // Cards: start 120px off to the right, invisible
       gsap.set(cards, { autoAlpha: 0, x: 120 });
 
       ScrollTrigger.create({
@@ -85,59 +117,13 @@ const Values = () => {
         onEnter: () => {
           const tl = gsap.timeline();
 
-          tl.to(gradientRef.current, {
-            autoAlpha: 1,
-            x: 0,
-            duration: 2.6,
-            ease: "expo.out",
-          })
-            .to(
-              headingRef.current,
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 2.4,
-                ease: "expo.out",
-              },
-              "-=1.8",
-            )
-            .to(
-              ballRef.current,
-              {
-                autoAlpha: 1,
-                scale: 1,
-                rotate: 0,
-                duration: 3.2,
-                ease: "expo.out",
-              },
-              "-=2.0",
-            )
-            .to(
-              cards,
-              {
-                autoAlpha: 1,
-                x: 0,
-                duration: 1.8,
-                ease: "expo.out",
-                stagger: 0.22,
-              },
-              "-=2.4",
-            )
+          tl.to(gradientRef.current, { autoAlpha: 1, x: 0, duration: 2.6, ease: "expo.out" })
+            .to(headingRef.current, { autoAlpha: 1, y: 0, duration: 2.4, ease: "expo.out" }, "-=1.8")
+            .to(ballRef.current, { autoAlpha: 1, scale: 1, rotate: 0, duration: 3.2, ease: "expo.out" }, "-=2.0")
+            .to(cards, { autoAlpha: 1, x: 0, duration: 1.8, ease: "expo.out", stagger: 0.22 }, "-=2.4")
             .call(() => {
-              gsap.to(ballRef.current, {
-                y: 18,
-                duration: 5.0,
-                ease: "sine.inOut",
-                repeat: -1,
-                yoyo: true,
-              });
-              gsap.to(ballRef.current, {
-                rotate: 5,
-                duration: 9.0,
-                ease: "sine.inOut",
-                repeat: -1,
-                yoyo: true,
-              });
+              gsap.to(ballRef.current, { y: 18, duration: 5.0, ease: "sine.inOut", repeat: -1, yoyo: true });
+              gsap.to(ballRef.current, { rotate: 5, duration: 9.0, ease: "sine.inOut", repeat: -1, yoyo: true });
             });
         },
       });
@@ -156,56 +142,26 @@ const Values = () => {
         overlayTextRef.current,
         overlayBackRef.current,
       ];
-
       gsap.set(overlayRef.current, { autoAlpha: 0 });
       gsap.set(overlayCardRef.current, { autoAlpha: 0, y: 30, scale: 0.97 });
       gsap.set(els, { autoAlpha: 0, y: 14 });
 
       const tl = gsap.timeline();
-      tl.to(overlayRef.current, {
-        autoAlpha: 1,
-        duration: 0.35,
-        ease: "power2.out",
-      })
-        .to(
-          overlayCardRef.current,
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.65, ease: "expo.out" },
-          "-=0.1",
-        )
-        .to(
-          els,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.55,
-            ease: "expo.out",
-            stagger: 0.08,
-          },
-          "-=0.35",
-        );
+      tl.to(overlayRef.current, { autoAlpha: 1, duration: 0.35, ease: "power2.out" })
+        .to(overlayCardRef.current, { autoAlpha: 1, y: 0, scale: 1, duration: 0.65, ease: "expo.out" }, "-=0.1")
+        .to(els, { autoAlpha: 1, y: 0, duration: 0.55, ease: "expo.out", stagger: 0.08 }, "-=0.35");
     });
   };
 
   // ── Overlay close ─────────────────────────────────────────────────────
   const closeOverlay = () => {
     const tl = gsap.timeline({ onComplete: () => setActive(null) });
-    tl.to(overlayCardRef.current, {
-      autoAlpha: 0,
-      y: 16,
-      scale: 0.97,
-      duration: 0.3,
-      ease: "power2.in",
-    }).to(
-      overlayRef.current,
-      { autoAlpha: 0, duration: 0.25, ease: "power2.in" },
-      "-=0.1",
-    );
+    tl.to(overlayCardRef.current, { autoAlpha: 0, y: 16, scale: 0.97, duration: 0.3, ease: "power2.in" })
+      .to(overlayRef.current, { autoAlpha: 0, duration: 0.25, ease: "power2.in" }, "-=0.1");
   };
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeOverlay();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeOverlay(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
@@ -217,20 +173,11 @@ const Values = () => {
     "right-[5%] xl:top-[38.5vh] top-[36vh]",
     "left-[5%] xl:top-[57vh] top-[50vh]",
   ];
-  const cardPadding = [
-    "md:pl-5 px-4",
-    "md:pl-5 px-4",
-    "md:pl-5 px-4",
-    "md:pl-5 px-4",
-    "md:pl-5 px-4",
-  ];
 
   return (
     <>
-      <section
-        ref={sectionRef}
-        className="xl:min-h-[127vh] min-h-screen relative"
-      >
+
+      <section ref={sectionRef} className="xl:min-h-[127vh] min-h-screen relative">
         <img
           ref={gradientRef}
           src="/value-gradient.webp"
@@ -266,22 +213,19 @@ const Values = () => {
                   ref={cardRefs[i]}
                   onClick={() => openOverlay(v)}
                   style={{ opacity: 0 }}
-                  className={`bg-white border border-[#DEE6E9] xl:rounded-[22px] rounded-[18px] xl:w-[680px] md:w-[550px] w-full xl:h-[110px] md:h-[95px] py-[2vh] flex items-center md:absolute cursor-pointer
+                  className={`value-card bg-white border border-[#DEE6E9] xl:rounded-[22px] rounded-[18px] xl:w-[680px] md:w-[550px] w-full xl:h-[110px] md:h-[95px] py-[2vh] flex items-center md:absolute cursor-pointer
                     transition-colors duration-300 hover:border-[#9564F4] hover:shadow-[0_4px_28px_rgba(149,100,244,0.12)]
                     will-change-transform ${cardPositions[i]}`}
                 >
                   <h6 className="font-bold text-[16px] text-[#9564F4] font-jakarta absolute right-3.5 top-3.5">
                     {v.id}
                   </h6>
-                  <div className={`flex xl:gap-6 gap-4 ${cardPadding[i]}`}>
-                    <div className="xl:w-[60px] xl:h-[60px] w-[40px] h-[40px] xl:rounded-[22px] rounded-[12px] flex justify-center items-center bg-[#9564F41F] shrink-0">
-                      <img
-                        src="/value-icon.webp"
-                        alt="icon"
-                        className="xl:w-[32px] xl:h-[32px] w-[24px] h-[24px]"
-                      />
+                  <div className="flex xl:gap-6 gap-4 md:pl-5 px-4">
+                    {/* Icon wrapper — bg fades to purple on hover */}
+                    <div className="icon-bg xl:w-[60px] xl:h-[60px] w-[40px] h-[40px] xl:rounded-[22px] rounded-[12px] flex justify-center items-center bg-[#9564F41F] shrink-0">
+                      {v.icon}
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col justify-center">
                       <h4 className="font-boldonse font-normal 2xl:text-[22px] xl:text-[20px] text-[18px] text-black leading-[151%]">
                         {v.title}
                       </h4>
@@ -305,15 +249,11 @@ const Values = () => {
           onClick={closeOverlay}
           className="fixed inset-0 z-[999] flex items-center justify-center"
         >
-          {/* Light backdrop */}
           <div className="absolute inset-0 bg-white/60 backdrop-blur-[8px]" />
-
-          {/* Soft purple radial glow */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-[700px] h-[700px] rounded-full bg-[#9564F4]/8 blur-[100px]" />
           </div>
 
-          {/* Close */}
           <button
             onClick={closeOverlay}
             className="absolute top-7 right-9 z-20 w-9 h-9 flex items-center justify-center rounded-full border border-[#DEE6E9] text-black/40 hover:text-[#9564F4] hover:border-[#9564F4] transition-all duration-200 text-[15px] bg-white/80"
@@ -321,21 +261,18 @@ const Values = () => {
             ✕
           </button>
 
-          {/* Card — light theme */}
           <div
             ref={overlayCardRef}
             onClick={(e) => e.stopPropagation()}
             style={{
               opacity: 0,
-              background:
-                "linear-gradient(160deg, #ffffff 0%, #f7f4ff 60%, #f0ebff 100%)",
+              background: "linear-gradient(160deg, #ffffff 0%, #f7f4ff 60%, #f0ebff 100%)",
               border: "1px solid rgba(149,100,244,0.18)",
-              boxShadow:
-                "0 8px 48px rgba(149,100,244,0.12), 0 2px 0 rgba(255,255,255,0.9) inset",
+              boxShadow: "0 8px 48px rgba(149,100,244,0.12), 0 2px 0 rgba(255,255,255,0.9) inset",
             }}
             className="relative z-10 w-[90%] max-w-[740px] text-center px-12 py-14 rounded-[24px]"
           >
-            {/* Number */}
+
             <span
               ref={overlayNumRef}
               style={{ opacity: 0 }}
@@ -344,7 +281,6 @@ const Values = () => {
               {active.id}
             </span>
 
-            {/* Title */}
             <h3
               ref={overlayTitleRef}
               style={{ opacity: 0 }}
@@ -353,22 +289,13 @@ const Values = () => {
               {active.title.toUpperCase()}
             </h3>
 
-            {/* Divider */}
-            <div
-              ref={overlayLineRef}
-              style={{ opacity: 0 }}
-              className="mx-auto mt-5 mb-8"
-            >
+            <div ref={overlayLineRef} style={{ opacity: 0 }} className="mx-auto mt-5 mb-8">
               <div
                 className="w-[48px] h-[2px] mx-auto rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, #9564F4, transparent)",
-                }}
+                style={{ background: "linear-gradient(90deg, transparent, #9564F4, transparent)" }}
               />
             </div>
 
-            {/* Expanded text */}
             <p
               ref={overlayTextRef}
               style={{ opacity: 0 }}
@@ -377,7 +304,6 @@ const Values = () => {
               {active.expanded}
             </p>
 
-            {/* Back link */}
             <button
               ref={overlayBackRef}
               onClick={closeOverlay}
