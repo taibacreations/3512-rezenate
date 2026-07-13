@@ -1,196 +1,241 @@
-// components/banner.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-// @ts-ignore
-import DotField from "./DotField";
 
-interface BannerData {
-  heading?: string;
-  subtitle?: string;
-  bannerWaveImage?: { asset: { _ref: string } };
-}
-
-interface Props {
-  data: BannerData;
-}
-
-const Banner = ({ data }: Props) => {
+const Banner = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const gradientRef = useRef<HTMLDivElement>(null);
+  const banner1Ref = useRef<HTMLImageElement>(null);
+  const banner1MobRef = useRef<HTMLImageElement>(null);
+  const scrollBgRef = useRef<HTMLDivElement>(null);
+  const arrowRef = useRef<SVGSVGElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const bannerContainerRef = useRef<HTMLDivElement>(null);
-  const bannerTrackRef = useRef<HTMLDivElement>(null);
-  const dotFieldRef = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const paraRef = useRef<HTMLParagraphElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
-  // Entrance animation
+  // ── Entrance — waits for loading-done event ───────────────────────────────
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(headingRef.current, { opacity: 0, y: 30, filter: "blur(6px)" });
-      gsap.set(gradientRef.current, { opacity: 0 });
-      gsap.set(dotFieldRef.current, { opacity: 0 });
-      gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
+    gsap.set([headingRef.current, paraRef.current], { autoAlpha: 0, y: 40 });
+    gsap.set([banner1Ref.current, banner1MobRef.current], {
+      autoAlpha: 0,
+      y: 60,
+    });
+    gsap.set(scrollBgRef.current, { autoAlpha: 0, scale: 0.92, y: 20 });
 
-      const tl = gsap.timeline({ paused: true });
-      tl.to(gradientRef.current, {
-        opacity: 1,
+    const runEntrance = () => {
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline(); // no delay needed, header already done
+
+        tl.to(headingRef.current, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1.8,
+          ease: "expo.out",
+        })
+          .to(
+            paraRef.current,
+            { autoAlpha: 1, y: 0, duration: 1.6, ease: "expo.out" },
+            "-=0.9",
+          )
+          .to(
+            [banner1Ref.current, banner1MobRef.current],
+            { autoAlpha: 1, y: 0, duration: 2.2, ease: "expo.out" },
+            "-=1.2",
+          )
+          .to(
+            scrollBgRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 1.4,
+              ease: "back.out(1.2)",
+            },
+            "-=0.8",
+          )
+          .call(() => {
+            gsap.to(arrowRef.current, {
+              y: 8,
+              duration: 1.4,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            });
+            gsap.to(scrollBgRef.current, {
+              scale: 1.04,
+              duration: 3.0,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            });
+          });
+      });
+
+      return () => ctx.revert();
+    };
+
+    window.addEventListener("header-done", runEntrance, { once: true });
+    return () => window.removeEventListener("header-done", runEntrance);
+  }, []);
+
+  // ── Mouse-follow glow ─────────────────────────────────────────────────────
+  useEffect(() => {
+    const section = sectionRef.current;
+    const glow = glowRef.current;
+    if (!section || !glow) return;
+
+    const quickX = gsap.quickTo(glow, "x", { duration: 1, ease: "power3.out" });
+    const quickY = gsap.quickTo(glow, "y", { duration: 1, ease: "power3.out" });
+
+    const handleMove = (e: MouseEvent) => {
+      const r = section.getBoundingClientRect();
+      quickX(e.clientX - r.left);
+      quickY(e.clientY - r.top);
+    };
+    const handleEnter = () => gsap.to(glow, { opacity: 0.7, duration: 0.8 });
+    const handleLeave = () => gsap.to(glow, { opacity: 0, duration: 0.8 });
+
+    section.addEventListener("mousemove", handleMove);
+    section.addEventListener("mouseenter", handleEnter);
+    section.addEventListener("mouseleave", handleLeave);
+
+    return () => {
+      section.removeEventListener("mousemove", handleMove);
+      section.removeEventListener("mouseenter", handleEnter);
+      section.removeEventListener("mouseleave", handleLeave);
+    };
+  }, []);
+
+  // ── Parallax ──────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const onMove = (e: MouseEvent) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      gsap.to([banner1Ref.current, banner1MobRef.current], {
+        x: nx * 22,
+        y: ny * 12,
+        duration: 2.2,
+        ease: "power2.out",
+      });
+      gsap.to(headingRef.current, {
+        x: nx * -5,
+        y: ny * -3,
+        duration: 2.8,
+        ease: "power2.out",
+      });
+      gsap.to(paraRef.current, {
+        x: nx * -3,
+        y: ny * -2,
+        duration: 2.8,
+        ease: "power2.out",
+      });
+      gsap.to(scrollBgRef.current, {
+        x: nx * 8,
+        y: ny * 5,
         duration: 2.4,
         ease: "power2.out",
-      })
-        .to(
-          dotFieldRef.current,
-          { opacity: 1, duration: 3.0, ease: "power2.out" },
-          "-=2.0",
-        )
-        .to(
+      });
+    };
+
+    const onLeave = () => {
+      gsap.to(
+        [
+          banner1Ref.current,
+          banner1MobRef.current,
           headingRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 1.6,
-            ease: "power3.out",
-          },
-          "-=2.0",
-        )
-        .to(
-          subtitleRef.current,
-          { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
-          "-=0.8",
-        );
-
-      const section = sectionRef.current;
-      if (!section) return;
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            tl.play();
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.1 },
+          paraRef.current,
+          scrollBgRef.current,
+        ],
+        { x: 0, y: 0, duration: 2.0, ease: "power2.out" },
       );
-      observer.observe(section);
-      return () => observer.disconnect();
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+    };
 
-  // Subtle gradient breathing
-  useEffect(() => {
-    const gradient = gradientRef.current;
-    if (!gradient) return;
-    const tl = gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      defaults: { ease: "sine.inOut" },
-    });
-    tl.to(gradient, { backgroundPosition: "51% 49%", duration: 16 }, 0);
+    section.addEventListener("mousemove", onMove);
+    section.addEventListener("mouseleave", onLeave);
     return () => {
-      tl.kill();
+      section.removeEventListener("mousemove", onMove);
+      section.removeEventListener("mouseleave", onLeave);
     };
   }, []);
-
-  // Wave float
-  useEffect(() => {
-    const track = bannerTrackRef.current;
-    if (!track) return;
-    const img = track.querySelector<HTMLImageElement>(".banner-image");
-    if (!img) return;
-    const tl = gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      defaults: { ease: "sine.inOut" },
-    });
-    tl.to(img, { y: "+=8", duration: 6 }, 0);
-    return () => {
-      tl.kill();
-    };
-  }, []);
-
-  // Static wave image — never from Sanity
-  const waveSrc = "/banner.webp";
-  const heading = data?.heading;
-  const subtitle = data?.subtitle;
 
   return (
     <section
-      id="home"
       ref={sectionRef}
-      className="relative bg-black px-4 md:min-h-[93.5vh] h-[90vh]"
+      className="2xl:min-h-[110vh] md:min-h-screen h-[80vh] bg-[url(/banner.webp)] bg-cover bg-center relative"
     >
-      {/* Background gradient */}
       <div
-        ref={gradientRef}
-        className="absolute inset-0 pointer-events-none z-0"
+        ref={glowRef}
+        className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-0 z-10"
         style={{
-          backgroundImage: `
-            radial-gradient(circle at 50% 28%, rgba(149,100,244,0.20) 0%, rgba(149,100,244,0.05) 40%, rgba(0,0,0,0) 65%),
-            linear-gradient(180deg, #000000 0%, #080510 50%, #000000 100%)
-          `,
-          backgroundSize: "140% 140%, 100% 100%",
-          backgroundPosition: "50% 50%, 50% 50%",
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(circle, rgba(149,100,244,0.35) 0%, rgba(149,100,244,0) 70%)",
+          filter: "blur(12px)",
         }}
       />
 
-      {/* Dot field */}
+      {/* Desktop image — lg and above */}
+      <img
+        ref={banner1Ref}
+        src="/banner1.webp"
+        alt="banner"
+        style={{ opacity: 0 }}
+        className="lg:absolute hidden lg:block 2xl:bottom-[-59.5vh] xl:bottom-[-50vh] lg:bottom-[-30vh] will-change-transform"
+      />
+
+      {/* Mobile/tablet image — below lg */}
+      <img
+        ref={banner1MobRef}
+        src="/banner1-mob.webp"
+        alt="banner"
+        style={{ opacity: 0 }}
+        className="absolute lg:hidden md:bottom-[-20vh] bottom-[-10vh] lg:h-auto md:h-[600px] h-[330px] will-change-transform"
+      />
+
       <div
-        ref={dotFieldRef}
-        className="absolute inset-0 z-[1]"
-        style={{ opacity: 0, pointerEvents: "none" }}
+        ref={scrollBgRef}
+        style={{ opacity: 0 }}
+        className="bg-[url(/scroll-bg.webp)] bg-cover 2xl:w-[160px] 2xl:h-[113px] w-[130px] h-[100px] md:flex hidden flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 z-30 2xl:bottom-[5vh] bottom-0 will-change-transform"
       >
-        <DotField
-          dotRadius={1.8}
-          dotSpacing={20}
-          cursorRadius={180}
-          bulgeOnly={true}
-          bulgeStrength={45}
-          glowRadius={220}
-          waveAmplitude={0}
-          gradientFrom="rgba(149, 100, 244, 0.55)"
-          gradientTo="rgba(149, 100, 244, 0.25)"
-          glowColor="rgba(149, 100, 244, 0.15)"
-          sparkle={false}
-          style={{ width: "100%", height: "100%" }}
-        />
+        <svg
+          ref={arrowRef}
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="43"
+          viewBox="0 0 18 43"
+          fill="none"
+          className="2xl:mt-[5vh] mt-[2vh] 2xl:h-[43px] h-[30px]"
+        >
+          <path
+            d="M8.66016 42.5L17.3204 27.5L-9.75728e-05 27.5L8.66016 42.5ZM10.1602 1.5C10.1602 0.671574 9.48859 3.62117e-08 8.66016 0C7.83173 -3.62117e-08 7.16016 0.671574 7.16016 1.5L8.66016 1.5L10.1602 1.5ZM8.66016 29L10.1602 29L10.1602 1.5L8.66016 1.5L7.16016 1.5L7.16016 29L8.66016 29Z"
+            fill="#9564F4"
+          />
+        </svg>
       </div>
 
-      {/* Static wave/ripple — replace img with video */}
-      <div
-        ref={bannerContainerRef}
-        className="absolute bottom-0 w-full z-10 h-[60vh] md:h-[70vh]"
-        style={{ overflow: "visible" }}
-      >
-        <div ref={bannerTrackRef} className="w-full h-full">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="banner-image w-full h-full object-cover object-top"
-            style={{ willChange: "transform", transformOrigin: "center top" }}
+      <div className="xl:pt-[22vh] md:pt-[26vh] pt-[20vh] relative z-30">
+        <div className="text-center xl:max-w-[1050px] max-w-[900px] mx-auto px-4">
+          <h1
+            ref={headingRef}
+            style={{ opacity: 0 }}
+            className="font-boldonse font-normal text-[22px] sm:text-[24px] md:text-[30px] lg:text-[36px] xl:text-[44px] text-black leading-[140%] xl:leading-[182.2%] will-change-transform"
           >
-            <source src="/banner.webm" />
-          </video>
+            Every leader influences a culture long before they change a
+            strategy.
+          </h1>
+          <p
+            ref={paraRef}
+            style={{ opacity: 0 }}
+            className="font-outfit font-normal text-[15px] sm:text-[17px] md:text-[20px] lg:text-[22px] xl:text-[24px] leading-[115%] w-full max-w-[793px] mx-auto mt-[2vh] will-change-transform"
+          >
+            We partner with organisations and leaders to attract, assess and
+            support exceptional leadership that creates lasting impact.
+          </p>
         </div>
-      </div>
-
-      {/* Heading */}
-      <div className="relative z-20 flex flex-col items-center justify-center min-h-[80vh]">
-        <h1
-          ref={headingRef}
-          className="font-boldonse font-normal 2xl:text-[110px] xl:text-[90px] md:text-[72px] text-[11vw] md:leading-[1.1] uppercase text-white text-center px-4"
-        >
-          {heading}
-        </h1>
-        <p
-          ref={subtitleRef}
-          className="mt-6 text-white/40 text-sm md:text-base tracking-[0.25em] uppercase font-outfit text-center"
-        >
-          {subtitle}
-        </p>
       </div>
     </section>
   );

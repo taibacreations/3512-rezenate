@@ -10,6 +10,8 @@
   --font-boldonse: var(--font-boldonse);
   --font-outfit: var(--font-outfit);
   --font-bartie: var(--font-bartie);
+  --font-jakarta: var(--font-jakarta);
+  --font-mulish: var(--font-mulish);
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -68,8 +70,8 @@ section {
   overflow: hidden;
 }
 
-.border {
-  border: 1px solid;
+.border1 {
+  border: 2px solid;
   border-image-slice: 1; /* 👈 required — nothing renders without this */
   border-image-width: 1; /* optional, keeps width = border-width */
   border-image-repeat: stretch; /* optional but explicit is safer */

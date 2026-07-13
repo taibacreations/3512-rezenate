@@ -13,12 +13,13 @@ import {
 
 import Banner    from "@/components/banner";
 import Section2  from "@/components/philosophy";
-import Section3  from "@/components/section3";
+import Section3  from "@/components/values";
 import Partners  from "@/components/partners";
 import Founders  from "@/components/founders";
 import Cta       from "@/components/cta";
 import Footer    from "@/components/footer";
 import LoadingScreen from "@/components/ui/LoadingScreen";
+import Values from "@/components/values";
 
 export const revalidate = 60;
 
@@ -43,13 +44,13 @@ async function PageContent() {
 
   return (
     <>
-      <Banner   data={bannerData}     />
-      <Section2 data={philosophyData} />
-      <Section3 data={valuesData}     />
-      <Partners data={partnersData}   />
-      <Founders data={foundersData}   />
+      <Banner />
+      {/* <Section2 data={philosophyData} /> */}
+      <Values />
+      {/* <Partners data={partnersData}   /> */}
+      {/* <Founders data={foundersData}   /> */}
       <Cta      data={ctaData}        />
-      <Footer   data={footerData}     />
+      {/* <Footer   data={footerData}     /> */}
     </>
   );
 }

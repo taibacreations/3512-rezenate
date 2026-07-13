@@ -51,7 +51,6 @@ const LoadingScreen = () => {
       onComplete: () => {
         const exitTl = gsap.timeline({
           onComplete: () => {
-            // Unlock scroll and restore position
             document.body.style.position = "";
             document.body.style.top      = "";
             document.body.style.left     = "";
@@ -59,10 +58,9 @@ const LoadingScreen = () => {
             document.body.style.width    = "";
             window.scrollTo(0, scrollY);
 
-            // Unmount the loading screen
             setDone(true);
+            window.dispatchEvent(new Event("loading-done"));
 
-            // Force ScrollTrigger to recalculate with real layout dimensions
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
                 ScrollTrigger.refresh();

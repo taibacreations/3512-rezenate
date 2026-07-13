@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { BBH_Bartle, Boldonse, Outfit } from "next/font/google";
+import { BBH_Bartle, Boldonse, Mulish, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutShell";
 import { client } from "@/sanity/lib/client";
@@ -10,6 +10,8 @@ import { urlFor } from "../sanity/lib/image";
 const boldonse = Boldonse({ weight: "400", variable: "--font-boldonse" });
 const outfit   = Outfit({ variable: "--font-outfit", subsets: ["latin"], weight: ["400", "500"] });
 const bartie   = BBH_Bartle({ variable: "--font-bartie", subsets: ["latin"], weight: "400" });
+const jakarta   = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], weight: ["400","500","600","700"] });
+const mulish   = Mulish({ variable: "--font-mulish", subsets: ["latin"], weight: ["400","500","600","700"] });
 
 // Fetch SEO settings and build Next.js Metadata object
 export async function generateMetadata(): Promise<Metadata> {
@@ -82,7 +84,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${boldonse.variable} ${outfit.variable} ${bartie.variable} h-full antialiased`}>
+    <html lang="en" className={`${boldonse.variable} ${outfit.variable} ${bartie.variable} ${jakarta.variable} ${mulish.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <main>
           <LayoutWrapper>{children}</LayoutWrapper>
