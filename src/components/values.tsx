@@ -185,7 +185,7 @@ const Values = () => {
           style={{ opacity: 0 }}
           className="absolute left-0 bottom-0 will-change-transform"
         />
-        <div className="md:pt-[12vh] pt-[8vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="pt-[12vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           <div
             ref={headingRef}
             style={{ opacity: 0 }}
@@ -196,7 +196,7 @@ const Values = () => {
             </h2>
           </div>
           <div>
-            <div className="absolute 2xl:left-[4.5%] left-[-5%] xl:top-[4vh] md:top-[8vh]">
+            <div className="md:absolute 2xl:left-[4.5%] left-[-5%] xl:top-[4vh] md:top-[8vh]">
               <img
                 ref={ballRef}
                 src="/value-ball.webp"

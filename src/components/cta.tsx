@@ -178,7 +178,10 @@ const Cta = ({ data }: { data: CtaData }) => {
       />
 
       <div ref={bgWrapRef} className="absolute top-0 right-0 h-full">
-        <img ref={bgRef} src={bgSrc} alt="" className="pointer-events-none h-full" />
+        <img ref={bgRef} src={bgSrc} alt="" className="pointer-events-none h-full hidden md:block" />
+      </div>
+      <div ref={bgWrapRef} className="absolute top-0 right-[-60%] h-full">
+        <img ref={bgRef} src={"/cta-bg-mob.webp"} alt="" className="pointer-events-none h-full md:hidden" />
       </div>
 
       <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4">
