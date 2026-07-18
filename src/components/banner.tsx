@@ -167,7 +167,8 @@ const Banner = () => {
       ref={sectionRef}
       className="2xl:min-h-[110vh] md:min-h-screen h-[80vh] bg-[url(/banner.webp)] bg-cover bg-center relative"
     >
-      <div
+      {/* <img src="/blur.webp" alt="blur" className="absolute w-full left-0 2xl:bottom-0 bottom-[-3%] 2xl:h-[50px] h-[200px] z-30" /> */}
+      {/* <div
         ref={glowRef}
         className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-0 z-10"
         style={{
@@ -176,7 +177,7 @@ const Banner = () => {
             "radial-gradient(circle, rgba(149,100,244,0.35) 0%, rgba(149,100,244,0) 70%)",
           filter: "blur(12px)",
         }}
-      />
+      /> */}
 
       {/* Desktop image — lg and above */}
       <img
@@ -217,20 +218,22 @@ const Banner = () => {
         </svg>
       </div>
 
-      <div className="xl:pt-[22vh] md:pt-[26vh] pt-[20vh] relative z-30">
-        <div className="text-center xl:max-w-[1050px] max-w-[900px] mx-auto px-4">
+      <div className="2xl:pt-[17vh] xl:pt-[20vh] lg:pt-[22vh] pt-[25vh] relative z-30">
+        <div className="text-center 2xl:max-w-[1050px] lg:max-w-[900px] max-w-[700px] mx-auto px-4">
           <h1
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="font-boldonse font-normal text-[22px] sm:text-[24px] md:text-[30px] lg:text-[36px] xl:text-[44px] text-black leading-[140%] xl:leading-[182.2%] will-change-transform"
+            className="font-reddit font-light 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-black leading-[101%] will-change-transform tracking-[-0.04em]"
           >
-            Every leader influences a culture long before they change a
-            strategy.
+            Leadership changes
+            <span className="font-tartuffo font-light text-[#9564F4] italic md:ml-[1vw] ml-[2vw] tracking-normal">
+              everything
+            </span>
           </h1>
           <p
             ref={paraRef}
             style={{ opacity: 0 }}
-            className="font-outfit font-normal text-[15px] sm:text-[17px] md:text-[20px] lg:text-[22px] xl:text-[24px] leading-[115%] w-full max-w-[793px] mx-auto mt-[2vh] will-change-transform"
+            className="font-outfit font-normal text-[15px] sm:text-[17px] md:text-[20px] lg:text-[22px] xl:text-[24px] leading-[115%] w-full max-w-[578px] mx-auto mt-[2.5vh] will-change-transform"
           >
             We partner with organisations and leaders to attract, assess and
             support exceptional leadership that creates lasting impact.

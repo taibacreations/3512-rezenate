@@ -52,54 +52,44 @@ const Header = () => {
     });
 
     const runEntrance = () => {
-      const ctx = gsap.context(() => {
-        const tl = gsap.timeline({ delay: 0.2 });
+  const ctx = gsap.context(() => {
+    const tl = gsap.timeline({ delay: 0.2 });
 
-        tl.to(paths[2], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" })
-          .to(
-            paths[1],
-            { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-            "-=0.4",
-          )
-          .to(
-            paths[0],
-            { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-            "-=0.4",
-          )
-          .to(
-            wordmark,
-            { autoAlpha: 1, duration: 0.55, ease: "power2.out" },
-            "-=0.2",
-          )
-          .to(
-            navRef.current ? Array.from(navRef.current.children) : [],
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.7,
-              ease: "expo.out",
-              stagger: 0.07,
-            },
-            "-=0.35",
-          )
-          .fromTo(
-            ctaRef.current,
-            { autoAlpha: 0, scale: 0.93 },
-            { autoAlpha: 1, scale: 1, duration: 0.65, ease: "expo.out" },
-            "-=0.4",
-          )
-          .to(
-            hamburgerRef.current,
-            { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
-            "<",
-          )
-          .call(() => {
-            window.dispatchEvent(new Event("header-done")); // ← add this
-          });
+    tl.to(paths[2], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" })
+      .to(paths[1], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.4")
+      .to(paths[0], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.4")
+      .to(wordmark, { autoAlpha: 1, duration: 0.55, ease: "power2.out" }, "-=0.2")
+      .to(
+        navRef.current ? Array.from(navRef.current.children) : [],
+        { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.07 },
+        "-=0.35",
+      )
+      .fromTo(
+        ctaRef.current,
+        { autoAlpha: 0, scale: 0.93 },
+        { autoAlpha: 1, scale: 1, duration: 0.65, ease: "expo.out" },
+        "-=0.4",
+      )
+      .to(hamburgerRef.current, { autoAlpha: 1, duration: 0.45, ease: "power2.out" }, "<")
+      .call(() => {
+        window.dispatchEvent(new Event("header-done"));
+
+        // ── Assembly animation starts after entrance completes ──
+        gsap.set(paths[2], { scale: 0.25, opacity: 0, transformOrigin: "center center" });
+        gsap.set([paths[0], paths[1]], { opacity: 0, scale: 1, transformOrigin: "center center" });
+
+        const assembleTl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+
+        assembleTl
+          .fromTo(paths[2], { x: 30, y: -30, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0)
+          .to(paths[2], { scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0.8)
+          .fromTo(paths[1], { x: 50, y: -50, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 1.8)
+          .fromTo(paths[0], { x: 70, y: -70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 3.2);
       });
+  });
 
-      return () => ctx.revert();
-    };
+  return () => ctx.revert();
+};
 
     window.addEventListener("loading-done", runEntrance, { once: true });
     return () => window.removeEventListener("loading-done", runEntrance);
@@ -331,7 +321,7 @@ const Header = () => {
           {/* ── Desktop Nav ── */}
           <nav
             ref={navRef}
-            className="hidden lg:flex items-center gap-2 xl:gap-4"
+            className="hidden lg:flex items-center gap-8"
           >
             {ALL_NAV.map(({ label, href }) => (
               <Link
@@ -341,18 +331,15 @@ const Header = () => {
                 onMouseEnter={(e) => onNavEnter(e.currentTarget)}
                 onMouseLeave={(e) => onNavLeave(e.currentTarget)}
                 style={{ visibility: "visible", opacity: 0 }}
-                className={`font-outfit font-normal text-[16px] xl:text-[18px] leading-[115%] px-4 xl:px-5 py-1.5 rounded-full relative group
+                className={`font-outfit font-normal text-[16px] xl:text-[18px] leading-[115%] py-1.5 rounded-full relative group
                   transition-[background-color,color,box-shadow] duration-300
                   ${
                     activeLink === label
-                      ? "text-[#FDFCFD] bg-[#9564F4] shadow-[0_4px_20px_rgba(149,100,244,0.35)]"
+                      ? "text-[#FDFCFD] bg-[#9564F4] shadow-[0_4px_20px_rgba(149,100,244,0.35)] px-4 xl:px-6"
                       : "text-black hover:text-[#9564F4]"
                   }`}
               >
                 {label}
-                {activeLink !== label && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[1.5px] bg-[#9564F4] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                )}
               </Link>
             ))}
           </nav>
@@ -360,7 +347,7 @@ const Header = () => {
           {/* ── Desktop CTA ── */}
           <div ref={ctaRef} className="hidden lg:flex" style={{ opacity: 0 }}>
             <button
-              className="font-boldonse font-normal text-[13px] xl:text-[14px] leading-[100%] w-[140px] xl:w-[159px] h-[40px] xl:h-[45px] flex justify-center items-center rounded-full border border-black transition-[background-color,color,box-shadow] duration-300 hover:bg-black hover:text-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
+              className="font-outfit font-normal text-[20px] leading-[114%] w-[140px] xl:w-[159px] h-[40px] xl:h-[45px] flex justify-center items-center rounded-full border border-black transition-[background-color,color,box-shadow] duration-300 hover:bg-black hover:text-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
               onMouseEnter={(e) => onCTAEnter(e.currentTarget)}
               onMouseLeave={(e) => onCTALeave(e.currentTarget)}
               onMouseDown={(e) => onCTAPress(e.currentTarget)}
@@ -447,7 +434,7 @@ const Header = () => {
             ref={mobileCTARef}
             onClick={() => setMenuOpen(false)}
             style={{ opacity: 0 }}
-            className="w-full font-boldonse text-[14px] h-[48px] rounded-full border border-black transition-all duration-300 hover:bg-black hover:text-white"
+            className="w-full font-outfit text-[18px] h-[48px] rounded-full border border-black transition-all duration-300 hover:bg-black hover:text-white"
           >
             Contact us
           </button>

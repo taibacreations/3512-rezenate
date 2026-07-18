@@ -1,258 +1,104 @@
-// components/philosophy.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { urlFor } from "../sanity/lib/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const BRAND_COLOR = "#9564F4";
-
-const logoPaths = [
-  "M0 0L451 0L348.705 102.919C341.009 110.662 330.543 115.015 319.626 115.015L117.804 115.015V316.911C117.804 327.784 113.484 338.213 105.795 345.902L0 451.697V0Z",
-  "M162.417 161.719L450.304 161.719L346.711 265.311C339.397 272.625 329.477 276.734 319.134 276.734H278.129V319.133C278.129 329.477 274.02 339.396 266.706 346.71L162.417 451V161.719Z",
-  "M323.437 451V323.437H451L323.437 451Z",
-];
-
-const ENTER_FRAC  = 0.5;
-const EXIT_FRAC   = 0.5;
-const HOLD_DRIFT_Y  = -28;
-const HOLD_DRIFT_X  =  12;
-const HEADING_DRIFT = -14;
-
-const FALLBACK_QUOTES = [
-  { text: "Every leader influences a culture long before they change a strategy", align: "left" },
-  { text: "Some support people to become more of themselves", align: "right" },
-  { text: "Others slowly ask them to become less", align: "left" },
-  { text: "Rezenate exists because leadership resonates", align: "right" },
-  { text: "People buy into the leader before they buy into the vision. — John C Maxwell", align: "left" },
-  { text: "What begins with a leader rarely ends with them", align: "right" },
-];
-
-interface Quote { text: string; align: "left" | "right"; }
-interface PhilosophyData {
-  backgroundImage?: { asset: { _ref: string } };
-  quotes?: Quote[];
-}
-
-function renderText(text: string): React.ReactNode {
-  const match = text.match(/^(.+?)\s*([\u2013\u2014-]\s*[A-Z].*)$/);
-  if (!match) return text;
-  return <>{match[1]} <span className="whitespace-nowrap">{match[2]}</span></>;
-}
-
-const Section2 = ({ data }: { data: PhilosophyData }) => {
-  const items = (data?.quotes?.length ? data.quotes : FALLBACK_QUOTES) as Quote[];
-  const bgSrc = "/section2-bg.webp";
-
-  const sectionRef = useRef<HTMLElement>(null);
-  const bgRef      = useRef<HTMLDivElement>(null);
-  const itemRefs   = useRef<HTMLDivElement[]>([]);
+const Philosophy = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !bgRef.current) return;
+    if (!svgRef.current) return;
 
-    const ctx = gsap.context(() => {
-      const totalSteps = items.length;
-      const PIN_END = `+=${totalSteps * 150}%`;
+    const paths = svgRef.current.querySelectorAll("path");
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: "section2Pin",
-          refreshPriority: 1,
-          trigger: sectionRef.current,
-          start: "top top",
-          end: PIN_END,
-          scrub: 1.5,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
+    gsap.set(paths[2], { scale: 0.25, opacity: 0, transformOrigin: "center center" });
+    gsap.set([paths[0], paths[1]], { opacity: 0, scale: 1, transformOrigin: "center center" });
 
-      // Background parallax
-      tl.to(bgRef.current, { backgroundPositionY: "100%", ease: "none" }, 0);
+    const assembleTl = gsap.timeline({
+      repeat: -1,
+      repeatDelay: 1.5,
+      scrollTrigger: {
+        trigger: svgRef.current,
+        start: "top 80%",
+      },
+    });
 
-      itemRefs.current.forEach((el, i) => {
-        if (!el) return;
-
-        const paths   = el.querySelectorAll("path");
-        const heading = el.querySelector(".s2-heading");
-        const line    = el.querySelector(".s2-line");
-        const glow    = el.querySelector(".s2-glow");
-        const logoEl  = el.querySelector("svg");
-
-        gsap.set(el, { visibility: "visible" });
-
-        if (i === 0) {
-          gsap.set(paths,   { scale: 1, opacity: 1, transformOrigin: "center center" });
-          gsap.set(heading, { y: 0, opacity: 1 });
-          gsap.set(line,    { scaleX: 1, transformOrigin: "left center" });
-          gsap.set(glow,    { scale: 1, opacity: 0.25 });
-          gsap.set(logoEl,  { y: 0, x: 0 });
-        } else {
-          gsap.set(paths,   { scale: 1, opacity: 0, transformOrigin: "center center" });
-          gsap.set(heading, { y: 0, opacity: 0 });
-          gsap.set(line,    { scaleX: 0, transformOrigin: "left center" });
-          gsap.set(glow,    { scale: 1, opacity: 0 });
-          gsap.set(logoEl,  { y: 0, x: 0 });
-        }
-
-        const stepStart  = i / totalSteps;
-        const stepEnd    = (i + 1) / totalSteps;
-        const stepSize   = stepEnd - stepStart;
-        const enterEnd   = stepStart + stepSize * ENTER_FRAC;
-        const exitStart  = stepEnd   - stepSize * EXIT_FRAC;
-        const holdStart  = enterEnd;
-        const holdEnd    = exitStart;
-        const holdSize   = holdEnd - holdStart;
-
-        // ── ENTRANCE ──────────────────────────────────────────────────
-        if (i > 0) {
-          const win = enterEnd - stepStart;
-
-          tl.to(glow,     { opacity: 0.25, duration: win,        ease: "none" }, stepStart)
-            .to(paths[0], { opacity: 1,    duration: win * 0.75, ease: "none" }, stepStart + win * 0.00)
-            .to(paths[1], { opacity: 1,    duration: win * 0.70, ease: "none" }, stepStart + win * 0.10)
-            .to(paths[2], { opacity: 1,    duration: win * 0.65, ease: "none" }, stepStart + win * 0.20)
-            .to(line,     { scaleX: 1,     duration: win * 0.60, ease: "none" }, stepStart + win * 0.18)
-            .to(heading,  { opacity: 1,    duration: win * 0.65, ease: "none" }, stepStart + win * 0.25);
-
-          tl.set(logoEl,  { y: 0, x: 0 }, stepStart)
-            .set(heading, { y: 0 },        stepStart);
-        }
-
-        // ── HOLD — continuous parallax drift ──────────────────────────
-        if (holdSize > 0) {
-          tl.to(logoEl, {
-            y: HOLD_DRIFT_Y,
-            x: HOLD_DRIFT_X,
-            duration: holdSize,
-            ease: "none",
-          }, holdStart)
-            .to(heading, {
-              y: HEADING_DRIFT,
-              duration: holdSize,
-              ease: "none",
-            }, holdStart)
-            .to(glow, {
-              scale: 1.15,
-              opacity: 0.35,
-              duration: holdSize * 0.5,
-              ease: "none",
-            }, holdStart)
-            .to(glow, {
-              scale: 1,
-              opacity: 0.25,
-              duration: holdSize * 0.5,
-              ease: "none",
-            }, holdStart + holdSize * 0.5);
-        }
-
-        // ── EXIT ──────────────────────────────────────────────────────
-        if (i < totalSteps - 1) {
-          const exitWin = stepSize * EXIT_FRAC;
-
-          tl.to([paths[0], paths[1], paths[2], heading, glow],
-            { opacity: 0, duration: exitWin, ease: "none" }, exitStart)
-            .to(line, { scaleX: 0, duration: exitWin * 0.8, ease: "none" }, exitStart)
-            .to(logoEl, {
-              y: HOLD_DRIFT_Y * 1.4,
-              x: HOLD_DRIFT_X * 1.2,
-              duration: exitWin,
-              ease: "none",
-            }, exitStart)
-            .to(heading, {
-              y: HEADING_DRIFT * 1.5,
-              duration: exitWin,
-              ease: "none",
-            }, exitStart);
-        }
-      });
-    }, sectionRef);
-
-    const refresh = () => ScrollTrigger.refresh();
-    requestAnimationFrame(() => requestAnimationFrame(refresh));
-    if (document.fonts?.ready) document.fonts.ready.then(refresh);
-    window.addEventListener("load", refresh);
-    const t = setTimeout(refresh, 800);
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    const handleResize = () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(refresh, 200); };
-    window.addEventListener("resize", handleResize);
+    assembleTl
+      .fromTo(paths[2], { x: 30, y: -30, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0)
+      .to(paths[2], { scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0.8)
+      .fromTo(paths[1], { x: 50, y: -50, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 1.8)
+      .fromTo(paths[0], { x: 70, y: -70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 3.2);
 
     return () => {
-      ctx.revert();
-      window.removeEventListener("load", refresh);
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(t);
-      clearTimeout(resizeTimeout);
+      assembleTl.kill();
     };
-  }, [items]);
+  }, []);
 
   return (
-    <section
-      id="philosophy"
-      ref={sectionRef}
-      className="relative min-h-[140vh] text-black xl:px-10 md:px-6 px-4"
-    >
-      <div
-        ref={bgRef}
-        className="absolute inset-0 -z-10 bg-cover bg-top"
-        style={{ backgroundImage: `url(${bgSrc})`, backgroundPositionY: "0%" }}
-      />
-
-      <div className="max-w-[1435px] mx-auto xl:px-10 md:px-6 px-4 mt-[4vh] relative h-full">
-        {items.map((item, i) => {
-          const logoFirst = item.align === "right";
-          return (
-            <div
-              key={i}
-              ref={(el) => { if (el) itemRefs.current[i] = el; }}
-              className={`absolute inset-0 flex gap-10 flex-col items-center pt-[12vh] md:pt-[18vh] md:items-start md:justify-between ${logoFirst ? "md:flex-row" : "md:flex-row-reverse"}`}
-            >
-              <div className="relative flex justify-center shrink-0">
-                <div
-                  className="s2-glow absolute inset-0 m-auto w-[300px] h-[300px] rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, rgba(149,100,244,0.18) 0%, rgba(149,100,244,0) 70%)`,
-                    filter: "blur(24px)",
-                  }}
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="192" height="192"
-                  viewBox="0 0 451 452"
-                  fill="none"
-                  className="relative 2xl:w-[452px] 2xl:h-[452px] xl:w-[380px] xl:h-[380px] lg:w-[340px] lg:h-[340px] md:w-[270px] md:h-[270px] w-[220px] h-[220px]"
-                  style={{ willChange: "transform" }}
-                >
-                  {logoPaths.map((d, idx) => <path key={idx} d={d} fill={BRAND_COLOR} />)}
-                </svg>
-              </div>
-
-              <div className={`xl:max-w-[517px] max-w-[480px] text-center ${item.align === "left" ? "md:text-left" : "md:text-right"}`}>
-                <div
-                  className="s2-line h-[2px] w-12 mb-6 mx-auto md:mx-0"
-                  style={{
-                    backgroundColor: BRAND_COLOR,
-                    marginLeft: item.align === "right" ? "auto" : undefined,
-                  }}
-                />
-                <h3
-                  className="s2-heading font-boldonse font-normal 2xl:text-[34px] xl:text-[30px] lg:text-[26px] text-[24px] text-black leading-[140%]"
-                  style={{ willChange: "transform" }}
-                >
-                  {renderText(item.text)}
-                </h3>
-              </div>
-            </div>
-          );
-        })}
+    <section className="min-h-screen bg-[url(/philosophy1.webp)] bg-cover bg-bottom relative">
+      <div className="absolute right-[18%] top-[45%]">
+        <svg
+          ref={svgRef}
+          xmlns="http://www.w3.org/2000/svg"
+          width="51"
+          height="51"
+          viewBox="0 0 51 51"
+          fill="none"
+          className="w-[112px] h-[112px] hidden md:block"
+        >
+          <path
+            d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
+            fill="white"
+          />
+          <path
+            d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
+            fill="white"
+          />
+          <path
+            d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
+            fill="white"
+          />
+        </svg>
+      </div>
+      <div className="bg-[url(/philosophy-box.webp)] md:bg-cover bg-contain bg-no-repeat bg-center xl:w-[500px] xl:h-[214px] lg:w-[400px] lg:h-[180px] md:w-[370px] w-full h-[160px] rounded-[36px] absolute bottom-[12%] md:right-[18.3%] md:left-auto flex justify-center">
+        <div className="max-w-[368px] 2xl:pt-[3.3vh] xl:pt-[3.8vh] md:pt-[3vh] pt-[2vh] xl:ml-4 lg:ml-[5vw] md:ml-[8vw] px-12 lg:mr-0">
+          <h5 className="font-outfit 2xl:text-[27px] xl:text-[24px] lg:text-[22px] text-[20px] leading-[114%] font-normal text-white">
+            People buy into the leader before they buy into the vision.
+          </h5>
+          <h4 className="font-outfit font-semibold 2xl:text-[27px] xl:text-[24px] lg:text-[22px] text-[20px] leading-[114%] text-white mt-[1vh]">
+            — JOHN C MAXWELL
+          </h4>
+        </div>
+      </div>
+      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 md:pt-[27vh] pt-[20vh]">
+        <div className="xl:max-w-[714px] lg:max-w-[620px] max-w-[550px] relative z-20">
+          <h2 className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+            Every leader influences a culture long before they{" "}
+            <span className="text-[#9564F4] tracking-[0em] italic font-tartuffo lowercase">
+              change a strategy.
+            </span>
+          </h2>
+          <div className="max-w-[434px]">
+            <p className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3vh]">
+              Some support people
+              <br /> to become more of themselves.
+            </p>
+            <p className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3.5vh]">
+              Others slowly ask
+              <br /> them to become less.
+            </p>
+            <p className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3.5vh]">
+              Rezenate exists because
+              <br /> leadership resonates.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
 };
 
-export default Section2;
+export default Philosophy;

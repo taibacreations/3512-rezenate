@@ -1,17 +1,44 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { BBH_Bartle, Boldonse, Mulish, Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Mulish, Outfit, Readex_Pro, Reddit_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutShell";
 import { client } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "../sanity/lib/image";
 
-const boldonse = Boldonse({ weight: "400", variable: "--font-boldonse" });
+// const boldonse = Boldonse({ weight: "400", variable: "--font-boldonse" });
 const outfit   = Outfit({ variable: "--font-outfit", subsets: ["latin"], weight: ["400", "500"] });
-const bartie   = BBH_Bartle({ variable: "--font-bartie", subsets: ["latin"], weight: "400" });
-const jakarta   = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], weight: ["400","500","600","700"] });
+// const bartie   = BBH_Bartle({ variable: "--font-bartie", subsets: ["latin"], weight: "400" });
+// const jakarta   = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], weight: ["400","500","600","700"] });
 const mulish   = Mulish({ variable: "--font-mulish", subsets: ["latin"], weight: ["400","500","600","700"] });
+
+const reddit = Reddit_Sans({
+  weight: ["300","400", "500", "600", "700"],
+  variable: "--font-reddit",
+})
+const readex = Readex_Pro({
+  weight: ["300","400", "500", "600", "700"],
+  variable: "--font-readex",
+})
+
+const tartuffo = localFont({
+  src: [
+    { path: "./fonts/tartuffo/Tartuffo_Trial-Thin.otf",         weight: "100", style: "normal" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-ThinItalic.otf",   weight: "100", style: "italic" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-Light.otf",        weight: "300", style: "normal" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-LightItalic.otf",  weight: "300", style: "italic" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-Regular.otf",      weight: "400", style: "normal" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-RegularItalic.otf",weight: "400", style: "italic" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-Medium.otf",       weight: "500", style: "normal" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-MediumItalic.otf", weight: "500", style: "italic" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-Bold.otf",         weight: "700", style: "normal" },
+    { path: "./fonts/tartuffo/Tartuffo_Trial-BoldItalic.otf",   weight: "700", style: "italic" },
+  ],
+  variable: "--font-tartuffo",
+  display: "swap",
+})
 
 // Fetch SEO settings and build Next.js Metadata object
 export async function generateMetadata(): Promise<Metadata> {
@@ -84,7 +111,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${boldonse.variable} ${outfit.variable} ${bartie.variable} ${jakarta.variable} ${mulish.variable} h-full antialiased`}>
+    <html lang="en" className={`${reddit.variable} ${tartuffo.variable} ${outfit.variable} ${readex.variable} ${mulish.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <main>
           <LayoutWrapper>{children}</LayoutWrapper>

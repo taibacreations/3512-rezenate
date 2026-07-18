@@ -7,11 +7,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-boldonse: var(--font-boldonse);
   --font-outfit: var(--font-outfit);
+  --font-readex: var(--font-readex);
+  /* --font-boldonse: var(--font-boldonse);
   --font-bartie: var(--font-bartie);
-  --font-jakarta: var(--font-jakarta);
+  --font-jakarta: var(--font-jakarta); */
   --font-mulish: var(--font-mulish);
+  --font-reddit: var(--font-reddit);
+  --font-tartuffo: var(--font-tartuffo);
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -53,7 +56,7 @@
 }
 
 body {
-  background: white;
+  background: #fdfcfc;
 }
 
 button,
@@ -91,12 +94,8 @@ section {
   border-radius: 36px;
 
   background:
-    linear-gradient(#9564F4, #9564F4) padding-box,
-    linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0) 0%,
-      #fdfaff 100%
-    ) border-box;
+    linear-gradient(#9564f4, #9564f4) padding-box,
+    linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, #fdfaff 100%) border-box;
 
   box-shadow: 0px -4px 2.1px 0px #4c1bad inset;
 }
@@ -180,4 +179,40 @@ section {
   html {
     @apply font-sans;
   }
+}
+
+.partner-border-wrapper {
+  padding: 2px;
+  border-radius: 36px;
+  background: linear-gradient(90deg, #dec7ff 0%, #ffffff 100%);
+  overflow: hidden;
+}
+
+.partner-border {
+  width: 100%;
+  height: 107px;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.85); /* white rakho, 0.4 se purple tint aa raha tha */
+  backdrop-filter: blur(72.62054443359375px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.partners-arrow-wrapper {
+  padding: 2px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #dec7ff 0%, #ffffff 100%);
+  overflow: hidden;
+}
+
+.partners-arrow {
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85); /* same fix */
+  backdrop-filter: blur(72.62054443359375px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

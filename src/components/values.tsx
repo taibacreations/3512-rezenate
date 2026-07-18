@@ -167,69 +167,62 @@ const Values = () => {
   }, []);
 
   const cardPositions = [
-    "right-[-.6%]",
-    "right-[5%] xl:top-[13vh] top-[12vh]",
-    "right-[-.6%] xl:top-[25.8vh] top-[24vh]",
-    "right-[5%] xl:top-[38.5vh] top-[36vh]",
-    "left-[5%] xl:top-[57vh] top-[50vh]",
+    "right-[3.7%]",
+    "right-[-1%] xl:top-[15vh] top-[12vh]",
+    "right-[3.5%] xl:top-[30vh] top-[24vh]",
+    "right-[-1%] xl:top-[44.7vh] top-[36vh]",
+    "left-[4%] xl:top-[63vh] top-[50vh]",
   ];
 
   return (
     <>
 
       <section ref={sectionRef} className="xl:min-h-[127vh] min-h-screen relative">
-        <img
-          ref={gradientRef}
-          src="/value-gradient.webp"
-          alt="gradient"
-          style={{ opacity: 0 }}
-          className="absolute left-0 bottom-0 will-change-transform"
-        />
-        <div className="pt-[12vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="pt-[8.3vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           <div
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="text-center 2xl:max-w-[819px] xl:max-w-[720px] max-w-[620px] mx-auto will-change-transform"
+            className="text-center max-w-[874px] mx-auto will-change-transform"
           >
-            <h2 className="font-boldonse font-normal 2xl:text-[38px] xl:text-[34px] md:text-[30px] text-[22px] text-black leading-[151%]">
-              The way we work should reflect the way we live.
+            <h2 className="font-readex font-light text-[60px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+              The way we work should reflect <span className="font-tartuffo font-light text-[#9564F4] lowercase italic tracking-normal">the way we live.</span>
             </h2>
           </div>
           <div>
-            <div className="md:absolute 2xl:left-[4.5%] left-[-5%] xl:top-[4vh] md:top-[8vh]">
+            <div className="md:absolute left-[13.8%] top-[3%]">
               <img
                 ref={ballRef}
-                src="/value-ball.webp"
+                src="/value-ball1.webp"
                 alt="value-ball"
                 style={{ opacity: 0 }}
-                className="2xl:w-[1140px] 2xl:h-[1140px] xl:w-[1000px] xl:h-[1000px] md:w-[800px] md:h-[800px] w-full h-auto will-change-transform"
+                className="w-[938px] h-[1081px] will-change-transform"
               />
             </div>
 
-            <div className="relative xl:mt-[14vh] mt-[8vh] flex flex-col gap-[2vh] md:block pb-[15vh] md:pb-0">
+            <div className="relative mt-[8.2vh] flex flex-col gap-[2vh] md:block pb-[15vh] md:pb-0">
               {valuesData.map((v, i) => (
                 <div
                   key={v.id}
                   ref={cardRefs[i]}
                   onClick={() => openOverlay(v)}
                   style={{ opacity: 0 }}
-                  className={`value-card bg-white border border-[#DEE6E9] xl:rounded-[22px] rounded-[18px] xl:w-[680px] md:w-[550px] w-full xl:h-[110px] md:h-[95px] py-[2vh] flex items-center md:absolute cursor-pointer
+                  className={`value-card bg-white border border-[#DEE6E9] xl:rounded-[22px] rounded-[18px] xl:w-[680px] md:w-[550px] w-full xl:h-[130px] md:h-[95px] py-[2vh] flex items-center md:absolute cursor-pointer
                     transition-colors duration-300 hover:border-[#9564F4] hover:shadow-[0_4px_28px_rgba(149,100,244,0.12)]
                     will-change-transform ${cardPositions[i]}`}
                 >
-                  <h6 className="font-bold text-[16px] text-[#9564F4] font-jakarta absolute right-3.5 top-3.5">
+                  <h6 className="font-bold text-[18px] text-[#9564F4] font-mulish absolute right-4.5 top-2">
                     {v.id}
                   </h6>
-                  <div className="flex xl:gap-6 gap-4 md:pl-5 px-4">
+                  <div className="flex pl-6 pr-15 gap-6">
                     {/* Icon wrapper — bg fades to purple on hover */}
-                    <div className="icon-bg xl:w-[60px] xl:h-[60px] w-[40px] h-[40px] xl:rounded-[22px] rounded-[12px] flex justify-center items-center bg-[#9564F41F] shrink-0">
+                    <div className="icon-bg w-[76px] h-[76px] rounded-[29px] flex justify-center items-center bg-[#9564F41F] shrink-0">
                       {v.icon}
                     </div>
                     <div className="flex flex-col justify-center">
-                      <h4 className="font-boldonse font-normal 2xl:text-[22px] xl:text-[20px] text-[18px] text-black leading-[151%]">
+                      <h4 className="font-readex font-normal text-[32px] leading-[90%] text-black leading-[151%]">
                         {v.title}
                       </h4>
-                      <p className="font-mulish font-normal xl:text-[16px] text-[15px] text-black mt-[.4vh] leading-[115%]">
+                      <p className="font-mulish font-normal text-[18px] text-black leading-[25px]">
                         {v.desc}
                       </p>
                     </div>
@@ -276,7 +269,7 @@ const Values = () => {
             <span
               ref={overlayNumRef}
               style={{ opacity: 0 }}
-              className="font-jakarta font-bold text-[12px] tracking-[0.28em] text-[#9564F4] block mb-5"
+              className="font-mulish font-bold text-[15px] tracking-[0.28em] text-[#9564F4] block mb-5"
             >
               {active.id}
             </span>
@@ -284,7 +277,7 @@ const Values = () => {
             <h3
               ref={overlayTitleRef}
               style={{ opacity: 0 }}
-              className="font-boldonse font-normal 2xl:text-[50px] xl:text-[40px] md:text-[36px] text-[22px] text-black leading-[110%] tracking-[0.03em]"
+              className="font-readex font-normal 2xl:text-[50px] xl:text-[40px] md:text-[36px] text-[22px] text-black leading-[110%] tracking-[0.03em]"
             >
               {active.title.toUpperCase()}
             </h3>
@@ -308,7 +301,7 @@ const Values = () => {
               ref={overlayBackRef}
               onClick={closeOverlay}
               style={{ opacity: 0 }}
-              className="mt-10 inline-block font-jakarta font-semibold text-[11px] tracking-[0.22em] uppercase text-black/35 hover:text-[#9564F4] transition-colors duration-300 relative group"
+              className="mt-10 inline-block font-mulish font-semibold text-[13px] tracking-[0.22em] uppercase text-black/35 hover:text-[#9564F4] transition-colors duration-300 relative group"
             >
               Back to Values
               <span className="absolute -bottom-[3px] left-0 w-full h-[1px] bg-black/15 group-hover:bg-[#9564F4] transition-colors duration-300" />

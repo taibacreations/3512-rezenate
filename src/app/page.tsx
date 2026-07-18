@@ -20,6 +20,7 @@ import Cta       from "@/components/cta";
 import Footer    from "@/components/footer";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import Values from "@/components/values";
+import Philosophy from "@/components/philosophy";
 
 export const revalidate = 60;
 
@@ -45,12 +46,12 @@ async function PageContent() {
   return (
     <>
       <Banner />
-      {/* <Section2 data={philosophyData} /> */}
+      <Philosophy />
       <Values />
-      {/* <Partners data={partnersData}   /> */}
-      {/* <Founders data={foundersData}   /> */}
-      <Cta      data={ctaData}        />
-      {/* <Footer   data={footerData}     /> */}
+      <Partners />
+      <Founders />
+      <Cta data={ctaData}  />
+      <Footer  />
     </>
   );
 }
