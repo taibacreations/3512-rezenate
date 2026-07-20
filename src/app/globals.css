@@ -216,3 +216,10 @@ section {
   justify-content: center;
   align-items: center;
 }
+
+@media screen and (max-width:1023px) {
+  .partners-arrow {
+    width: 40px !important; 
+    height: 40px !important;
+  }
+}

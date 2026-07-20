@@ -1,4 +1,4 @@
-// schemas/footer.ts
+// sanity/schemas/footer.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -7,27 +7,40 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "heading",
-      title: "Heading",
+      name: "headingPlain",
+      title: "Heading — Plain part",
       type: "string",
-      initialValue: "Lead The Way.",
-      validation: (R) => R.required(),
+      initialValue: "Lead The",
     }),
     defineField({
-      name: "bodyText",
-      title: "Body Text",
+      name: "headingItalic",
+      title: "Heading — Italic / accent part",
+      type: "string",
+      initialValue: "way",
+    }),
+    defineField({
+      name: "paragraph",
+      title: "Paragraph",
       type: "text",
       rows: 3,
-      validation: (R) => R.required(),
+      initialValue:
+        "10% of every retainer supports a cause our clients care about. We also make a matching donation to a charity chosen by their new leader, because good business should always leave the world better than it found it.",
     }),
     defineField({
       name: "copyrightText",
       title: "Copyright Text",
       type: "string",
-      initialValue: "© Rezenate 2026. All rights reserved.",
+      initialValue: "© Rezenate 2025. All rights reserved.",
+    }),
+    defineField({
+      name: "accentColor",
+      title: "Accent Color",
+      type: "string",
+      initialValue: "#9564F4",
     }),
   ],
   preview: {
-    prepare: () => ({ title: "Footer Section" }),
+    select: { title: "headingPlain" },
+    prepare: ({ title }) => ({ title: `Footer — "${title}"` }),
   },
 });

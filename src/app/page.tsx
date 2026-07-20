@@ -1,28 +1,18 @@
 // src/app/page.tsx
 import { Suspense } from "react";
 import { client } from "../sanity/lib/client";
-import {
-  bannerQuery,
-  philosophyQuery,
-  valuesQuery,
-  partnersQuery,
-  foundersQuery,
-  ctaQuery,
-  footerQuery,
-} from "@/sanity/lib/queries";
 
-import Banner    from "@/components/banner";
-import Section2  from "@/components/philosophy";
-import Section3  from "@/components/values";
-import Partners  from "@/components/partners";
-import Founders  from "@/components/founders";
-import Cta       from "@/components/cta";
-import Footer    from "@/components/footer";
-import LoadingScreen from "@/components/ui/LoadingScreen";
-import Values from "@/components/values";
+import { BANNER_QUERY,PHILOSOPHY_QUERY,VALUES_QUERY,PARTNERS_QUERY,FOUNDERS_QUERY,CTA_QUERY,FOOTER_QUERY,LOADING_QUERY } from "@/sanity/lib/queries";
+
+import Banner     from "@/components/banner";
 import Philosophy from "@/components/philosophy";
+import Values     from "@/components/values";
+import Partners   from "@/components/partners";
+import Founders   from "@/components/founders";
+import Cta        from "@/components/cta";
+import Footer     from "@/components/footer";
 
-export const revalidate = 60;
+const FETCH_OPTS = { cache: "no-store" } as const;
 
 async function PageContent() {
   const [
@@ -34,38 +24,32 @@ async function PageContent() {
     ctaData,
     footerData,
   ] = await Promise.all([
-    client.fetch(bannerQuery),
-    client.fetch(philosophyQuery),
-    client.fetch(valuesQuery),
-    client.fetch(partnersQuery),
-    client.fetch(foundersQuery),
-    client.fetch(ctaQuery),
-    client.fetch(footerQuery),
+    client.fetch(BANNER_QUERY,     {}, FETCH_OPTS),
+    client.fetch(PHILOSOPHY_QUERY, {}, FETCH_OPTS),
+    client.fetch(VALUES_QUERY,     {}, FETCH_OPTS),
+    client.fetch(PARTNERS_QUERY,   {}, FETCH_OPTS),
+    client.fetch(FOUNDERS_QUERY,   {}, FETCH_OPTS),
+    client.fetch(CTA_QUERY,        {}, FETCH_OPTS),
+    client.fetch(FOOTER_QUERY,     {}, FETCH_OPTS),
   ]);
 
   return (
     <>
-      <Banner />
-      <Philosophy />
-      <Values />
-      <Partners />
-      <Founders />
-      <Cta data={ctaData}  />
-      <Footer  />
+      <Banner     data={bannerData}     />
+      <Philosophy data={philosophyData} />
+      <Values     data={valuesData}     />
+      <Partners   data={partnersData}   />
+      <Founders   data={foundersData}   />
+      <Cta        data={ctaData}        />
+      <Footer     data={footerData}     />
     </>
   );
 }
 
-// Home is NOT async — it renders the shell (LoadingScreen) immediately.
-// PageContent is async inside Suspense — it streams in as Sanity fetches resolve.
-// This means the browser paints the LoadingScreen before any data arrives.
 export default function Home() {
   return (
-    <>
-      <LoadingScreen />
-      <Suspense fallback={null}>
-        <PageContent />
-      </Suspense>
-    </>
+    <Suspense fallback={null}>
+      <PageContent />
+    </Suspense>
   );
 }

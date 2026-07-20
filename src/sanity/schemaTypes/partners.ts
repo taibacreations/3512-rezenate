@@ -1,3 +1,4 @@
+// sanity/schemas/partners.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -6,112 +7,53 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "heading",
-      title: "Section Heading",
+      name: "headingPlain",
+      title: "Heading — Plain part",
       type: "string",
-      initialValue: "HOW WE PARTNER",
-      validation: (R) => R.required(),
+      initialValue: "How we",
     }),
     defineField({
-      name: "subheading",
-      title: "Subheading Paragraph",
+      name: "headingItalic",
+      title: "Heading — Italic / accent part",
+      type: "string",
+      initialValue: "partner",
+    }),
+    defineField({
+      name: "subParagraph",
+      title: "Sub-paragraph",
       type: "text",
       rows: 3,
-      validation: (R) => R.required(),
+      initialValue:
+        "We partner with founders and boards to introduce leaders who strengthen culture and build momentum without losing what makes the company human.\n Every engagement moves through five deliberate stages.",
     }),
     defineField({
-      name: "stages",
-      title: "Stages",
+      name: "items",
+      title: "Partner Steps",
       type: "array",
       of: [
         {
           type: "object",
           fields: [
-            defineField({
-              name: "number",
-              title: "Number",
-              type: "string",
-              description: 'e.g. "01"',
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "title",
-              title: "Stage Title",
-              type: "string",
-              description: 'e.g. "Attract"',
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "heading",
-              title: "Stage Heading",
-              type: "string",
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "text",
-              title: "Stage Body Text",
-              type: "text",
-              rows: 4,
-              validation: (R) => R.required(),
-            }),
+            defineField({ name: "num",         title: "Number (e.g. 01)",  type: "string" }),
+            defineField({ name: "title",       title: "Title",             type: "string" }),
+            defineField({ name: "subtitle",    title: "Subtitle",          type: "string" }),
+            defineField({ name: "description", title: "Expanded text",     type: "text", rows: 3 }),
           ],
           preview: {
-            select: { title: "title", subtitle: "heading", media: "image" },
+            select: { title: "title", subtitle: "subtitle" },
           },
         },
       ],
-      validation: (R) => R.required().min(1),
     }),
-
-    // ── Trust Strip ──────────────────────────────────────────
     defineField({
-      name: "trustSignals",
-      title: "Trust Strip Signals",
-      type: "array",
-      description: "4 trust signals shown in the strip below the stages",
-      of: [
-        {
-          type: "object",
-          fields: [
-            defineField({
-              name: "label",
-              title: "Label",
-              type: "string",
-              description: 'e.g. "Replacement Guarantee"',
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "detail",
-              title: "Detail",
-              type: "string",
-              description: 'e.g. "If it doesn\'t work out, we make it right."',
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "icon",
-              title: "Icon Type",
-              type: "string",
-              description: "shield-check | dollar | shield | person",
-              options: {
-                list: [
-                  { title: "Shield with Check (Guarantee)", value: "shield-check" },
-                  { title: "Dollar Sign (Fees)",            value: "dollar"       },
-                  { title: "Shield (Values)",               value: "shield"       },
-                  { title: "Person (Founder-Led)",          value: "person"       },
-                ],
-                layout: "radio",
-              },
-              validation: (R) => R.required(),
-            }),
-          ],
-          preview: {
-            select: { title: "label", subtitle: "detail" },
-          },
-        },
-      ],
+      name: "accentColor",
+      title: "Accent Color",
+      type: "string",
+      initialValue: "#9564F4",
     }),
   ],
   preview: {
-    prepare: () => ({ title: "How We Partner Section" }),
+    select: { title: "headingPlain" },
+    prepare: ({ title }) => ({ title: `Partners — "${title}"` }),
   },
 });

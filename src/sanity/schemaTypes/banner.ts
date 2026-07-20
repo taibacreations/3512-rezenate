@@ -1,4 +1,4 @@
-// schemas/banner.ts
+// sanity/schemas/banner.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -7,21 +7,39 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "heading",
-      title: "Heading",
+      name: "headingPlain",
+      title: "Heading — Plain part",
       type: "string",
-      description: 'The large heading — e.g. "Lead The Way"',
-      validation: (R) => R.required(),
+      description: 'e.g. "Leadership changes"',
+      initialValue: "Leadership changes",
     }),
     defineField({
-      name: "subtitle",
-      title: "Subtitle",
+      name: "headingItalic",
+      title: "Heading — Italic / accent word",
       type: "string",
-      description: 'Small text below heading — e.g. "Leadership Recruitment & Consulting"',
+      description: 'e.g. "everything"',
+      initialValue: "everything",
+    }),
+    defineField({
+      name: "paragraph",
+      title: "Sub-paragraph",
+      type: "text",
+      rows: 3,
+      initialValue:
+        "We partner with organisations and leaders to attract, assess and support exceptional leadership that creates lasting impact.",
+    }),
+    defineField({
+      name: "accentColor",
+      title: "Accent Color",
+      type: "string",
+      description: "Hex color for italic word and scroll arrow",
+      initialValue: "#9564F4",
     }),
   ],
   preview: {
-    select: { title: "heading" },
-    prepare: ({ title }) => ({ title: `Banner: ${title}` }),
+    select: { title: "headingPlain", subtitle: "headingItalic" },
+    prepare: ({ title, subtitle }) => ({
+      title: `Banner — "${title} ${subtitle}"`,
+    }),
   },
 });

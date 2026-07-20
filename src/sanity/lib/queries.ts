@@ -1,17 +1,40 @@
 // src/sanity/lib/queries.ts
 
-// Header — tries fixed ID first, falls back to _type match
-// The fixed ID "header" is set by documentId("header") in sanity.config.ts
-// If the document was created before that config existed, it has a random ID
-// and _type == "header" will still find it.
-export const headerQuery = `coalesce(
-  *[_id == "header"][0],
-  *[_type == "header"][0]
-){
-  logoImage,
-  contactButtonText,
-  navLinks[]{ label, href }
+import { client } from "./client";
+
+export const HEADER_QUERY = `*[_type == "header"][0]{
+  logoMark,
+  wordmarkImage { asset->{ url } },
+  wordmarkAlt,
+  navLinks[] {
+    label,
+    href
+  },
+  ctaLabel,
+  ctaHref
 }`;
+
+// ── TypeScript type ────────────────────────────────────────────────────────
+export type HeaderData = {
+  logoMark?: string;
+  wordmarkImage?: { asset?: { url?: string } };
+  wordmarkAlt?: string;
+  navLinks?: { label: string; href: string }[];
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+
+// ── Fetcher (no-store — Next.js 15 cache bypass) ──────────────────────────
+export async function getHeaderData(): Promise<HeaderData> {
+  return client.fetch<HeaderData>(
+    HEADER_QUERY,
+    {},
+    {
+      // Next.js 15 fetch cache directive — no caching at all
+      cache: "no-store",
+    },
+  );
+}
 
 export const siteSettingsQuery = `coalesce(
   *[_id == "siteSettings"][0],
@@ -32,13 +55,212 @@ export const siteSettingsQuery = `coalesce(
   noIndex
 }`;
 
-export const bannerQuery = `coalesce(
-  *[_id == "banner"][0],
-  *[_type == "banner"][0]
-){ heading, subtitle }`;
-export const philosophyQuery = `coalesce(*[_id == "philosophy"][0], *[_type == "philosophy"][0]){ quotes[]{ text, align } }`;
-export const valuesQuery     = `coalesce(*[_id == "values"][0],     *[_type == "values"][0])    { heading, items[]{ name, shortDescription, longDescription, image } }`;
-export const partnersQuery = `coalesce(*[_id == "partners"][0], *[_type == "partners"][0]){ heading, subheading, stages[]{ number, title, heading, text }, trustSignals[]{ label, detail, icon } }`;
-export const foundersQuery = `coalesce(*[_id == "founders"][0], *[_type == "founders"][0]){ heading, subheading, founders[]{ name, role, bio, quote, photo, cardStyle }, ctaButtonText, ctaButtonLink }`;
-export const ctaQuery        = `coalesce(*[_id == "cta"][0],        *[_type == "cta"][0])       { heading, paragraph, buttonText, buttonLink }`;
-export const footerQuery     = `coalesce(*[_id == "footer"][0],     *[_type == "footer"][0])    { heading, bodyText, copyrightText }`;
+// lib/queries/banner.ts
+import { createClient } from "next-sanity";
+
+export const sanityClient = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+  apiVersion: "2024-06-01",
+  useCdn: false,
+});
+
+export const BANNER_QUERY = `*[_type == "banner"][0]{
+  headingPlain,
+  headingItalic,
+  paragraph,
+  accentColor
+}`;
+
+export type BannerData = {
+  headingPlain?: string;
+  headingItalic?: string;
+  paragraph?: string;
+  accentColor?: string;
+};
+
+export async function getBannerData(): Promise<BannerData> {
+  return client.fetch<BannerData>(BANNER_QUERY, {}, { cache: "no-store" });
+}
+export const PHILOSOPHY_QUERY = `*[_type == "philosophy"][0]{
+  headingPlain,
+  headingItalic,
+  para1,
+  para2,
+  para3,
+  quoteText,
+  quoteAuthor,
+  accentColor
+}`;
+
+export type PhilosophyData = {
+  headingPlain?: string;
+  headingItalic?: string;
+  para1?: string;
+  para2?: string;
+  para3?: string;
+  quoteText?: string;
+  quoteAuthor?: string;
+  accentColor?: string;
+};
+
+export async function getPhilosophyData(): Promise<PhilosophyData> {
+  return client.fetch<PhilosophyData>(
+    PHILOSOPHY_QUERY,
+    {},
+    { cache: "no-store" },
+  );
+}
+
+export const VALUES_QUERY = `*[_type == "values"][0]{
+  headingPlain,
+  headingItalic,
+  items[] {
+    id,
+    title,
+    desc,
+    expanded
+  },
+  accentColor
+}`;
+
+export type ValueItem = {
+  id: string;
+  title: string;
+  desc: string;
+  expanded: string;
+};
+
+export type ValuesData = {
+  headingPlain?: string;
+  headingItalic?: string;
+  items?: ValueItem[];
+  accentColor?: string;
+};
+
+export async function getValuesData(): Promise<ValuesData> {
+  return client.fetch<ValuesData>(VALUES_QUERY, {}, { cache: "no-store" });
+}
+
+
+export const PARTNERS_QUERY = `*[_type == "partners"][0]{
+  headingPlain,
+  headingItalic,
+  subParagraph,
+  items[] {
+    num,
+    title,
+    subtitle,
+    description
+  },
+  accentColor
+}`;
+ 
+export type PartnerItem = {
+  num:         string;
+  title:       string;
+  subtitle:    string;
+  description: string;
+};
+ 
+export type PartnersData = {
+  headingPlain?:  string;
+  headingItalic?: string;
+  subParagraph?:  string;
+  items?:         PartnerItem[];
+  accentColor?:   string;
+};
+ 
+export async function getPartnersData(): Promise<PartnersData> {
+  return sanityClient.fetch<PartnersData>(PARTNERS_QUERY, {}, { cache: "no-store" });
+}
+export const FOUNDERS_QUERY = `*[_type == "founders"][0]{
+  headingPlain,
+  headingItalic,
+  subParagraph,
+  founders[] {
+    photo { asset->{ url } },
+    name,
+    quote,
+    bio
+  },
+  accentColor
+}`;
+ 
+export type FounderItem = {
+  photo?: { asset?: { url?: string } };
+  name:   string;
+  quote:  string;
+  bio:    string;
+};
+ 
+export type FoundersData = {
+  headingPlain?:  string;
+  headingItalic?: string;
+  subParagraph?:  string;
+  founders?:      FounderItem[];
+  accentColor?:   string;
+};
+ 
+export async function getFoundersData(): Promise<FoundersData> {
+  return client.fetch<FoundersData>(FOUNDERS_QUERY, {}, { cache: "no-store" });
+}
+export const CTA_QUERY = `*[_type == "cta"][0]{
+  headingPlain,
+  headingItalic,
+  paragraph,
+  buttonText,
+  buttonLink,
+  accentColor
+}`;
+ 
+export type CtaData = {
+  headingPlain?:  string;
+  headingItalic?: string;
+  paragraph?:     string;
+  buttonText?:    string;
+  buttonLink?:    string;
+  accentColor?:   string;
+};
+ 
+export async function getCtaData(): Promise<CtaData> {
+  return client.fetch<CtaData>(CTA_QUERY, {}, { cache: "no-store" });
+}
+export const FOOTER_QUERY = `*[_type == "footer"][0]{
+  headingPlain,
+  headingItalic,
+  paragraph,
+  copyrightText,
+  accentColor
+}`;
+ 
+export type FooterData = {
+  headingPlain?:  string;
+  headingItalic?: string;
+  paragraph?:     string;
+  copyrightText?: string;
+  accentColor?:   string;
+};
+ 
+export async function getFooterData(): Promise<FooterData> {
+  return client.fetch<FooterData>(FOOTER_QUERY, {}, { cache: "no-store" });
+}
+
+
+export const LOADING_QUERY = `*[_type == "loading"][0]{
+  headingPlain,
+  headingItalic,
+  tagline,
+  loadingLabel
+}`;
+ 
+export type LoadingData = {
+  headingPlain?:  string;
+  headingItalic?: string;
+  tagline?:       string;
+  loadingLabel?:  string;
+};
+ 
+export async function getLoadingData(): Promise<LoadingData> {
+  return sanityClient.fetch<LoadingData>(LOADING_QUERY, {}, { cache: "no-store" });
+}

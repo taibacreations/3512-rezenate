@@ -1,4 +1,4 @@
-// schemas/header.ts
+// sanity/schemas/header.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -7,49 +7,57 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "logoImage",
-      title: "Logo Wordmark",
-      type: "image",
-      description: "The REZENATE wordmark shown below the SVG icon",
-      options: { hotspot: true },
+      name: "logoMark",
+      title: "Logo Mark (SVG paths color)",
+      type: "string",
+      description: "Fill color for logo SVG paths (default: #9564F4)",
+      initialValue: "#9564F4",
     }),
     defineField({
-      name: "contactButtonText",
-      title: "Contact Button Text",
+      name: "wordmarkImage",
+      title: "Wordmark Image",
+      type: "image",
+      description: "The text logo beside the icon (e.g. 'Rezenate')",
+      options: { hotspot: false },
+    }),
+    defineField({
+      name: "wordmarkAlt",
+      title: "Wordmark Alt Text",
       type: "string",
-      initialValue: "Contact us",
-      description: "Text shown in the pill button top-left (desktop only)",
-      validation: (R) => R.required(),
+      initialValue: "Rezenate",
     }),
     defineField({
       name: "navLinks",
       title: "Navigation Links",
       type: "array",
-      description: "Order matters — these appear in the mobile menu top to bottom",
       of: [
         {
           type: "object",
           fields: [
-            defineField({
-              name: "label",
-              title: "Label",
-              type: "string",
-              validation: (R) => R.required(),
-            }),
-            defineField({
-              name: "href",
-              title: "Link Target",
-              type: "string",
-              description: 'Section anchor e.g. "#home", "#founders", or a full URL',
-              validation: (R) => R.required(),
-            }),
+            defineField({ name: "label", title: "Label", type: "string" }),
+            defineField({ name: "href", title: "Href (anchor or path)", type: "string" }),
           ],
-          preview: { select: { title: "label", subtitle: "href" } },
+          preview: {
+            select: { title: "label", subtitle: "href" },
+          },
         },
       ],
     }),
+    defineField({
+      name: "ctaLabel",
+      title: "CTA Button Label",
+      type: "string",
+      initialValue: "Contact us",
+    }),
+    defineField({
+      name: "ctaHref",
+      title: "CTA Button Href",
+      type: "string",
+      initialValue: "#contact",
+    }),
   ],
   preview: {
-    prepare: () => ({ title: "Header" }),
+    select: { title: "wordmarkAlt" },
+    prepare: ({ title }) => ({ title: `Header — ${title}` }),
   },
 });

@@ -1,19 +1,48 @@
+// Header.tsx — Sanity CMS powered (no cache)
+// Usage: wrap in a Server Component that fetches data, then pass as props.
+// See HeaderWrapper.tsx below for the RSC wrapper pattern.
+
 "use client";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import type { HeaderData } from "@/sanity/lib/queries";
 
-const NAV_LINKS = [
-  { label: "Philosophy", href: "#philosophy" },
-  { label: "How We Partner", href: "#how-we-partner" },
-  { label: "Founders", href: "#founders" },
-  { label: "Contact", href: "#contact" },
-];
+// ── Fallback content (used when Sanity returns nothing) ───────────────────
+const FALLBACK: Required<HeaderData> = {
+  logoMark: "#9564F4",
+  wordmarkImage: { asset: { url: "/logo.webp" } },
+  wordmarkAlt: "Rezenate",
+  navLinks: [
+    { label: "Philosophy", href: "#philosophy" },
+    { label: "How We Partner", href: "#how-we-partner" },
+    { label: "Founders", href: "#founders" },
+    { label: "Contact", href: "#contact" },
+  ],
+  ctaLabel: "Contact us",
+  ctaHref: "#contact",
+};
 
-const ALL_NAV = [{ label: "Home", href: "#home" }, ...NAV_LINKS];
+// ── Props ─────────────────────────────────────────────────────────────────
+interface HeaderProps {
+  data?: HeaderData | null;
+}
 
-const Header = () => {
+const Header = ({ data }: HeaderProps) => {
+  // Merge Sanity data with fallbacks
+  const logoColor = data?.logoMark ?? FALLBACK.logoMark;
+  const wordmarkUrl =
+    data?.wordmarkImage?.asset?.url ?? FALLBACK.wordmarkImage.asset!.url!;
+  const wordmarkAlt = data?.wordmarkAlt ?? FALLBACK.wordmarkAlt;
+  const rawNavLinks = (
+    data?.navLinks?.length ? data.navLinks : FALLBACK.navLinks
+  ).filter((l) => l.label.toLowerCase() !== "home");
+  const ctaLabel = data?.ctaLabel ?? FALLBACK.ctaLabel;
+  const ctaHref = data?.ctaHref ?? FALLBACK.ctaHref;
+
+  const ALL_NAV = [{ label: "Home", href: "#home" }, ...rawNavLinks];
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Home");
 
@@ -33,7 +62,7 @@ const Header = () => {
   const bar3Ref = useRef<HTMLSpanElement>(null);
   const scrolledRef = useRef(false);
 
-  // ── Entrance — waits for loading-done event ───────────────────────────────
+  // ── Entrance — waits for loading-done ────────────────────────────────────
   useEffect(() => {
     const svg = svgRef.current;
     const wordmark = wordmarkRef.current;
@@ -41,7 +70,6 @@ const Header = () => {
 
     const paths = svg.querySelectorAll("path");
 
-    // Hide everything immediately so nothing shows during loading
     gsap.set(paths, { opacity: 0, y: 10 });
     gsap.set([wordmark, ctaRef.current, hamburgerRef.current], {
       autoAlpha: 0,
@@ -52,44 +80,113 @@ const Header = () => {
     });
 
     const runEntrance = () => {
-  const ctx = gsap.context(() => {
-    const tl = gsap.timeline({ delay: 0.2 });
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({ delay: 0.15 });
 
-    tl.to(paths[2], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" })
-      .to(paths[1], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.4")
-      .to(paths[0], { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, "-=0.4")
-      .to(wordmark, { autoAlpha: 1, duration: 0.55, ease: "power2.out" }, "-=0.2")
-      .to(
-        navRef.current ? Array.from(navRef.current.children) : [],
-        { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.07 },
-        "-=0.35",
-      )
-      .fromTo(
-        ctaRef.current,
-        { autoAlpha: 0, scale: 0.93 },
-        { autoAlpha: 1, scale: 1, duration: 0.65, ease: "expo.out" },
-        "-=0.4",
-      )
-      .to(hamburgerRef.current, { autoAlpha: 1, duration: 0.45, ease: "power2.out" }, "<")
-      .call(() => {
-        window.dispatchEvent(new Event("header-done"));
+        tl.to(paths[2], {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          ease: "power2.out",
+        })
+          .to(
+            paths[1],
+            { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" },
+            "-=0.35",
+          )
+          .to(
+            paths[0],
+            { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" },
+            "-=0.35",
+          )
+          .to(
+            wordmark,
+            { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
+            "-=0.2",
+          )
+          .to(
+            navRef.current ? Array.from(navRef.current.children) : [],
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.55,
+              ease: "expo.out",
+              stagger: 0.06,
+            },
+            "-=0.25",
+          )
+          .call(
+            () => {
+              window.dispatchEvent(new Event("header-done"));
+            },
+            [],
+            "-=0.1",
+          )
+          .fromTo(
+            ctaRef.current,
+            { autoAlpha: 0, scale: 0.93 },
+            { autoAlpha: 1, scale: 1, duration: 0.5, ease: "expo.out" },
+            "<",
+          )
+          .to(
+            hamburgerRef.current,
+            { autoAlpha: 1, duration: 0.4, ease: "power2.out" },
+            "<",
+          )
+          .call(() => {
+            gsap.set(paths[2], {
+              scale: 0.25,
+              opacity: 0,
+              transformOrigin: "center center",
+            });
+            gsap.set([paths[0], paths[1]], {
+              opacity: 0,
+              scale: 1,
+              transformOrigin: "center center",
+            });
 
-        // ── Assembly animation starts after entrance completes ──
-        gsap.set(paths[2], { scale: 0.25, opacity: 0, transformOrigin: "center center" });
-        gsap.set([paths[0], paths[1]], { opacity: 0, scale: 1, transformOrigin: "center center" });
-
-        const assembleTl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-
-        assembleTl
-          .fromTo(paths[2], { x: 30, y: -30, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0)
-          .to(paths[2], { scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0.8)
-          .fromTo(paths[1], { x: 50, y: -50, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 1.8)
-          .fromTo(paths[0], { x: 70, y: -70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 3.2);
+            const assembleTl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+            assembleTl
+              .fromTo(
+                paths[2],
+                { x: 30, y: -30, opacity: 0 },
+                { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+                0,
+              )
+              .to(
+                paths[2],
+                { scale: 1, duration: 0.6, ease: "back.out(1.7)" },
+                0.8,
+              )
+              .fromTo(
+                paths[1],
+                { x: 50, y: -50, opacity: 0 },
+                {
+                  x: 0,
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.9,
+                  ease: "back.out(1.7)",
+                },
+                1.8,
+              )
+              .fromTo(
+                paths[0],
+                { x: 70, y: -70, opacity: 0 },
+                {
+                  x: 0,
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.9,
+                  ease: "back.out(1.7)",
+                },
+                3.2,
+              );
+          });
       });
-  });
 
-  return () => ctx.revert();
-};
+      return () => ctx.revert();
+    };
 
     window.addEventListener("loading-done", runEntrance, { once: true });
     return () => window.removeEventListener("loading-done", runEntrance);
@@ -142,7 +239,6 @@ const Header = () => {
 
     if (menuOpen) {
       document.body.style.overflow = "hidden";
-
       gsap.to(overlay, { autoAlpha: 1, duration: 0.35, ease: "power2.out" });
       gsap.to(drawer, { x: 0, duration: 0.55, ease: "expo.out" });
       gsap.fromTo(
@@ -173,7 +269,6 @@ const Header = () => {
         { autoAlpha: 0, y: 10 },
         { autoAlpha: 1, y: 0, duration: 0.45, ease: "expo.out", delay: 0.52 },
       );
-
       gsap.to(bar1Ref.current, {
         rotation: 45,
         y: 7,
@@ -194,7 +289,6 @@ const Header = () => {
       });
     } else {
       document.body.style.overflow = "";
-
       gsap.to(closeBtn, {
         autoAlpha: 0,
         rotate: -90,
@@ -216,7 +310,6 @@ const Header = () => {
         ease: "expo.in",
         delay: 0.05,
       });
-
       gsap.to(bar1Ref.current, {
         rotation: 0,
         y: 0,
@@ -257,13 +350,10 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handle);
   }, [menuOpen]);
 
-  // ── Nav hover ─────────────────────────────────────────────────────────────
   const onNavEnter = (el: HTMLElement) =>
     gsap.to(el, { y: -2, duration: 0.25, ease: "power2.out" });
   const onNavLeave = (el: HTMLElement) =>
     gsap.to(el, { y: 0, duration: 0.3, ease: "power2.out" });
-
-  // ── CTA hover ─────────────────────────────────────────────────────────────
   const onCTAEnter = (el: HTMLElement) =>
     gsap.to(el, { scale: 1.04, duration: 0.3, ease: "power2.out" });
   const onCTALeave = (el: HTMLElement) =>
@@ -298,31 +388,28 @@ const Header = () => {
             >
               <path
                 d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
-                fill="#9564F4"
+                fill={logoColor}
               />
               <path
                 d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
-                fill="#9564F4"
+                fill={logoColor}
               />
               <path
                 d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
-                fill="#9564F4"
+                fill={logoColor}
               />
             </svg>
             <img
               ref={wordmarkRef}
-              src="/logo.webp"
-              alt="Rezenate"
+              src={wordmarkUrl}
+              alt={wordmarkAlt}
               style={{ visibility: "visible", opacity: 0 }}
               className="w-[120px] md:w-[158px]"
             />
           </Link>
 
-          {/* ── Desktop Nav ── */}
-          <nav
-            ref={navRef}
-            className="hidden lg:flex items-center gap-8"
-          >
+          {/* ── Desktop nav ── */}
+          <nav ref={navRef} className="hidden lg:flex items-center gap-8">
             {ALL_NAV.map(({ label, href }) => (
               <Link
                 key={label}
@@ -346,18 +433,20 @@ const Header = () => {
 
           {/* ── Desktop CTA ── */}
           <div ref={ctaRef} className="hidden lg:flex" style={{ opacity: 0 }}>
-            <button
-              className="font-outfit font-normal text-[20px] leading-[114%] w-[140px] xl:w-[159px] h-[40px] xl:h-[45px] flex justify-center items-center rounded-full border border-black transition-[background-color,color,box-shadow] duration-300 hover:bg-black hover:text-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
-              onMouseEnter={(e) => onCTAEnter(e.currentTarget)}
-              onMouseLeave={(e) => onCTALeave(e.currentTarget)}
-              onMouseDown={(e) => onCTAPress(e.currentTarget)}
-              onMouseUp={(e) => onCTARelease(e.currentTarget)}
-            >
-              Contact us
-            </button>
+            <Link href={ctaHref}>
+              <button
+                className="font-outfit font-normal text-[20px] leading-[114%] w-[140px] xl:w-[159px] h-[40px] xl:h-[45px] flex justify-center items-center rounded-full border border-black transition-[background-color,color,box-shadow] duration-300 hover:bg-black hover:text-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
+                onMouseEnter={(e) => onCTAEnter(e.currentTarget)}
+                onMouseLeave={(e) => onCTALeave(e.currentTarget)}
+                onMouseDown={(e) => onCTAPress(e.currentTarget)}
+                onMouseUp={(e) => onCTARelease(e.currentTarget)}
+              >
+                {ctaLabel}
+              </button>
+            </Link>
           </div>
 
-          {/* ── Mobile Hamburger ── */}
+          {/* ── Hamburger ── */}
           <button
             ref={hamburgerRef}
             onClick={() => setMenuOpen((v) => !v)}
@@ -390,13 +479,12 @@ const Header = () => {
         aria-hidden="true"
       />
 
-      {/* ── Mobile Drawer ── */}
+      {/* ── Mobile drawer ── */}
       <div
         ref={mobileMenuRef}
         className="fixed top-0 right-0 z-50 h-full w-[80vw] max-w-[320px] bg-white shadow-2xl flex flex-col pt-24 pb-10 px-8 lg:hidden"
         style={{ transform: "translateX(100%)" }}
       >
-        {/* ── Close button ── */}
         <button
           ref={closeBtnRef}
           onClick={() => setMenuOpen(false)}
@@ -430,14 +518,16 @@ const Header = () => {
         </nav>
 
         <div className="mt-auto">
-          <button
-            ref={mobileCTARef}
-            onClick={() => setMenuOpen(false)}
-            style={{ opacity: 0 }}
-            className="w-full font-outfit text-[18px] h-[48px] rounded-full border border-black transition-all duration-300 hover:bg-black hover:text-white"
-          >
-            Contact us
-          </button>
+          <Link href={ctaHref}>
+            <button
+              ref={mobileCTARef}
+              onClick={() => setMenuOpen(false)}
+              style={{ opacity: 0 }}
+              className="w-full font-outfit text-[18px] h-[48px] rounded-full border border-black transition-all duration-300 hover:bg-black hover:text-white"
+            >
+              {ctaLabel}
+            </button>
+          </Link>
         </div>
       </div>
     </>
