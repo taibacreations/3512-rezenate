@@ -131,9 +131,12 @@ const Partners = ({ data }: PartnersProps) => {
       const cardEls = cardsRef.current?.children ? Array.from(cardsRef.current.children) : [];
       gsap.set(cardEls, { autoAlpha: 0, y: 30 });
 
+
+      const isMobile = window.innerWidth < 768;
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top 140%",
+        start: isMobile ? "top 180%" : "top 140%",
         once: true,
         onEnter: () => {
           const tl = gsap.timeline();

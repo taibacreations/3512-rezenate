@@ -115,9 +115,11 @@ const Values = ({ data }: ValuesProps) => {
       gsap.set(gradientRef.current, { autoAlpha: 0, x: -20 });
       gsap.set(cards,               { autoAlpha: 0, x: 80 });
 
+      const isMobile = window.innerWidth < 768;
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top 140%",
+        start: isMobile ? "top 180%" : "top 140%",
         once: true,
         onEnter: () => {
           const tl = gsap.timeline();

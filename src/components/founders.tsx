@@ -57,9 +57,11 @@ const Founders = ({ data }: FoundersProps) => {
       gsap.set(card1Ref.current,   { autoAlpha: 0, x: -60 });
       gsap.set(card2Ref.current,   { autoAlpha: 0, x: 60 });
 
+      const isMobile = window.innerWidth < 768;
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top 140%",
+        start: isMobile ? "top 180%" : "top 140%",
         once: true,
         onEnter: () => {
           const tl = gsap.timeline();

@@ -10,12 +10,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ── Fallback ───────────────────────────────────────────────────────────────
 const FALLBACK = {
-  headingPlain:  "Lead The",
+  headingPlain: "Lead The",
   headingItalic: "way",
   paragraph:
     "10% of every retainer supports a cause our clients care about. We also make a matching donation to a charity chosen by their new leader, because good business should always leave the world better than it found it.",
   copyrightText: "© Rezenate 2025. All rights reserved.",
-  accentColor:   "#9564F4",
+  accentColor: "#9564F4",
 };
 
 interface FooterProps {
@@ -23,17 +23,17 @@ interface FooterProps {
 }
 
 const Footer = ({ data }: FooterProps) => {
-  const headingPlain  = data?.headingPlain  ?? FALLBACK.headingPlain;
+  const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
   const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
-  const paragraph     = data?.paragraph     ?? FALLBACK.paragraph;
+  const paragraph = data?.paragraph ?? FALLBACK.paragraph;
   const copyrightText = data?.copyrightText ?? FALLBACK.copyrightText;
-  const accentColor   = data?.accentColor   ?? FALLBACK.accentColor;
+  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
-  const sectionRef   = useRef<HTMLElement>(null);
-  const svgRef       = useRef<SVGSVGElement>(null);
-  const cardRef      = useRef<HTMLDivElement>(null);
-  const headingRef   = useRef<HTMLHeadingElement>(null);
-  const paraRef      = useRef<HTMLParagraphElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const paraRef = useRef<HTMLParagraphElement>(null);
   const copyrightRef = useRef<HTMLDivElement>(null);
 
   // ── Logo assembly ──────────────────────────────────────────────────────────
@@ -41,47 +41,88 @@ const Footer = ({ data }: FooterProps) => {
     if (!svgRef.current) return;
     const paths = svgRef.current.querySelectorAll("path");
 
-    gsap.set(paths[2], { scale: 0.25, opacity: 0, transformOrigin: "center center" });
+    gsap.set(paths[2], {
+      scale: 0.25,
+      opacity: 0,
+      transformOrigin: "center center",
+    });
     gsap.set(paths[1], { opacity: 0, transformOrigin: "center center" });
     gsap.set(paths[0], { opacity: 0, transformOrigin: "center center" });
+
+    const isMobile = window.innerWidth < 768;
 
     const assembleTl = gsap.timeline({
       repeat: -1,
       repeatDelay: 1.5,
       scrollTrigger: {
         trigger: svgRef.current,
-        start: "top 140%",
+        start: isMobile ? "top 250%" : "top 140%",
       },
     });
 
     assembleTl
-      .fromTo(paths[2], { x: 30, y: -30, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0)
+      .fromTo(
+        paths[2],
+        { x: 30, y: -30, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+        0,
+      )
       .to(paths[2], { scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0.8)
-      .fromTo(paths[1], { x: 50, y: -50, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 1.8)
-      .fromTo(paths[0], { x: 70, y: -70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" }, 3.2);
+      .fromTo(
+        paths[1],
+        { x: 50, y: -50, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" },
+        1.8,
+      )
+      .fromTo(
+        paths[0],
+        { x: 70, y: -70, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.7)" },
+        3.2,
+      );
 
-    return () => { assembleTl.kill(); };
+    return () => {
+      assembleTl.kill();
+    };
   }, []);
 
   // ── Entrance ───────────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(cardRef.current,      { autoAlpha: 0, y: 40 });
-      gsap.set(headingRef.current,   { autoAlpha: 0, y: 25 });
-      gsap.set(paraRef.current,      { autoAlpha: 0, y: 20 });
+      gsap.set(cardRef.current, { autoAlpha: 0, y: 40 });
+      gsap.set(headingRef.current, { autoAlpha: 0, y: 25 });
+      gsap.set(paraRef.current, { autoAlpha: 0, y: 20 });
       gsap.set(copyrightRef.current, { autoAlpha: 0 });
+
+      const isMobile = window.innerWidth < 768;
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top 140%",
+        start: isMobile ? "top 180%" : "top 140%",
         once: true,
         onEnter: () => {
           const tl = gsap.timeline();
-          tl
-            .to(cardRef.current,      { autoAlpha: 1, y: 0, duration: 1.2, ease: "expo.out" })
-            .to(headingRef.current,   { autoAlpha: 1, y: 0, duration: 1.0, ease: "expo.out" }, "-=0.7")
-            .to(paraRef.current,      { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out" }, "-=0.6")
-            .to(copyrightRef.current, { autoAlpha: 1,        duration: 0.7, ease: "power2.out" }, "-=0.3");
+          tl.to(cardRef.current, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 1.2,
+            ease: "expo.out",
+          })
+            .to(
+              headingRef.current,
+              { autoAlpha: 1, y: 0, duration: 1.0, ease: "expo.out" },
+              "-=0.7",
+            )
+            .to(
+              paraRef.current,
+              { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out" },
+              "-=0.6",
+            )
+            .to(
+              copyrightRef.current,
+              { autoAlpha: 1, duration: 0.7, ease: "power2.out" },
+              "-=0.3",
+            );
         },
       });
     }, sectionRef);
@@ -104,9 +145,18 @@ const Footer = ({ data }: FooterProps) => {
           fill="none"
           className="xl:w-[589px] xl:h-[589px] md:w-[480px] md:h-[480px] w-full h-auto"
         >
-          <path d="M588.052 0H0L138.843 139.69C145.382 146.268 154.273 149.967 163.548 149.967H434.45V420.931C434.45 430.169 438.12 439.029 444.652 445.561L588.052 588.961V0Z" fill={accentColor} />
-          <path d="M376.303 210.863H0.931641L141.194 351.126C147.408 357.34 155.835 360.83 164.623 360.83H225.428V423.453C225.428 432.24 228.918 440.668 235.132 446.881L376.303 588.053V210.863Z" fill={accentColor} />
-          <path d="M166.327 588.054V421.727H0L166.327 588.054Z" fill={accentColor} />
+          <path
+            d="M588.052 0H0L138.843 139.69C145.382 146.268 154.273 149.967 163.548 149.967H434.45V420.931C434.45 430.169 438.12 439.029 444.652 445.561L588.052 588.961V0Z"
+            fill={accentColor}
+          />
+          <path
+            d="M376.303 210.863H0.931641L141.194 351.126C147.408 357.34 155.835 360.83 164.623 360.83H225.428V423.453C225.428 432.24 228.918 440.668 235.132 446.881L376.303 588.053V210.863Z"
+            fill={accentColor}
+          />
+          <path
+            d="M166.327 588.054V421.727H0L166.327 588.054Z"
+            fill={accentColor}
+          />
         </svg>
       </div>
 

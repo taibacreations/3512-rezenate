@@ -76,10 +76,12 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         autoAlpha: 0,
       });
 
+      const isMobile = window.innerWidth < 768;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 140%",
+          start: isMobile ? "top 180%" : "top 140%",
           once: true,
         },
       });
