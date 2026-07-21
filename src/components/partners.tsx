@@ -152,6 +152,7 @@ const Partners = ({ data }: PartnersProps) => {
   return (
     <section
       ref={sectionRef}
+      id="how-we-partner"
       className="bg-[url(/partners1.webp)] bg-cover bg-center xl:min-h-screen xl:mt-[-9vh] relative px-4 md:px-6 xl:px-10"
     >
       <div>

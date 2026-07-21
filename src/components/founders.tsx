@@ -77,7 +77,7 @@ const Founders = ({ data }: FoundersProps) => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="pb-[8vh] px-2 md:px-6 xl:px-10 xl:pt-0 pt-[12vh]">
+    <section id="founders" ref={sectionRef} className="pb-[8vh] px-2 md:px-6 xl:px-10 xl:pt-0 pt-[12vh]">
       <div>
         {/* Heading */}
         <div ref={headingRef} style={{ opacity: 0 }} className="max-w-[878px] mx-auto text-center">

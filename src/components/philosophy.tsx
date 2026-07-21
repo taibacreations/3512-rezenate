@@ -100,6 +100,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
   return (
     <section
       ref={sectionRef}
+      id="philosophy"
       className="min-h-screen bg-[url(/philosophy1.webp)] bg-cover bg-bottom relative"
     >
       {/* Logo mark — hardcoded white fill */}

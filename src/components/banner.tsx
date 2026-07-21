@@ -114,6 +114,7 @@ const Banner = ({ data }: BannerProps) => {
   return (
     <section
       ref={sectionRef}
+      id="hero"
       className="2xl:min-h-[110vh] md:min-h-screen h-[80vh] bg-[url(/banner.webp)] bg-cover bg-center relative"
     >
       {/* Glow */}

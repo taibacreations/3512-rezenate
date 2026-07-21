@@ -223,3 +223,9 @@ section {
     height: 40px !important;
   }
 }
+
+
+section, body {
+  scroll-padding-top: 32vh !important;
+  scroll-behavior: smooth !important;
+}
