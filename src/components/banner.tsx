@@ -5,6 +5,24 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { BannerData } from "@/sanity/lib/queries";
 
+// ── Smooth scroll helper (Lenis-aware) ────────────────────────────────────
+const scrollToSection = (href: string) => {
+  const id = href.startsWith("#") ? href.slice(1) : href;
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const headerHeight = document.querySelector("header")?.offsetHeight ?? 80;
+  const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 32;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lenis = (window as any).__lenis;
+  if (lenis) {
+    lenis.scrollTo(top, { duration: 1.4, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+  } else {
+    window.scrollTo({ top, behavior: "smooth" });
+  }
+};
+
 const FALLBACK = {
   headingPlain:  "Leadership changes",
   headingItalic: "everything",
@@ -26,7 +44,7 @@ const Banner = ({ data }: BannerProps) => {
   const sectionRef    = useRef<HTMLElement>(null);
   const banner1Ref    = useRef<HTMLImageElement>(null);
   const banner1MobRef = useRef<HTMLImageElement>(null);
-  const scrollBgRef   = useRef<HTMLDivElement>(null);
+  const scrollBgRef   = useRef<HTMLAnchorElement>(null);
   const arrowRef      = useRef<SVGSVGElement>(null);
   const headingRef    = useRef<HTMLHeadingElement>(null);
   const paraRef       = useRef<HTMLParagraphElement>(null);
@@ -44,12 +62,10 @@ const Banner = ({ data }: BannerProps) => {
         tl
           .to(headingRef.current, { autoAlpha: 1, y: 0, duration: 1.4, ease: "expo.out" })
           .to(paraRef.current,    { autoAlpha: 1, y: 0, duration: 1.2, ease: "expo.out" }, "-=0.85")
-          .to([banner1Ref.current, banner1MobRef.current], {
-            autoAlpha: 1, y: 0, scale: 1, duration: 1.6, ease: "expo.out",
-          }, "-=0.9")
+          .to([banner1Ref.current, banner1MobRef.current], { autoAlpha: 1, y: 0, scale: 1, duration: 1.6, ease: "expo.out" }, "-=0.9")
           .to(scrollBgRef.current, { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: "back.out(1.3)" }, "-=0.6")
           .call(() => {
-            gsap.to(arrowRef.current,    { y: 8,    duration: 1.4, ease: "sine.inOut", repeat: -1, yoyo: true });
+            gsap.to(arrowRef.current,  { y: 8,    duration: 1.4, ease: "sine.inOut", repeat: -1, yoyo: true });
             gsap.to(scrollBgRef.current, { scale: 1.04, duration: 3.0, ease: "sine.inOut", repeat: -1, yoyo: true });
           });
       });
@@ -92,9 +108,9 @@ const Banner = ({ data }: BannerProps) => {
       const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
       gsap.to([banner1Ref.current, banner1MobRef.current], { x: nx * 22, y: ny * 12, duration: 2.2, ease: "power2.out" });
-      gsap.to(headingRef.current,   { x: nx * -5, y: ny * -3, duration: 2.8, ease: "power2.out" });
-      gsap.to(paraRef.current,      { x: nx * -3, y: ny * -2, duration: 2.8, ease: "power2.out" });
-      gsap.to(scrollBgRef.current,  { x: nx *  8, y: ny *  5, duration: 2.4, ease: "power2.out" });
+      gsap.to(headingRef.current,  { x: nx * -5, y: ny * -3, duration: 2.8, ease: "power2.out" });
+      gsap.to(paraRef.current,     { x: nx * -3, y: ny * -2, duration: 2.8, ease: "power2.out" });
+      gsap.to(scrollBgRef.current, { x: nx *  8, y: ny *  5, duration: 2.4, ease: "power2.out" });
     };
     const onLeave = () => {
       gsap.to(
@@ -146,9 +162,11 @@ const Banner = ({ data }: BannerProps) => {
         className="absolute lg:hidden md:bottom-[-20vh] bottom-[-10vh] lg:h-auto md:h-[600px] h-[330px] will-change-transform"
       />
 
-      {/* Scroll indicator — hardcoded from /public */}
-      <div
+      {/* Scroll indicator — smooth scroll on click */}
+      <a
         ref={scrollBgRef}
+        href="#philosophy"
+        onClick={(e) => { e.preventDefault(); scrollToSection("#philosophy"); }}
         style={{ opacity: 0 }}
         className="bg-[url(/scroll-bg1.png)] bg-cover bg-center 2xl:w-[160px] 2xl:h-[166px] w-[130px] h-[140px] md:flex hidden flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 z-30 bottom-[0vh] will-change-transform"
       >
@@ -166,7 +184,7 @@ const Banner = ({ data }: BannerProps) => {
             fill={accentColor}
           />
         </svg>
-      </div>
+      </a>
 
       {/* Text */}
       <div className="2xl:pt-[17vh] xl:pt-[20vh] lg:pt-[22vh] md:pt-[25vh] pt-[22vh] relative z-30">
