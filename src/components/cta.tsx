@@ -229,7 +229,7 @@ const Cta = ({ data }: CtaProps) => {
       </div>
 
       {/* Content */}
-      <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4 z-30">
+      <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4 z-40">
         <h2
           ref={headingRef}
           className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black"

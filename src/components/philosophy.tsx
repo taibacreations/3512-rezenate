@@ -101,7 +101,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
     <section
       ref={sectionRef}
       id="philosophy"
-      className="min-h-screen bg-[url(/philosophy1.webp)] bg-cover bg-bottom relative"
+      className="min-h-screen 2xl:min-h-[115vh] bg-[url(/philosophy1.webp)] bg-cover bg-center relative"
     >
       {/* Logo mark — hardcoded white fill */}
       <div className="absolute right-[18%] top-[45%]">

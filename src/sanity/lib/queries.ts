@@ -119,27 +119,31 @@ export const VALUES_QUERY = `*[_type == "values"][0]{
     id,
     title,
     desc,
-    expanded
+    expanded,
+    iconImage { asset->{ url } },
+    iconSvg
   },
   accentColor
 }`;
-
+ 
 export type ValueItem = {
-  id: string;
-  title: string;
-  desc: string;
-  expanded: string;
+  id:        string;
+  title:     string;
+  desc:      string;
+  expanded:  string;
+  iconImage?: { asset?: { url?: string } };
+  iconSvg?:  string;
 };
-
+ 
 export type ValuesData = {
-  headingPlain?: string;
+  headingPlain?:  string;
   headingItalic?: string;
-  items?: ValueItem[];
-  accentColor?: string;
+  items?:         ValueItem[];
+  accentColor?:   string;
 };
-
+ 
 export async function getValuesData(): Promise<ValuesData> {
-  return client.fetch<ValuesData>(VALUES_QUERY, {}, { cache: "no-store" });
+  return sanityClient.fetch<ValuesData>(VALUES_QUERY, {}, { cache: "no-store" });
 }
 
 
