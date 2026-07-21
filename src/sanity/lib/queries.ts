@@ -160,11 +160,20 @@ export const PARTNERS_QUERY = `*[_type == "partners"][0]{
   accentColor
 }`;
  
+// ── Portable Text block type ───────────────────────────────────────────────
+export type PortableTextBlock = {
+  _type: "block";
+  _key:  string;
+  children: { _type: "span"; _key: string; text: string; marks: string[] }[];
+  markDefs: unknown[];
+  style: string;
+};
+ 
 export type PartnerItem = {
   num:         string;
   title:       string;
   subtitle:    string;
-  description: string;
+  description: PortableTextBlock[]; // array of blocks, NOT plain string
 };
  
 export type PartnersData = {
@@ -178,6 +187,8 @@ export type PartnersData = {
 export async function getPartnersData(): Promise<PartnersData> {
   return sanityClient.fetch<PartnersData>(PARTNERS_QUERY, {}, { cache: "no-store" });
 }
+
+
 export const FOUNDERS_QUERY = `*[_type == "founders"][0]{
   headingPlain,
   headingItalic,

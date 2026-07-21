@@ -130,11 +130,11 @@ const Banner = ({ data }: BannerProps) => {
   return (
     <section
       ref={sectionRef}
-      id="hero"
+      id="home"
       className="md:min-h-[110vh] h-[80vh] bg-[url(/banner.webp)] bg-cover bg-center relative overflow-visible"
     >
       {/* Glow */}
-      <div
+      {/* <div
         ref={glowRef}
         className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-0 z-10"
         style={{
@@ -142,7 +142,7 @@ const Banner = ({ data }: BannerProps) => {
           background: `radial-gradient(circle, ${accentColor}59 0%, ${accentColor}00 70%)`,
           filter: "blur(12px)",
         }}
-      />
+      /> */}
 
       {/* Desktop banner image — hardcoded from /public */}
       <img

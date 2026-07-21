@@ -34,10 +34,24 @@ export default defineType({
         {
           type: "object",
           fields: [
-            defineField({ name: "num",         title: "Number (e.g. 01)",  type: "string" }),
-            defineField({ name: "title",       title: "Title",             type: "string" }),
-            defineField({ name: "subtitle",    title: "Subtitle",          type: "string" }),
-            defineField({ name: "description", title: "Expanded text",     type: "text", rows: 3 }),
+            defineField({ name: "num",      title: "Number (e.g. 01)", type: "string" }),
+            defineField({ name: "title",    title: "Title",            type: "string" }),
+            defineField({ name: "subtitle", title: "Subtitle",         type: "string" }),
+            // ── Portable Text — har Enter = naya paragraph, gap render hoga ──
+            defineField({
+              name: "description",
+              title: "Expanded text",
+              type: "array",
+              of: [
+                {
+                  type: "block",
+                  styles: [{ title: "Normal", value: "normal" }],
+                  lists: [],
+                  marks: { decorators: [] },
+                },
+              ],
+              description: "Enter dabao = naya paragraph (gap aayega). Shift+Enter = line break (gap nahi aayega).",
+            }),
           ],
           preview: {
             select: { title: "title", subtitle: "subtitle" },

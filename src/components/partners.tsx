@@ -1,10 +1,12 @@
 // Partners.tsx — Sanity CMS powered (no cache)
+// npm install @portabletext/react  ← ek baar run karo
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { PartnersData, PartnerItem } from "@/sanity/lib/queries";
+import { PortableText } from "@portabletext/react";
+import type { PartnersData, PartnerItem, PortableTextBlock } from "@/sanity/lib/queries";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,8 +19,40 @@ const CARD_GAPS = [
   "xl:gap-[6vw] lg:gap-[7.7vw] gap-[5vw]",
 ];
 
-// ── Fallback data ──────────────────────────────────────────────────────────
-const FALLBACK_ITEMS: PartnerItem[] = [
+// ── Portable Text components — paragraph gap styling ──────────────────────
+const ptComponents = {
+  block: {
+    normal: ({ children }: { children?: React.ReactNode }) => (
+      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-black/70 mt-3 first:mt-0">
+        {children}
+      </p>
+    ),
+  },
+};
+
+// ── Description renderer — handles both PortableText array and plain string ──
+const Description = ({
+  description,
+}: {
+  description: PortableTextBlock[] | string | undefined;
+}) => {
+  if (!description) return null;
+
+  // Plain string fallback (old data / FALLBACK_ITEMS)
+  if (typeof description === "string") {
+    return (
+      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-black/70">
+        {description}
+      </p>
+    );
+  }
+
+  // Portable Text array from Sanity
+  return <PortableText value={description} components={ptComponents} />;
+};
+
+// ── Fallback data — description as plain string ────────────────────────────
+const FALLBACK_ITEMS = [
   { num: "01", title: "Attract",       subtitle: "We make your story magnetic.",                      description: "We craft a compelling narrative around your organisation that draws the right leaders in. From positioning to outreach, we ensure your opportunity stands out in a crowded market and resonates with candidates who lead with both head and heart." },
   { num: "02", title: "Assess",        subtitle: "We reveal leadership truth",                        description: "Beyond credentials and confidence, we go deeper. Our assessment process uncovers how candidates think, lead under pressure, and shape the people around them — giving you a clear picture of who they truly are before any decision is made." },
   { num: "03", title: "Align",         subtitle: "We create mutual clarity before commitment",        description: "We facilitate honest conversations between candidates and your leadership team to ensure values, expectations, and vision are genuinely shared. Alignment here prevents misalignment later — saving culture, time, and trust." },
@@ -29,10 +63,9 @@ const FALLBACK_ITEMS: PartnerItem[] = [
 const FALLBACK = {
   headingPlain:  "How we",
   headingItalic: "partner",
-  subParagraph:
-    "We partner with founders and boards to introduce leaders who strengthen culture and build momentum without losing what makes the company human.\n Every engagement moves through five deliberate stages.",
-  items:       FALLBACK_ITEMS,
-  accentColor: "#9564F4",
+  subParagraph:  "We partner with founders and boards to introduce leaders who strengthen culture and build momentum without losing what makes the company human.\n Every engagement moves through five deliberate stages.",
+  items:         FALLBACK_ITEMS,
+  accentColor:   "#9564F4",
 };
 
 // ── PartnerCard ────────────────────────────────────────────────────────────
@@ -43,7 +76,7 @@ const PartnerCard = ({
   onClick,
   accentColor,
 }: {
-  item: PartnerItem;
+  item: PartnerItem | typeof FALLBACK_ITEMS[0];
   index: number;
   isOpen: boolean;
   onClick: () => void;
@@ -94,12 +127,11 @@ const PartnerCard = ({
           </div>
         </div>
 
+        {/* Expanded content */}
         <div ref={contentRef} style={{ height: 0, overflow: "hidden", opacity: 0 }}>
           <div className="pt-4 pb-2 max-w-[820px]">
             <div className="border-t mb-4" style={{ borderColor: `${accentColor}55` }} />
-            <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-black/70">
-              {item.description}
-            </p>
+            <Description description={item.description as PortableTextBlock[] | string} />
           </div>
         </div>
       </div>
@@ -116,7 +148,7 @@ const Partners = ({ data }: PartnersProps) => {
   const headingPlain  = data?.headingPlain  ?? FALLBACK.headingPlain;
   const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const subParagraph  = data?.subParagraph  ?? FALLBACK.subParagraph;
-  const items         = data?.items?.length ? data.items : FALLBACK.items;
+  const items         = (data?.items?.length ? data.items : FALLBACK_ITEMS) as (PartnerItem | typeof FALLBACK_ITEMS[0])[];
   const accentColor   = data?.accentColor   ?? FALLBACK.accentColor;
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -124,13 +156,12 @@ const Partners = ({ data }: PartnersProps) => {
   const headingRef = useRef<HTMLDivElement>(null);
   const cardsRef   = useRef<HTMLDivElement>(null);
 
-  // ── Entrance ─────────────────────────────────────────────────────────────
+  // ── Entrance ───────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(headingRef.current, { autoAlpha: 0, y: 40 });
       const cardEls = cardsRef.current?.children ? Array.from(cardsRef.current.children) : [];
       gsap.set(cardEls, { autoAlpha: 0, y: 30 });
-
 
       const isMobile = window.innerWidth < 768;
 
@@ -157,17 +188,10 @@ const Partners = ({ data }: PartnersProps) => {
     >
       <div>
         {/* Heading */}
-        <div
-          ref={headingRef}
-          style={{ opacity: 0 }}
-          className="xl:max-w-[878px] max-w-[780px] mx-auto text-center"
-        >
+        <div ref={headingRef} style={{ opacity: 0 }} className="xl:max-w-[878px] max-w-[780px] mx-auto text-center">
           <h2 className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
             {headingPlain}{" "}
-            <span
-              className="tracking-[0em] italic font-tartuffo lowercase"
-              style={{ color: accentColor }}
-            >
+            <span className="tracking-[0em] italic font-tartuffo lowercase" style={{ color: accentColor }}>
               {headingItalic}
             </span>
           </h2>
@@ -177,10 +201,7 @@ const Partners = ({ data }: PartnersProps) => {
         </div>
 
         {/* Cards */}
-        <div
-          ref={cardsRef}
-          className="max-w-[1070px] mx-auto flex flex-col gap-7 w-full mt-[3.5vh]"
-        >
+        <div ref={cardsRef} className="max-w-[1070px] mx-auto flex flex-col gap-7 w-full mt-[3.5vh]">
           {items.map((item, i) => (
             <PartnerCard
               key={item.num}
