@@ -77,11 +77,12 @@ const Founders = ({ data }: FoundersProps) => {
   }, []);
 
   return (
-    <section id="founders" ref={sectionRef} className="pb-[8vh] px-2 md:px-6 xl:px-10 pt-[12.5vh]">
-      <div>
+    <section id="founders" ref={sectionRef} className="pb-[8vh] px-2 md:px-6 xl:px-10 pt-[12.5vh] bg-[url(/founder.png)] bg-cover bg-center relative">
+      <img src="/founder-blur.png" alt="blur" className="absolute w-full left-0 top-[-11vh] h-[300px]" />
+      <div className="relative">
         {/* Heading */}
         <div ref={headingRef} style={{ opacity: 0 }} className="max-w-[878px] mx-auto text-center">
-          <h2 className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+          <h2 className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
             {headingPlain}{" "}
             <span
               className="tracking-[0em] italic font-tartuffo lowercase"
@@ -107,7 +108,7 @@ const Founders = ({ data }: FoundersProps) => {
                 ref={cardRefs[i]}
                 style={{ opacity: 0 }}
                 // Card bg — hardcoded from /public
-                className="bg-[url(/founder.webp)] 2xl:bg-cover bg-contain bg-no-repeat bg-center md:w-[566px] w-full 2xl:h-[685px] lg:h-[630px] flex flex-col items-center text-center"
+                className="bg-[url(/founders.png)] 2xl:bg-cover bg-contain bg-no-repeat bg-center md:w-[566px] w-full 2xl:h-[685px] lg:h-[630px] flex flex-col items-center text-center"
               >
                 {/* Founder photo — from Sanity */}
                 <img
@@ -115,8 +116,8 @@ const Founders = ({ data }: FoundersProps) => {
                   alt={founder.name}
                   className="xl:w-[177px] xl:h-[177px] lg:w-[140px] lg:h-[140px] w-[100px] h-[100px] rounded-full mt-[7.8vh]"
                 />
-                <div className="md:max-w-[394px] mx-auto px-5">
-                  <h3 className="font-readex font-normal 2xl:text-[32px] xl:text-[30px] lg:text-[26px] text-[22px] leading-[90%] text-black mt-[3vh]">
+                <div className="md:max-w-[394px] mx-auto lg:px-5 md:px-8 px-8">
+                  <h3 className="font-toruspro font-normal 2xl:text-[32px] xl:text-[30px] lg:text-[26px] text-[22px] leading-[90%] text-black mt-[3vh]">
                     {founder.name}
                   </h3>
                   <h4 className="font-outfit 2xl:text-[24px] xl:text-[22px] lg:text-[20px] text-[18px] leading-[115%] text-black mt-[4vh] max-w-[350px] mx-auto">

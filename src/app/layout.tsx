@@ -32,6 +32,27 @@ const tartuffo = localFont({
   display: "swap",
 });
 
+
+
+const toruspro = localFont({
+  src: [
+    { path: "./fonts/toruspro/toruspro-thin.otf",         weight: "100", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-thinitalic.otf",   weight: "100", style: "italic" },
+    { path: "./fonts/toruspro/toruspro-light.otf",        weight: "300", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-lightitalic.otf",  weight: "300", style: "italic" },
+    { path: "./fonts/toruspro/toruspro-regular.otf",      weight: "400", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-italic.otf",       weight: "400", style: "italic" },
+    { path: "./fonts/toruspro/toruspro-semibold.otf",       weight: "600", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-semibolditalic.otf", weight: "600", style: "italic" },
+    { path: "./fonts/toruspro/toruspro-bold.otf",         weight: "700", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-bolditalic.otf",   weight: "700", style: "italic" },
+    { path: "./fonts/toruspro/toruspro-heavy.otf",        weight: "800", style: "normal" },
+    { path: "./fonts/toruspro/toruspro-heavyitalic.otf",  weight: "800", style: "italic" },
+  ],
+  variable: "--font-toruspro",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const s = await client.fetch(siteSettingsQuery, {}, { cache: "no-store" });
 
@@ -82,7 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   ]);
 
   return (
-    <html lang="en" className={`${reddit.variable} ${tartuffo.variable} ${outfit.variable} ${readex.variable} ${mulish.variable} h-full antialiased`}>
+    <html lang="en" className={`${reddit.variable} ${tartuffo.variable} ${outfit.variable} ${readex.variable} ${mulish.variable} ${toruspro.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <main>
           <LayoutWrapper headerData={headerData} loadingData={loadingData}>

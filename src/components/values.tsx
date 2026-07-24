@@ -199,11 +199,11 @@ const Values = ({ data }: ValuesProps) => {
   return (
     <>
       <section ref={sectionRef} className="xl:min-h-[127vh] min-h-screen relative">
-        <div className="md:pt-[8.3vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="2xl:pt-[8.3vh] xl:pt-[10vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
 
           {/* Heading */}
           <div ref={headingRef} style={{ opacity: 0 }} className="text-center 2xl:max-w-[874px] xl:max-w-[800px] lg:max-w-[720px] max-w-[600px] mx-auto will-change-transform">
-            <h2 className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+            <h2 className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
               {headingPlain}{" "}
               <span className="font-tartuffo font-light lowercase italic tracking-normal" style={{ color: accentColor }}>
                 {headingItalic}
@@ -237,7 +237,7 @@ const Values = ({ data }: ValuesProps) => {
                       <CardIcon item={v} index={i} accentColor={accentColor} />
                     </div>
                     <div className="flex flex-col justify-center">
-                      <h4 className="font-readex font-normal 2xl:text-[32px] xl:text-[28px] md:text-[24px] text-[20px] text-black leading-[151%]">
+                      <h4 className="font-toruspro font-normal 2xl:text-[32px] xl:text-[28px] md:text-[24px] text-[20px] text-black leading-[151%]">
                         {v.title}
                       </h4>
                       <p className="font-mulish font-normal xl:text-[18px] md:text-[16px] text-[14px] text-black leading-[115%] xl:leading-[25px]">
@@ -267,7 +267,7 @@ const Values = ({ data }: ValuesProps) => {
             className="relative z-10 w-[90%] max-w-[740px] text-center px-12 py-14 rounded-[24px]"
           >
             <span ref={overlayNumRef} style={{ opacity: 0, color: accentColor }} className="font-mulish font-bold text-[15px] tracking-[0.28em] block mb-5">{active.id}</span>
-            <h3 ref={overlayTitleRef} style={{ opacity: 0 }} className="font-readex font-normal 2xl:text-[50px] xl:text-[40px] md:text-[36px] text-[22px] text-black leading-[110%] tracking-[0.03em]">{active.title.toUpperCase()}</h3>
+            <h3 ref={overlayTitleRef} style={{ opacity: 0 }} className="font-toruspro font-normal 2xl:text-[50px] xl:text-[40px] md:text-[36px] text-[22px] text-black leading-[110%] tracking-[0.03em]">{active.title.toUpperCase()}</h3>
             <div ref={overlayLineRef} style={{ opacity: 0 }} className="mx-auto mt-5 mb-8">
               <div className="w-[48px] h-[2px] mx-auto rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
             </div>

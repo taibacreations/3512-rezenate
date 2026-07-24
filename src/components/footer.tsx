@@ -132,10 +132,10 @@ const Footer = ({ data }: FooterProps) => {
   return (
     <section
       ref={sectionRef}
-      className="bg-[url(/footer.webp)] bg-cover bg-[50%_100%] relative"
+      className="bg-[url(/footer.webp)] bg-[50%_100%] relative"
     >
       {/* Logo SVG — color from accentColor */}
-      <div className="absolute xl:top-[11vh] md:top-[17vh] top-[27vh] left-1/2 -translate-x-1/2">
+      <div className="absolute xl:top-[13vh] md:top-[12vh] top-[27vh] left-1/2 -translate-x-1/2">
         <svg
           ref={svgRef}
           xmlns="http://www.w3.org/2000/svg"
@@ -143,7 +143,7 @@ const Footer = ({ data }: FooterProps) => {
           height="589"
           viewBox="0 0 589 589"
           fill="none"
-          className="xl:w-[589px] xl:h-[589px] md:w-[480px] md:h-[480px] w-full h-auto"
+          className="xl:w-[589px] xl:h-[589px] md:w-[480px] md:h-[480px] w-full h-auto md:scale-100 scale-150"
         >
           <path
             d="M588.052 0H0L138.843 139.69C145.382 146.268 154.273 149.967 163.548 149.967H434.45V420.931C434.45 430.169 438.12 439.029 444.652 445.561L588.052 588.961V0Z"
@@ -161,17 +161,17 @@ const Footer = ({ data }: FooterProps) => {
       </div>
 
       {/* Card — bg hardcoded from /public */}
-      <div className="flex justify-center items-center md:pt-[24vh] pt-[16vh] md:pb-[23.5vh] pb-[16vh] relative px-4 md:px-6 xl:px-10">
+      <div className="flex justify-center items-center xl:pt-[24vh] pt-[16vh] md:pb-[23.5vh] pb-[16vh] relative px-4 md:px-6 xl:px-10">
         <div
           ref={cardRef}
           style={{ opacity: 0 }}
-          className="bg-[url(/footers.png)] xl:bg-cover md:bg-contain bg-[length:100%_59%] bg-no-repeat bg-center xl:w-[1083px] h-[344px] md:w-[700px] w-full xl:rounded-[20px] rounded-[30px]"
+          className="bg-[url(/footers.webp)] xl:bg-cover md:bg-contain bg-[length:100%_59%]  bg-no-repeat bg-center xl:w-[1150px] h-[426px] md:w-[700px] w-full xl:rounded-[20px] rounded-[30px]"
         >
-          <div className="max-w-[678px] mx-auto text-center xl:mt-[7.5vh] md:mt-[9vh] mt-[12vh] xl:px-0 md:px-12 px-4">
+          <div className="max-w-[678px] mx-auto text-center xl:mt-[10vh] lg:mt-[14vh] mt-[14.5vh] mt-[12vh] xl:px-0 md:px-12 px-4">
             <h2
               ref={headingRef}
               style={{ opacity: 0 }}
-              className="font-readex font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[114%] tracking-[-0.04em] capitalize text-white"
+              className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[114%] tracking-[-0.04em] capitalize text-black"
             >
               {headingPlain}{" "}
               <span className="tracking-[0em] italic font-tartuffo lowercase">
@@ -181,7 +181,7 @@ const Footer = ({ data }: FooterProps) => {
             <p
               ref={paraRef}
               style={{ opacity: 0 }}
-              className="font-outfit xl:text-[24px] md:text-[20px] text-[16px] leading-[115%] text-[#F6F6F6] mt-[1.5vh]"
+              className="font-outfit xl:text-[24px] md:text-[20px] text-[16px] leading-[115%] text-black mt-[1.5vh]"
             >
               {paragraph}
             </p>
@@ -192,7 +192,7 @@ const Footer = ({ data }: FooterProps) => {
       {/* Copyright bar — bg from accentColor */}
       <div
         ref={copyrightRef}
-        style={{ opacity: 0, backgroundColor: accentColor }}
+        style={{ opacity: 0, backgroundColor: "#9564F4" }}
         className="xl:h-[80px] md:h-[70px] py-[2vh] flex justify-center items-center"
       >
         <p className="font-outfit 2xl:text-[28px] xl:text-[26px] lg:text-[24px] md:text-[20px] text-[18px] leading-[115%] font-normal text-[#F6F6F6]">
