@@ -192,7 +192,7 @@ const Banner = ({ data }: BannerProps) => {
           <h1
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="font-toruspro font-light 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-black leading-[101%] will-change-transform tracking-[-0.04em]"
+            className="font-toruspro font-normal 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-black leading-[101%] will-change-transform tracking-[-0.04em]"
           >
             {headingPlain}
             <span

@@ -100,13 +100,13 @@ const PartnerCard = ({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center lg:gap-10 md:gap-6 gap-3">
             <h5
-              className="font-toruspro font-light xl:text-[60px] lg:text-[50px] md:text-[40px] text-[30px] tracking-[-0.04em] leading-[113%]"
+              className="font-toruspro font-normal xl:text-[60px] lg:text-[50px] md:text-[40px] text-[30px] tracking-[-0.04em] leading-[113%]"
               style={{ color: accentColor }}
             >
               {item.num}
             </h5>
             <div className="border border-r xl:h-[58px] lg:h-[48px] md:h-[38px] h-[30px]" style={{ borderColor: accentColor }} />
-            <h3 className="font-toruspro font-light xl:text-[32px] lg:text-[28px] text-[24px] leading-[90%] text-black">
+            <h3 className="font-toruspro font-normal xl:text-[32px] lg:text-[28px] text-[24px] leading-[90%] text-black">
               {item.title}
             </h3>
           </div>
@@ -189,7 +189,7 @@ const Partners = ({ data }: PartnersProps) => {
       <div>
         {/* Heading */}
         <div ref={headingRef} style={{ opacity: 0 }} className="xl:max-w-[878px] max-w-[780px] mx-auto text-center">
-          <h2 className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
             {headingPlain}{" "}
             <span className="tracking-[0em] italic font-tartuffo lowercase" style={{ color: accentColor }}>
               {headingItalic}

@@ -203,7 +203,7 @@ const Values = ({ data }: ValuesProps) => {
 
           {/* Heading */}
           <div ref={headingRef} style={{ opacity: 0 }} className="text-center 2xl:max-w-[874px] xl:max-w-[800px] lg:max-w-[720px] max-w-[600px] mx-auto will-change-transform">
-            <h2 className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+            <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
               {headingPlain}{" "}
               <span className="font-tartuffo font-light lowercase italic tracking-normal" style={{ color: accentColor }}>
                 {headingItalic}

@@ -82,7 +82,7 @@ const Founders = ({ data }: FoundersProps) => {
       <div className="relative">
         {/* Heading */}
         <div ref={headingRef} style={{ opacity: 0 }} className="max-w-[878px] mx-auto text-center">
-          <h2 className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
+          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
             {headingPlain}{" "}
             <span
               className="tracking-[0em] italic font-tartuffo lowercase"

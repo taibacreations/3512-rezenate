@@ -182,7 +182,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
           <h2
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="font-toruspro font-light 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black"
+            className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black"
           >
             {headingPlain}{" "}
             <span
