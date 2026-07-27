@@ -7,6 +7,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import type { HeaderData } from "@/sanity/lib/queries";
 import type { LoadingData } from "@/sanity/lib/queries";
+import GlobalGlow from "./GlobalGlow";
 
 interface LayoutWrapperProps {
   children: React.ReactNode;
@@ -14,7 +15,11 @@ interface LayoutWrapperProps {
   loadingData?: LoadingData | null;
 }
 
-export default function LayoutWrapper({ children, headerData, loadingData }: LayoutWrapperProps) {
+export default function LayoutWrapper({
+  children,
+  headerData,
+  loadingData,
+}: LayoutWrapperProps) {
   const pathname = usePathname();
   const isStudio = pathname?.startsWith("/studio");
 
@@ -26,6 +31,7 @@ export default function LayoutWrapper({ children, headerData, loadingData }: Lay
     <SmoothScroll>
       <LoadingScreen data={loadingData} />
       <Header data={headerData} />
+      <GlobalGlow />
       {children}
     </SmoothScroll>
   );

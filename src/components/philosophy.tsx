@@ -42,7 +42,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
   const para3Ref = useRef<HTMLParagraphElement>(null);
   const quoteBoxRef = useRef<HTMLDivElement>(null);
 
-  // ── Logo assembly loop ─────────────────────────────────────────────────
+  // ── Logo assembly loop ────────────────────────────────────────────────
   useEffect(() => {
     if (!svgRef.current) return;
     const paths = svgRef.current.querySelectorAll("path");
@@ -154,11 +154,15 @@ const Philosophy = ({ data }: PhilosophyProps) => {
     <section
       ref={sectionRef}
       id="philosophy"
-      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative"
+      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-gradient-to-br from-[#F5F0FA] via-[#E8D5F5] to-[#D4B8F0]"
     >
       <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] md:top-[-28vh] top-[-8vh] w-full z-10" />
       <img src="/founder-blur.png" alt="blur" className="absolute left-0 xl:bottom-[-38vh] md:bottom-[-16vh] bottom-[-8vh] w-full z-10" />
       <img src="/philosophy.png" alt="vector" className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full" />
+      
+      {/* Gradient overlay for smoother transition */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-purple-200/30 pointer-events-none" />
+
       {/* Logo mark — hardcoded white fill */}
       {/* <div className="absolute right-[18%] top-[45%]">
         <svg

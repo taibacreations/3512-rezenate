@@ -19,6 +19,66 @@ const CARD_GAPS = [
   "xl:gap-[6vw] lg:gap-[7.7vw] gap-[5vw]",
 ];
 
+// ── Hardcoded per-card icons (index 0-4) ───────────────────────────────────
+const getPartnerIcon = (index: number, accentColor: string) => {
+  const common = {
+    width: 34,
+    height: 34,
+    viewBox: "0 0 24 24",
+    fill: "none" as const,
+    stroke: accentColor,
+    strokeWidth: 1.4,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  switch (index) {
+    case 0: // Attract — magnet
+      return (
+        <svg {...common}>
+          <path d="M4 4h4v7a4 4 0 0 0 8 0V4h4v7a8 8 0 0 1-16 0V4z" />
+          <path d="M4 4v4M8 4v4M16 4v4M20 4v4" />
+          <path d="M1.5 3.5l1.2 1.2M22.5 3.5l-1.2 1.2" />
+        </svg>
+      );
+    case 1: // Assess — lightbulb
+      return (
+        <svg {...common}>
+          <path d="M9 18h6" />
+          <path d="M10 21h4" />
+          <path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3z" />
+        </svg>
+      );
+    case 2: // Align — target / crosshair
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="12" cy="12" r="0.6" fill={accentColor} />
+          <path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3" />
+        </svg>
+      );
+    case 3: // Anchor
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="5" r="2" />
+          <path d="M12 7v13" />
+          <path d="M7 13a5 5 0 0 0 10 0" />
+          <path d="M5 13H2l1.5 2M22 13h-3l-1.5 2" />
+        </svg>
+      );
+    case 4: // Ascend — rising trend arrow
+      return (
+        <svg {...common}>
+          <path d="M3 17c3-1 5-6 8-6s4 5 7 2" />
+          <path d="M14.5 12.5l4-1.5 1 4" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
 // ── Portable Text components — paragraph gap styling ──────────────────────
 const ptComponents = {
   block: {
@@ -119,9 +179,7 @@ const PartnerCard = ({
                 className="partners-arrow transition-transform duration-500"
                 style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
-                  <path d="M7.79492 13.5L0.000695455 -1.4682e-06L15.5892 -1.05412e-07L7.79492 13.5Z" fill={accentColor} />
-                </svg>
+                {getPartnerIcon(index, accentColor)}
               </div>
             </div>
           </div>
