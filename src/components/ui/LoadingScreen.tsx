@@ -6,8 +6,7 @@ import gsap from "gsap";
 import type { LoadingData } from "@/sanity/lib/queries";
 
 const FALLBACK = {
-  headingPlain:  "lead the",
-  headingItalic: "way",
+  headingPlain:  "lead the way",
   tagline:       "Leadership that resonates. Impact that lasts.",
   loadingLabel:  "Loading",
 };
@@ -18,7 +17,6 @@ interface LoadingScreenProps {
 
 const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const headingPlain  = data?.headingPlain  ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const tagline       = data?.tagline       ?? FALLBACK.tagline;
   const loadingLabel  = data?.loadingLabel  ?? FALLBACK.loadingLabel;
 
@@ -166,11 +164,8 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         </div>
 
         <div ref={contentRef} className="md:mt-[6vh] mt-[3vh]">
-          <h2 className="font-reddit font-light lg:text-[72px] md:text-[60px] text-[50px] leading-[101%] tracking-[-0.04em] capitalize text-black">
-            {headingPlain}{" "}
-            <span className="text-[#9564F4] tracking-[0em] italic font-tartuffo lowercase">
-              {headingItalic}
-            </span>
+          <h2 className="font-toruspro font-normal lg:text-[72px] md:text-[60px] text-[50px] leading-[101%] tracking-[-0.04em] capitalize text-black">
+            {headingPlain}
           </h2>
           <p className="font-outfit lg:text-[24px] md:text-[22px] text-[20px] leading-[115%] text-black mt-[1.5vh]">
             {tagline}

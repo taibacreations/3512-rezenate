@@ -24,11 +24,9 @@ const scrollToSection = (href: string) => {
 };
 
 const FALLBACK = {
-  headingPlain:  "Leadership changes",
-  headingItalic: "everything",
+  headingPlain:  "Leadership changes everything",
   paragraph:
     "We partner with organisations and leaders to attract, assess and support exceptional leadership that creates lasting impact.",
-  accentColor: "#9564F4",
 };
 
 interface BannerProps {
@@ -37,9 +35,7 @@ interface BannerProps {
 
 const Banner = ({ data }: BannerProps) => {
   const headingPlain  = data?.headingPlain  ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const paragraph     = data?.paragraph     ?? FALLBACK.paragraph;
-  const accentColor   = data?.accentColor   ?? FALLBACK.accentColor;
 
   const sectionRef    = useRef<HTMLElement>(null);
   const banner1Ref    = useRef<HTMLImageElement>(null);
@@ -181,7 +177,7 @@ const Banner = ({ data }: BannerProps) => {
         >
           <path
             d="M8.66016 42.5L17.3204 27.5L-9.75728e-05 27.5L8.66016 42.5ZM10.1602 1.5C10.1602 0.671574 9.48859 3.62117e-08 8.66016 0C7.83173 -3.62117e-08 7.16016 0.671574 7.16016 1.5L8.66016 1.5L10.1602 1.5ZM8.66016 29L10.1602 29L10.1602 1.5L8.66016 1.5L7.16016 1.5L7.16016 29L8.66016 29Z"
-            fill={accentColor}
+            fill={"#9564F4"}
           />
         </svg>
       </a>
@@ -194,7 +190,7 @@ const Banner = ({ data }: BannerProps) => {
             style={{ opacity: 0 }}
             className="font-toruspro font-normal 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-[#0B0730] leading-[101%] will-change-transform tracking-[-0.04em]"
           >
-            Leadership changes everything
+            {headingPlain}
           </h1>
           <p
             ref={paraRef}

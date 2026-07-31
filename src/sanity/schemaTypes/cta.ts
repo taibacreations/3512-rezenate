@@ -10,13 +10,7 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      initialValue: "Leadership shapes the way people experience work and",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent part",
-      type: "string",
-      initialValue: "therefore life",
+      initialValue: "Leadership shapes the way people experience work and therefore life",
     }),
     defineField({
       name: "paragraph",
@@ -35,12 +29,6 @@ export default defineType({
       title: "Button Link",
       type: "string",
       initialValue: "#footer",
-    }),
-    defineField({
-      name: "accentColor",
-      title: "Accent Color",
-      type: "string",
-      initialValue: "#9564F4",
     }),
   ],
   preview: {

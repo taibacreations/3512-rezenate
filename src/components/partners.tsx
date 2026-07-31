@@ -116,11 +116,9 @@ const FALLBACK_ITEMS = [
 ];
 
 const FALLBACK = {
-  headingPlain: "How we",
-  headingItalic: "partner",
+  headingPlain: "How we partner",
   subParagraph: "We partner with founders and boards to introduce leaders who strengthen culture and build momentum without losing what makes the company human.\n Every engagement moves through five deliberate stages.",
   items: FALLBACK_ITEMS,
-  accentColor: "#9564F4",
 };
 
 const PartnerCard = ({
@@ -183,10 +181,8 @@ interface PartnersProps {
 
 const Partners = ({ data }: PartnersProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const subParagraph = data?.subParagraph ?? FALLBACK.subParagraph;
   const items = (data?.items?.length ? data.items : FALLBACK_ITEMS) as (PartnerItem | (typeof FALLBACK_ITEMS)[0])[];
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -239,12 +235,12 @@ const Partners = ({ data }: PartnersProps) => {
     <section ref={sectionRef} id="how-we-partner" className="xl:min-h-screen xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10">
       <div>
         <div ref={headingRef} style={{ opacity: 0 }} className="xl:max-w-[878px] max-w-[780px] mx-auto text-center">
-          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">How we partner</h2>
+          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">{headingPlain}</h2>
           <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:text-[20px] text-[16px] leading-[130%] text-[#0B0730] mt-[1.5vh] whitespace-pre-line">{subParagraph}</p>
         </div>
         <div ref={cardsRef} className="max-w-[1070px] mx-auto flex flex-col gap-7 w-full mt-[3.5vh]">
           {items.map((item, i) => (
-            <PartnerCard key={item.num} item={item} index={i} isOpen={openIndex === i} onClick={() => setOpenIndex((prev) => (prev === i ? null : i))} accentColor={accentColor} />
+            <PartnerCard key={item.num} item={item} index={i} isOpen={openIndex === i} onClick={() => setOpenIndex((prev) => (prev === i ? null : i))} accentColor={"#9564F4"} />
           ))}
         </div>
       </div>

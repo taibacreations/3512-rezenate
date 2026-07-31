@@ -26,12 +26,10 @@ const FALLBACK_FOUNDERS: FounderItem[] = [
 ];
 
 const FALLBACK = {
-  headingPlain: "THE",
-  headingItalic: "founders",
+  headingPlain: "THE Founders",
   subParagraph:
     "Rezenate is founder-led. We believe that leadership can be both strong and kind.",
   founders: FALLBACK_FOUNDERS,
-  accentColor: "#9564F4",
 };
 
 // ── Props ─────────────────────────────────────────────────────────────────
@@ -41,10 +39,8 @@ interface FoundersProps {
 
 const Founders = ({ data }: FoundersProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const subParagraph = data?.subParagraph ?? FALLBACK.subParagraph;
   const founders = data?.founders?.length ? data.founders : FALLBACK.founders;
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -154,11 +150,11 @@ const Founders = ({ data }: FoundersProps) => {
         style={{
           background: `linear-gradient(to bottom, 
             transparent 0%, 
-            ${accentColor}05 20%, 
-            ${accentColor}10 40%, 
-            ${accentColor}20 60%, 
-            ${accentColor}30 80%, 
-            ${accentColor}40 100%)`,
+            #9564F405 20%, 
+            #9564F410 40%, 
+            #9564F420 60%, 
+            #9564F430 80%, 
+            #9564F440 100%)`,
         }}
       />
 
@@ -167,8 +163,8 @@ const Founders = ({ data }: FoundersProps) => {
         className="absolute bottom-0 left-0 right-0 h-[200px] md:h-[300px] xl:h-[400px] pointer-events-none z-0"
         style={{
           background: `radial-gradient(ellipse at center bottom, 
-            ${accentColor}25 0%, 
-            ${accentColor}15 40%, 
+            #9564F4}25 0%, 
+            #9564F415 40%, 
             transparent 100%)`,
           filter: "blur(40px)",
         }}
@@ -182,7 +178,7 @@ const Founders = ({ data }: FoundersProps) => {
           className="max-w-[878px] mx-auto text-center"
         >
           <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
-            {headingPlain} {headingItalic}
+            {headingPlain}
           </h2>
           <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:lg:text-[20px] text-[18px] leading-[130%] text-[#0B0730] mt-[1.5vh]">
             {subParagraph}
@@ -221,7 +217,7 @@ const Founders = ({ data }: FoundersProps) => {
                   </h4>
                   <hr
                     className="mt-[2vh] w-[70%] mx-auto"
-                    style={{ borderColor: accentColor }}
+                    style={{ borderColor: "#9564F4" }}
                   />
                   <p className="font-outfit font-normal 2xl:text-[24px] xl:text-[22px] lg:text-[20px] text-[18px] leading-[130%] text-[#0B0730] mt-[1.5vh]">
                     {founder.bio}

@@ -1,5 +1,6 @@
-// sanity/schemas/footer.ts
 import { defineField, defineType } from "sanity";
+// Make sure to import your configured sanity client here
+// import { client } from "@/sanity/lib/client"; 
 
 export default defineType({
   name: "footer",
@@ -10,13 +11,7 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      initialValue: "Lead The",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent part",
-      type: "string",
-      initialValue: "way",
+      initialValue: "Lead The Way",
     }),
     defineField({
       name: "paragraph",
@@ -31,12 +26,6 @@ export default defineType({
       title: "Copyright Text",
       type: "string",
       initialValue: "© Rezenate 2025. All rights reserved.",
-    }),
-    defineField({
-      name: "accentColor",
-      title: "Accent Color",
-      type: "string",
-      initialValue: "#9564F4",
     }),
   ],
   preview: {

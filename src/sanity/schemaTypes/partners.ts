@@ -10,13 +10,7 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      initialValue: "How we",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent part",
-      type: "string",
-      initialValue: "partner",
+      initialValue: "How we partner",
     }),
     defineField({
       name: "subParagraph",
@@ -58,12 +52,6 @@ export default defineType({
           },
         },
       ],
-    }),
-    defineField({
-      name: "accentColor",
-      title: "Accent Color",
-      type: "string",
-      initialValue: "#9564F4",
     }),
   ],
   preview: {

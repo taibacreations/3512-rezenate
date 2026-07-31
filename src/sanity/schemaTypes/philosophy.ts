@@ -10,15 +10,8 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      description: 'e.g. "Every leader influences a culture long before they"',
-      initialValue: "Every leader influences a culture long before they",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent part",
-      type: "string",
-      description: 'e.g. "change a strategy."',
-      initialValue: "change a strategy.",
+      description: 'e.g. "Every leader influences a culture long before they change a strategy."',
+      initialValue: "Every leader influences a culture long before they change a strategy.",
     }),
     defineField({
       name: "para1",
@@ -49,13 +42,6 @@ export default defineType({
       title: "Quote Author",
       type: "string",
       initialValue: "JOHN C MAXWELL",
-    }),
-    defineField({
-      name: "accentColor",
-      title: "Accent Color",
-      type: "string",
-      description: "Hex color for italic heading word",
-      initialValue: "#9564F4",
     }),
   ],
   preview: {

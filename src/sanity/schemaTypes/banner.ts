@@ -10,15 +10,8 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      description: 'e.g. "Leadership changes"',
-      initialValue: "Leadership changes",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent word",
-      type: "string",
-      description: 'e.g. "everything"',
-      initialValue: "everything",
+      description: 'e.g. "Leadership changes everything"',
+      initialValue: "Leadership changes everything",
     }),
     defineField({
       name: "paragraph",
@@ -28,18 +21,11 @@ export default defineType({
       initialValue:
         "We partner with organisations and leaders to attract, assess and support exceptional leadership that creates lasting impact.",
     }),
-    defineField({
-      name: "accentColor",
-      title: "Accent Color",
-      type: "string",
-      description: "Hex color for italic word and scroll arrow",
-      initialValue: "#9564F4",
-    }),
   ],
   preview: {
-    select: { title: "headingPlain", subtitle: "headingItalic" },
-    prepare: ({ title, subtitle }) => ({
-      title: `Banner — "${title} ${subtitle}"`,
+    select: { title: "headingPlain" },
+    prepare: ({ title }) => ({
+      title: `Banner — "${title}"`,
     }),
   },
 });

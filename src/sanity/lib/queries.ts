@@ -67,41 +67,38 @@ export const sanityClient = createClient({
 
 export const BANNER_QUERY = `*[_type == "banner"][0]{
   headingPlain,
-  headingItalic,
   paragraph,
-  accentColor
 }`;
 
 export type BannerData = {
   headingPlain?: string;
-  headingItalic?: string;
   paragraph?: string;
-  accentColor?: string;
 };
 
 export async function getBannerData(): Promise<BannerData> {
   return client.fetch<BannerData>(BANNER_QUERY, {}, { cache: "no-store" });
 }
+
+
+
+
+
 export const PHILOSOPHY_QUERY = `*[_type == "philosophy"][0]{
   headingPlain,
-  headingItalic,
   para1,
   para2,
   para3,
   quoteText,
   quoteAuthor,
-  accentColor
 }`;
 
 export type PhilosophyData = {
   headingPlain?: string;
-  headingItalic?: string;
   para1?: string;
   para2?: string;
   para3?: string;
   quoteText?: string;
   quoteAuthor?: string;
-  accentColor?: string;
 };
 
 export async function getPhilosophyData(): Promise<PhilosophyData> {
@@ -112,9 +109,11 @@ export async function getPhilosophyData(): Promise<PhilosophyData> {
   );
 }
 
+
+
+
 export const VALUES_QUERY = `*[_type == "values"][0]{
   headingPlain,
-  headingItalic,
   items[] {
     id,
     title,
@@ -123,7 +122,6 @@ export const VALUES_QUERY = `*[_type == "values"][0]{
     iconImage { asset->{ url } },
     iconSvg
   },
-  accentColor
 }`;
  
 export type ValueItem = {
@@ -137,9 +135,7 @@ export type ValueItem = {
  
 export type ValuesData = {
   headingPlain?:  string;
-  headingItalic?: string;
   items?:         ValueItem[];
-  accentColor?:   string;
 };
  
 export async function getValuesData(): Promise<ValuesData> {
@@ -147,9 +143,11 @@ export async function getValuesData(): Promise<ValuesData> {
 }
 
 
+
+
+
 export const PARTNERS_QUERY = `*[_type == "partners"][0]{
   headingPlain,
-  headingItalic,
   subParagraph,
   items[] {
     num,
@@ -157,7 +155,6 @@ export const PARTNERS_QUERY = `*[_type == "partners"][0]{
     subtitle,
     description
   },
-  accentColor
 }`;
  
 // ── Portable Text block type ───────────────────────────────────────────────
@@ -178,10 +175,8 @@ export type PartnerItem = {
  
 export type PartnersData = {
   headingPlain?:  string;
-  headingItalic?: string;
   subParagraph?:  string;
   items?:         PartnerItem[];
-  accentColor?:   string;
 };
  
 export async function getPartnersData(): Promise<PartnersData> {
@@ -189,9 +184,11 @@ export async function getPartnersData(): Promise<PartnersData> {
 }
 
 
+
+
+
 export const FOUNDERS_QUERY = `*[_type == "founders"][0]{
   headingPlain,
-  headingItalic,
   subParagraph,
   founders[] {
     photo { asset->{ url } },
@@ -199,7 +196,6 @@ export const FOUNDERS_QUERY = `*[_type == "founders"][0]{
     quote,
     bio
   },
-  accentColor
 }`;
  
 export type FounderItem = {
@@ -211,15 +207,18 @@ export type FounderItem = {
  
 export type FoundersData = {
   headingPlain?:  string;
-  headingItalic?: string;
   subParagraph?:  string;
   founders?:      FounderItem[];
-  accentColor?:   string;
 };
  
 export async function getFoundersData(): Promise<FoundersData> {
   return client.fetch<FoundersData>(FOUNDERS_QUERY, {}, { cache: "no-store" });
 }
+
+
+
+
+
 export const CTA_QUERY = `*[_type == "cta"][0]{
   headingPlain,
   headingItalic,
@@ -231,30 +230,28 @@ export const CTA_QUERY = `*[_type == "cta"][0]{
  
 export type CtaData = {
   headingPlain?:  string;
-  headingItalic?: string;
   paragraph?:     string;
   buttonText?:    string;
   buttonLink?:    string;
-  accentColor?:   string;
 };
  
 export async function getCtaData(): Promise<CtaData> {
   return client.fetch<CtaData>(CTA_QUERY, {}, { cache: "no-store" });
 }
+
+
+
+
 export const FOOTER_QUERY = `*[_type == "footer"][0]{
   headingPlain,
-  headingItalic,
   paragraph,
   copyrightText,
-  accentColor
 }`;
  
 export type FooterData = {
   headingPlain?:  string;
-  headingItalic?: string;
   paragraph?:     string;
   copyrightText?: string;
-  accentColor?:   string;
 };
  
 export async function getFooterData(): Promise<FooterData> {
@@ -264,14 +261,12 @@ export async function getFooterData(): Promise<FooterData> {
 
 export const LOADING_QUERY = `*[_type == "loading"][0]{
   headingPlain,
-  headingItalic,
   tagline,
   loadingLabel
 }`;
  
 export type LoadingData = {
   headingPlain?:  string;
-  headingItalic?: string;
   tagline?:       string;
   loadingLabel?:  string;
 };

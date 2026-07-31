@@ -10,13 +10,7 @@ export default defineType({
       name: "headingPlain",
       title: "Heading — Plain part",
       type: "string",
-      initialValue: "lead the",
-    }),
-    defineField({
-      name: "headingItalic",
-      title: "Heading — Italic / accent part",
-      type: "string",
-      initialValue: "way",
+      initialValue: "lead the way",
     }),
     defineField({
       name: "tagline",

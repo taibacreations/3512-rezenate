@@ -10,13 +10,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ── Fallback ───────────────────────────────────────────────────────────────
 const FALLBACK = {
-  headingPlain: "Leadership shapes the way people experience work and",
-  headingItalic: "therefore life",
+  headingPlain: "Leadership shapes the way people experience work and therefore life",
   paragraph:
     "If this resonates, let's have a conversation. We reply within a day — always personally.",
   buttonText: "Start a Private Conversation",
   buttonLink: "#footer",
-  accentColor: "#9564F4",
 };
 
 interface CtaProps {
@@ -25,11 +23,9 @@ interface CtaProps {
 
 const Cta = ({ data }: CtaProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const paragraph = data?.paragraph ?? FALLBACK.paragraph;
   const buttonText = data?.buttonText ?? FALLBACK.buttonText;
   const buttonLink = data?.buttonLink ?? FALLBACK.buttonLink;
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const sectionRef = useRef<HTMLElement>(null);
   const gradRef = useRef<HTMLImageElement>(null);
@@ -272,7 +268,7 @@ const Cta = ({ data }: CtaProps) => {
           ref={headingRef}
           className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
         >
-          Leadership shapes the way people experience work and therefore life
+          {headingPlain}
         </h2>
         <p
           ref={paraRef}

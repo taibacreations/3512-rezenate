@@ -185,10 +185,8 @@ const FALLBACK_ITEMS: ValueItem[] = [
 ];
 
 const FALLBACK = {
-  headingPlain: "The way we work should reflect",
-  headingItalic: "the way we live.",
+  headingPlain: "The way we work should reflect the way we live.",
   items: FALLBACK_ITEMS,
-  accentColor: "#9564F4",
 };
 
 interface ValuesProps {
@@ -197,9 +195,7 @@ interface ValuesProps {
 
 const Values = ({ data }: ValuesProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const items = data?.items?.length ? data.items : FALLBACK.items;
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -469,7 +465,7 @@ const Values = ({ data }: ValuesProps) => {
             className="text-center 2xl:max-w-[874px] xl:max-w-[800px] lg:max-w-[720px] max-w-[600px] mx-auto will-change-transform"
           >
             <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
-              The way we work should reflect the way we live.
+              {headingPlain}
             </h2>
           </div>
 
@@ -503,9 +499,9 @@ const Values = ({ data }: ValuesProps) => {
                   <div className="flex pl-6 pr-15 xl:gap-6 gap-3">
                     <div
                       className="2xl:w-[76px] 2xl:h-[76px] md:w-[60px] w-[45px] md:h-[50px] h-[50px] 2xl:rounded-[29px] md:rounded-[20px] rounded-[15px] flex justify-center items-center shrink-0"
-                      style={{ backgroundColor: `${accentColor}1F` }}
+                      style={{ backgroundColor: `#9564F41F` }}
                     >
-                      <CardIcon item={v} index={i} accentColor={accentColor} />
+                      <CardIcon item={v} index={i} accentColor={"#9564F4"} />
                     </div>
                     <div className="flex flex-col justify-center">
                       <h4 className="font-toruspro font-normal 2xl:text-[32px] xl:text-[28px] md:text-[24px] text-[20px] text-[#0B0730] leading-[151%]">
@@ -535,7 +531,7 @@ const Values = ({ data }: ValuesProps) => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
               className="w-[700px] h-[700px] rounded-full blur-[100px]"
-              style={{ backgroundColor: `${accentColor}14` }}
+              style={{ backgroundColor: `#9564F414` }}
             />
           </div>
 
@@ -601,14 +597,14 @@ const Values = ({ data }: ValuesProps) => {
               opacity: 0,
               background:
                 "linear-gradient(160deg, #ffffff 0%, #f7f4ff 60%, #f0ebff 100%)",
-              border: `1px solid ${accentColor}2E`,
-              boxShadow: `0 8px 48px ${accentColor}1F, 0 2px 0 rgba(255,255,255,0.9) inset`,
+              border: `1px solid #9564F42E`,
+              boxShadow: `0 8px 48px #9564F41F, 0 2px 0 rgba(255,255,255,0.9) inset`,
             }}
             className="relative z-10 w-[90%] max-w-[740px] text-center px-12 py-14 rounded-[24px]"
           >
             <span
               ref={overlayNumRef}
-              style={{ opacity: 0, color: accentColor }}
+              style={{ opacity: 0, color: "#9564F4" }}
               className="font-mulish font-bold text-[15px] tracking-[0.28em] block mb-5"
             >
               {active.id} / {String(items.length).padStart(2, "0")}
@@ -628,7 +624,7 @@ const Values = ({ data }: ValuesProps) => {
               <div
                 className="w-[48px] h-[2px] mx-auto rounded-full"
                 style={{
-                  background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
+                  background: `linear-gradient(90deg, transparent, #9564F4, transparent)`,
                 }}
               />
             </div>
@@ -654,7 +650,7 @@ const Values = ({ data }: ValuesProps) => {
                   className="w-2 h-2 rounded-full transition-all duration-300"
                   style={{
                     backgroundColor:
-                      i === activeIndex ? accentColor : `${accentColor}33`,
+                      i === activeIndex ? "#9564F4" : "#9564F433",
                     transform: i === activeIndex ? "scale(1.3)" : "scale(1)",
                   }}
                 />

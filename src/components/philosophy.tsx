@@ -9,14 +9,12 @@ import type { PhilosophyData } from "@/sanity/lib/queries";
 gsap.registerPlugin(ScrollTrigger);
 
 const FALLBACK = {
-  headingPlain: "Every leader influences a culture long before they",
-  headingItalic: "change a strategy.",
+  headingPlain: "Every leader influences a culture long before they change a strategy.",
   para1: "Some support people to become more of themselves.",
   para2: "Others slowly ask them to become less.",
   para3: "Rezenate exists because leadership resonates.",
   quoteText: "People buy into the leader before they buy into the vision.",
   quoteAuthor: "JOHN C MAXWELL",
-  accentColor: "#9564F4",
 };
 
 interface PhilosophyProps {
@@ -25,13 +23,11 @@ interface PhilosophyProps {
 
 const Philosophy = ({ data }: PhilosophyProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const para1 = data?.para1 ?? FALLBACK.para1;
   const para2 = data?.para2 ?? FALLBACK.para2;
   const para3 = data?.para3 ?? FALLBACK.para3;
   const quoteText = data?.quoteText ?? FALLBACK.quoteText;
   const quoteAuthor = data?.quoteAuthor ?? FALLBACK.quoteAuthor;
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const sectionRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -143,7 +139,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
             style={{ opacity: 0 }}
             className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
           >
-            Every leader influences a culture long before they change a strategy.
+            {headingPlain}
           </h2>
           <div className="w-[20%] my-[3vh] border border-black" />
           <div className="max-w-[434px]">

@@ -1,4 +1,3 @@
-// Footer.tsx — Sanity CMS powered (no cache)
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -10,12 +9,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ── Fallback ───────────────────────────────────────────────────────────────
 const FALLBACK = {
-  headingPlain: "Lead The",
-  headingItalic: "Way",
+  headingPlain: "Lead The Way",
   paragraph:
     "10% of every retainer supports a cause our clients care about. We also make a matching donation to a charity chosen by their new leader, because good business should always leave the world better than it found it.",
-  copyrightText: "© Rezenate 2026. All rights reserved.",
-  accentColor: "#9564F4",
+  copyrightText: "© Rezenate 2025. All rights reserved.",
 };
 
 interface FooterProps {
@@ -24,10 +21,8 @@ interface FooterProps {
 
 const Footer = ({ data }: FooterProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
-  const headingItalic = data?.headingItalic ?? FALLBACK.headingItalic;
   const paragraph = data?.paragraph ?? FALLBACK.paragraph;
   const copyrightText = data?.copyrightText ?? FALLBACK.copyrightText;
-  const accentColor = data?.accentColor ?? FALLBACK.accentColor;
 
   const sectionRef = useRef<HTMLElement>(null);
   const leftContentRef = useRef<HTMLDivElement>(null);
@@ -55,8 +50,6 @@ const Footer = ({ data }: FooterProps) => {
       const createTrigger = () => {
         st = ScrollTrigger.create({
           trigger: sectionRef.current,
-          // ✅ CHANGED: "top 90%" triggers when the top of the footer is nicely in view
-          // Previously "top 210%" was likely a typo (your comment said 90%) and misfired due to loading screen layout shifts
           start: "top 90%",
           once: true,
           onEnter: () => {
@@ -96,7 +89,7 @@ const Footer = ({ data }: FooterProps) => {
         });
       };
 
-      // ✅ CHANGED: Use the reliable global flag instead of creating trigger immediately
+      // Use the reliable global flag instead of creating trigger immediately
       if ((window as any).__loadingDone) {
         createTrigger();
       } else {
@@ -130,7 +123,8 @@ const Footer = ({ data }: FooterProps) => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-[#9564F4] z-50"
+      className="relative w-full z-50"
+      style={{ backgroundColor: "#9564F4" }}
     >
       <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
         {/* Main footer content */}
@@ -142,7 +136,7 @@ const Footer = ({ data }: FooterProps) => {
               ref={headingRef}
               className="font-toruspro font-normal 2xl:text-[56px] xl:text-[48px] lg:text-[42px] md:text-[36px] text-[32px] leading-[113%] tracking-[-0.04em] text-white"
             >
-              {headingPlain} {headingItalic}
+              {headingPlain}
             </h2>
             <p 
               ref={copyrightRef}
