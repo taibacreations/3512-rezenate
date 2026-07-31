@@ -154,14 +154,31 @@ const Philosophy = ({ data }: PhilosophyProps) => {
     <section
       ref={sectionRef}
       id="philosophy"
-      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-gradient-to-br from-[#F5F0FA] via-[#E8D5F5] to-[#D4B8F0]"
+      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-[#FAFAFC]"
     >
-      <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] md:top-[-28vh] top-[-8vh] w-full z-10" />
-      <img src="/founder-blur.png" alt="blur" className="absolute left-0 xl:bottom-[-38vh] md:bottom-[-16vh] bottom-[-8vh] w-full z-10" />
-      <img src="/philosophy.png" alt="vector" className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full" />
-      
+      <img
+        src="/founder-blur.png"
+        alt="blur"
+        className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10"
+      />
+      <img
+        src="/founder-blur.png"
+        alt="blur"
+        className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-42vh] md:bottom-[-16vh] bottom-[-11vh] w-full z-10"
+      />
+      <img
+        src="/philosophy.png"
+        alt="vector"
+        className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full md:block hidden"
+      />
+      <img
+        src="/philosophy-mob1.png"
+        alt="vector"
+        className="absolute w-full h-full md:hidden"
+      />
+
       {/* Gradient overlay for smoother transition */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-purple-200/30 pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-purple-200/30 pointer-events-none" /> */}
 
       {/* Logo mark — hardcoded white fill */}
       {/* <div className="absolute right-[18%] top-[45%]">
@@ -181,57 +198,48 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       </div> */}
 
       {/* Text content */}
-      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[27vh] pt-[10vh] relative z-30">
+      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[27vh] md:pt-[10vh] pt-[50px] relative z-30">
         <div className="xl:max-w-[714px] lg:max-w-[620px] max-w-[550px] relative z-20">
           <h2
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black"
+            className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
           >
-            {headingPlain}{" "}
-            <span
-              className="tracking-[0em] italic font-tartuffo lowercase"
-              style={{ color: accentColor }}
-            >
-              {headingItalic}
-            </span>
+            Every leader influences a culture long before they change a
+            strategy.
           </h2>
-          <div className="w-[20%] my-[3vh] border border-[#9564F4]"/>
+          <div className="w-[20%] my-[3vh] border border-black" />
           <div className="max-w-[434px]">
             <p
               ref={para1Ref}
               style={{ opacity: 0 }}
-              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3vh]"
+              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-[#0B0730] mt-[3vh]"
             >
               {para1}
             </p>
             <p
               ref={para2Ref}
               style={{ opacity: 0 }}
-              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3.5vh]"
+              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-[#0B0730] mt-[3.5vh]"
             >
               {para2}
             </p>
             <p
               ref={para3Ref}
               style={{ opacity: 0 }}
-              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-black mt-[3.5vh]"
+              className="font-outfit font-normal 2xl:text-[30px] xl:text-[26px] text-[22px] leading-[114%] text-[#0B0730] mt-[3.5vh]"
             >
               {para3}
             </p>
           </div>
 
           {/* Quote box — bg hardcoded from /public */}
-          <div
-            ref={quoteBoxRef}
-            style={{ opacity: 0 }}
-            className="mt-[4vh]"
-          >
-            <div className="max-w-[368px] border-l-2 border-[#9564F4] pl-[1vw]">
-              <h5 className="font-outfit 2xl:text-[22px] xl:text-[24px] lg:text-[22px] text-[18px] leading-[114%] font-normal text-black">
+          <div ref={quoteBoxRef} style={{ opacity: 0 }} className="mt-[4vh]">
+            <div className="max-w-[368px] border-l-2 border-black pl-[1vw]">
+              <h5 className="font-outfit 2xl:text-[22px] xl:text-[24px] lg:text-[22px] text-[18px] leading-[114%] font-normal text-[#0B0730]">
                 {quoteText}
               </h5>
-              <h4 className="font-outfit font-semibold 2xl:text-[20px] lg:text-[18px] text-[16px] leading-[114%] text-[#9564F4] mt-[1vh]">
+              <h4 className="font-outfit font-semibold 2xl:text-[20px] lg:text-[18px] text-[16px] leading-[114%] text-[#0B0730] mt-[1vh]">
                 — {quoteAuthor}
               </h4>
             </div>

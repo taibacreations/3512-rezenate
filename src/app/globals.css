@@ -57,7 +57,8 @@
 }
 
 body {
-  background: #fdfcfc;
+  background: #FAFAFC;
+  color: #0B0730;
 }
 
 button,
@@ -68,10 +69,6 @@ a {
 body,
 html {
   overflow-x: hidden !important;
-}
-
-section {
-  overflow: hidden;
 }
 
 .border1 {

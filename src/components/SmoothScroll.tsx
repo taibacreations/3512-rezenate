@@ -24,42 +24,24 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     lenisRef.current = lenis;
 
-    // Sync Lenis with ScrollTrigger
+    // Sync Lenis → ScrollTrigger (yahi kaafi hai, proxy nahi chahiye)
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    // GSAP ticker drives Lenis RAF
+    const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
-    });
-
+    };
+    gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    // CRITICAL FIX: Tell ScrollTrigger to use Lenis scroll position
-    ScrollTrigger.scrollerProxy(document.body, {
-      scrollTop(value) {
-        if (arguments.length && value !== undefined) {
-          lenis.scrollTo(value, { immediate: true });
-        }
-        return lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-      },
-      pinType: document.body.style.transform ? "transform" : "fixed",
-    });
-
-    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
+    // Initial refresh after Lenis is ready
     ScrollTrigger.refresh();
 
     return () => {
-      ScrollTrigger.scrollerProxy(document.body, undefined as any);
-      ScrollTrigger.removeEventListener("refresh", () => lenis.resize());
+      gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;
+      ScrollTrigger.refresh();
     };
   }, []);
 

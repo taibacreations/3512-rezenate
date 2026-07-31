@@ -159,7 +159,7 @@ const Banner = ({ data }: BannerProps) => {
         src="/banner1-mob.webp"
         alt="banner"
         style={{ opacity: 0 }}
-        className="absolute lg:hidden md:bottom-[-20vh] bottom-[-10vh] lg:h-auto md:h-[600px] h-[330px] will-change-transform"
+        className="absolute lg:hidden bottom-0 will-change-transform"
       />
 
       {/* Scroll indicator — smooth scroll on click */}
@@ -192,20 +192,14 @@ const Banner = ({ data }: BannerProps) => {
           <h1
             ref={headingRef}
             style={{ opacity: 0 }}
-            className="font-toruspro font-normal 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-black leading-[101%] will-change-transform tracking-[-0.04em]"
+            className="font-toruspro font-normal 2xl:text-[100px] lg:text-[80px] md:text-[60px] text-[40px] text-[#0B0730] leading-[101%] will-change-transform tracking-[-0.04em]"
           >
-            {headingPlain}
-            <span
-              className="font-tartuffo font-light italic md:ml-[1vw] ml-[2vw] tracking-normal"
-              style={{ color: accentColor }}
-            >
-              {headingItalic}
-            </span>
+            Leadership changes everything
           </h1>
           <p
             ref={paraRef}
             style={{ opacity: 0 }}
-            className="font-outfit font-normal text-[15px] sm:text-[17px] md:text-[20px] lg:text-[22px] xl:text-[24px] leading-[115%] w-full max-w-[578px] mx-auto mt-[2.5vh] will-change-transform"
+            className="font-outfit font-normal text-[15px] sm:text-[17px] md:text-[20px] text-[#0B0730] lg:text-[22px] xl:text-[24px] leading-[115%] w-full max-w-[578px] mx-auto mt-[2.5vh] will-change-transform"
           >
             {paragraph}
           </p>

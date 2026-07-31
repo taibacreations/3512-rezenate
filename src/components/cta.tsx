@@ -202,13 +202,13 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="md:min-h-[81.5vh] min-h-[70vh] relative flex justify-center items-center"
+      className="md:min-h-[81.5vh] py-[15vh] relative flex justify-center items-center overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
         src="/footer-blur.webp"
         alt=""
-        className="absolute w-full md:bottom-[-50%] bottom-[-10%] left-0 z-40 md:h-[700px] h-[100px]"
+        className="absolute w-full md:bottom-[-50%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
       />
       <img
         ref={gradRef}
@@ -218,7 +218,7 @@ const Cta = ({ data }: CtaProps) => {
       />
       <div
         ref={bgWrapRef}
-        className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-40%] right-0 h-[1284px] w-[831px]"
+        className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-20%] right-0 h-[1284px] w-[831px] z-30"
       >
         <img
           ref={bgRef}
@@ -232,15 +232,9 @@ const Cta = ({ data }: CtaProps) => {
       <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4 z-40">
         <h2
           ref={headingRef}
-          className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black"
+          className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
         >
-          {headingPlain}{" "}
-          <span
-            className="tracking-[0em] italic font-tartuffo lowercase"
-            style={{ color: accentColor }}
-          >
-            {headingItalic}
-          </span>
+          Leadership shapes the way people experience work and therefore life
         </h2>
         <p
           ref={paraRef}
@@ -261,7 +255,7 @@ const Cta = ({ data }: CtaProps) => {
             className="absolute inset-0 bg-black rounded-full pointer-events-none"
             style={{ transform: "scaleY(0)", transformOrigin: "bottom center" }}
           />
-          <span ref={buttonTextRef} className="relative z-10 text-black">
+          <span ref={buttonTextRef} className="relative z-10 text-[#0B0730]">
             {buttonText}
           </span>
         </button>

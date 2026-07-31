@@ -26,8 +26,8 @@ const CARD_GAPS = [
 // ── Hardcoded per-card icons (index 0-4) ───────────────────────────────────
 const getPartnerIcon = (index: number, accentColor: string) => {
   const common = {
-    width: 34,
-    height: 34,
+    width: 30,
+    height: 30,
     viewBox: "0 0 24 24",
     fill: "none" as const,
     stroke: accentColor,
@@ -65,17 +65,18 @@ const getPartnerIcon = (index: number, accentColor: string) => {
     case 3: // Anchor
       return (
         <svg {...common}>
-          <circle cx="12" cy="5" r="2" />
-          <path d="M12 7v13" />
-          <path d="M7 13a5 5 0 0 0 10 0" />
-          <path d="M5 13H2l1.5 2M22 13h-3l-1.5 2" />
+          <circle cx="12" cy="4" r="2.5" />
+          <path d="M12 6.5v3" />
+          <path d="M7 10h10" />
+          <path d="M12 9.5v9" />
+          <path d="M6.5 15a5.5 5.5 0 0 0 11 0" />
+          <path d="M12 18.5v2" />
         </svg>
       );
-    case 4: // Ascend — rising trend arrow
+    case 4: // Ascend — upward arrow/A shape
       return (
         <svg {...common}>
-          <path d="M3 17c3-1 5-6 8-6s4 5 7 2" />
-          <path d="M14.5 12.5l4-1.5 1 4" />
+          <path d="M5 19L12 5L19 19" />
         </svg>
       );
     default:
@@ -87,7 +88,7 @@ const getPartnerIcon = (index: number, accentColor: string) => {
 const ptComponents = {
   block: {
     normal: ({ children }: { children?: React.ReactNode }) => (
-      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-black/70 mt-3 first:mt-0">
+      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-[#0B0730] mt-3 first:mt-0">
         {children}
       </p>
     ),
@@ -105,7 +106,7 @@ const Description = ({
   // Plain string fallback (old data / FALLBACK_ITEMS)
   if (typeof description === "string") {
     return (
-      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-black/70">
+      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-[#0B0730]">
         {description}
       </p>
     );
@@ -199,7 +200,10 @@ const PartnerCard = ({
   }, [isOpen]);
 
   return (
-    <div className="partner-border-wrapper cursor-pointer" onClick={onClick}>
+    <div
+      className="border border-[#DEE6E9] rounded-[20px] cursor-pointer"
+      onClick={onClick}
+    >
       <div className="partner-border lg:pl-12 pl-6 pr-4 !h-auto !flex-col !items-start py-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center lg:gap-10 md:gap-6 gap-3">
@@ -213,12 +217,12 @@ const PartnerCard = ({
               className="border border-r xl:h-[58px] lg:h-[48px] md:h-[38px] h-[30px]"
               style={{ borderColor: accentColor }}
             />
-            <h3 className="font-toruspro font-normal xl:text-[32px] lg:text-[28px] text-[24px] leading-[90%] text-black">
+            <h3 className="font-toruspro font-normal xl:text-[32px] lg:text-[28px] text-[24px] leading-[90%] text-[#0B0730]">
               {item.title}
             </h3>
           </div>
           <div className={`flex items-center gap-6 ${CARD_GAPS[index] ?? ""}`}>
-            <h4 className="font-outfit font-normal xl:text-[24px] lg:text-[20px] text-[18px] leading-[114%] text-black hidden md:block">
+            <h4 className="font-outfit font-normal xl:text-[24px] lg:text-[20px] text-[18px] leading-[114%] text-[#0B0730] hidden md:block">
               {item.subtitle}
             </h4>
             <div className="partners-arrow-wrapper flex-shrink-0">
@@ -316,7 +320,7 @@ const Partners = ({ data }: PartnersProps) => {
     <section
       ref={sectionRef}
       id="how-we-partner"
-      className="bg-[url(/partners1.webp)] bg-cover bg-center xl:min-h-screen xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10"
+      className="xl:min-h-screen xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10"
     >
       <div>
         {/* Heading */}
@@ -325,16 +329,10 @@ const Partners = ({ data }: PartnersProps) => {
           style={{ opacity: 0 }}
           className="xl:max-w-[878px] max-w-[780px] mx-auto text-center"
         >
-          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-black">
-            {headingPlain}{" "}
-            <span
-              className="tracking-[0em] italic font-tartuffo lowercase"
-              style={{ color: accentColor }}
-            >
-              {headingItalic}
-            </span>
+          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
+            How we partner
           </h2>
-          <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:text-[20px] text-[16px] leading-[130%] text-black mt-[1.5vh] whitespace-pre-line">
+          <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:text-[20px] text-[16px] leading-[130%] text-[#0B0730] mt-[1.5vh] whitespace-pre-line">
             {subParagraph}
           </p>
         </div>
