@@ -39,6 +39,9 @@ const Footer = ({ data }: FooterProps) => {
 
   // ── Entrance Animation ───────────────────────────────────────────────────
   useEffect(() => {
+    let st: ScrollTrigger | null = null;
+    let onLoadingDone: (() => void) | null = null;
+
     const ctx = gsap.context(() => {
       // 1. Set initial hidden states
       gsap.set([leftContentRef.current, rightContentRef.current, dividerRef.current], { 
@@ -49,50 +52,79 @@ const Footer = ({ data }: FooterProps) => {
       gsap.set(copyrightRef.current, { autoAlpha: 0, y: 15 });
       gsap.set(paraRef.current, { autoAlpha: 0, y: 15 });
 
-      // 2. Create timeline with ScrollTrigger attached directly
-      const tl = gsap.timeline({
-        scrollTrigger: {
+      const createTrigger = () => {
+        st = ScrollTrigger.create({
           trigger: sectionRef.current,
-          start: "top 210%", // Triggers when top of footer is 90% down the viewport
+          // ✅ CHANGED: "top 90%" triggers when the top of the footer is nicely in view
+          // Previously "top 210%" was likely a typo (your comment said 90%) and misfired due to loading screen layout shifts
+          start: "top 90%",
           once: true,
-        },
-      });
+          onEnter: () => {
+            const tl = gsap.timeline();
+            tl.to(leftContentRef.current, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 1.0,
+              ease: "expo.out",
+            })
+              .to(
+                dividerRef.current,
+                { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
+                "-=0.6"
+              )
+              .to(
+                rightContentRef.current,
+                { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out" },
+                "-=0.4"
+              )
+              .to(
+                headingRef.current,
+                { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out" },
+                "-=0.8"
+              )
+              .to(
+                copyrightRef.current,
+                { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" },
+                "-=0.5"
+              )
+              .to(
+                paraRef.current,
+                { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out" },
+                "-=0.6"
+              );
+          },
+        });
+      };
 
-      // 3. Define the animation sequence
-      tl.to(leftContentRef.current, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 1.0,
-        ease: "expo.out",
-      })
-        .to(
-          dividerRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          "-=0.6"
-        )
-        .to(
-          rightContentRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out" },
-          "-=0.4"
-        )
-        .to(
-          headingRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out" },
-          "-=0.8"
-        )
-        .to(
-          copyrightRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" },
-          "-=0.5"
-        )
-        .to(
-          paraRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out" },
-          "-=0.6"
-        );
+      // ✅ CHANGED: Use the reliable global flag instead of creating trigger immediately
+      if ((window as any).__loadingDone) {
+        createTrigger();
+      } else {
+        onLoadingDone = () => {
+          // Small delay ensures the browser has fully recalculated layout after body unlock
+          setTimeout(() => {
+            ScrollTrigger.refresh(true);
+            createTrigger();
+          }, 150);
+        };
+
+        window.addEventListener("loading-done", onLoadingDone, { once: true });
+
+        // Fallback: in case the event fired a millisecond before this component mounted
+        if ((window as any).__loadingDone) {
+          window.removeEventListener("loading-done", onLoadingDone);
+          createTrigger();
+        }
+      }
     }, sectionRef);
     
-    return () => ctx.revert();
+    return () => {
+      if (st) st.kill();
+      if (onLoadingDone) {
+        window.removeEventListener("loading-done", onLoadingDone);
+      }
+      ctx.revert();
+    };
   }, []);
 
   return (

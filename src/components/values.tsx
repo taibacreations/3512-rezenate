@@ -227,6 +227,9 @@ const Values = ({ data }: ValuesProps) => {
 
   // ── Entrance ───────────────────────────────────────────────────────────
   useEffect(() => {
+    let st: ScrollTrigger | null = null;
+    let onLoadingDone: (() => void) | null = null;
+
     const ctx = gsap.context(() => {
       const cards = cardRefs.map((r) => r.current);
 
@@ -237,65 +240,97 @@ const Values = ({ data }: ValuesProps) => {
 
       const isMobile = window.innerWidth < 768;
 
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: isMobile ? "top 180%" : "top 140%",
-        once: true,
-        onEnter: () => {
-          const tl = gsap.timeline();
-          tl.to(gradientRef.current, {
-            autoAlpha: 1,
-            x: 0,
-            duration: 1.8,
-            ease: "expo.out",
-          })
-            .to(
-              headingRef.current,
-              { autoAlpha: 1, y: 0, duration: 1.4, ease: "expo.out" },
-              "-=1.4",
-            )
-            .to(
-              ballRef.current,
-              {
-                autoAlpha: 1,
-                scale: 1,
-                rotate: 0,
-                duration: 2.0,
-                ease: "expo.out",
-              },
-              "-=1.2",
-            )
-            .to(
-              cards,
-              {
-                autoAlpha: 1,
-                x: 0,
-                duration: 1.2,
-                ease: "expo.out",
-                stagger: 0.14,
-              },
-              "-=1.6",
-            )
-            .call(() => {
-              gsap.to(ballRef.current, {
-                y: 18,
-                duration: 5.0,
-                ease: "sine.inOut",
-                repeat: -1,
-                yoyo: true,
+      const createTrigger = () => {
+        st = ScrollTrigger.create({
+          trigger: sectionRef.current,
+          // ✅ CHANGED: "top 70%" / "top 80%" triggers when the section is nicely in "perfect view"
+          // Previously "top 140%" / "180%" misfired due to layout shifts from the loading screen's fixed body
+          start: isMobile ? "top 80%" : "top 70%",
+          once: true,
+          onEnter: () => {
+            const tl = gsap.timeline();
+            tl.to(gradientRef.current, {
+              autoAlpha: 1,
+              x: 0,
+              duration: 1.8,
+              ease: "expo.out",
+            })
+              .to(
+                headingRef.current,
+                { autoAlpha: 1, y: 0, duration: 1.4, ease: "expo.out" },
+                "-=1.4",
+              )
+              .to(
+                ballRef.current,
+                {
+                  autoAlpha: 1,
+                  scale: 1,
+                  rotate: 0,
+                  duration: 2.0,
+                  ease: "expo.out",
+                },
+                "-=1.2",
+              )
+              .to(
+                cards,
+                {
+                  autoAlpha: 1,
+                  x: 0,
+                  duration: 1.2,
+                  ease: "expo.out",
+                  stagger: 0.14,
+                },
+                "-=1.6",
+              )
+              .call(() => {
+                gsap.to(ballRef.current, {
+                  y: 18,
+                  duration: 5.0,
+                  ease: "sine.inOut",
+                  repeat: -1,
+                  yoyo: true,
+                });
+                gsap.to(ballRef.current, {
+                  rotate: 5,
+                  duration: 9.0,
+                  ease: "sine.inOut",
+                  repeat: -1,
+                  yoyo: true,
+                });
               });
-              gsap.to(ballRef.current, {
-                rotate: 5,
-                duration: 9.0,
-                ease: "sine.inOut",
-                repeat: -1,
-                yoyo: true,
-              });
-            });
-        },
-      });
+          },
+        });
+      };
+
+      // ✅ CHANGED: Use the reliable global flag instead of creating trigger immediately
+      if ((window as any).__loadingDone) {
+        createTrigger();
+      } else {
+        onLoadingDone = () => {
+          // Small delay ensures the browser has fully recalculated layout after body unlock
+          setTimeout(() => {
+            ScrollTrigger.refresh(true);
+            createTrigger();
+          }, 150);
+        };
+
+        window.addEventListener("loading-done", onLoadingDone, { once: true });
+
+        // Fallback: in case the event fired a millisecond before this component mounted
+        if ((window as any).__loadingDone) {
+          window.removeEventListener("loading-done", onLoadingDone);
+          createTrigger();
+        }
+      }
     }, sectionRef);
-    return () => ctx.revert();
+
+    return () => {
+      if (st) st.kill();
+      if (onLoadingDone) {
+        window.removeEventListener("loading-done", onLoadingDone);
+      }
+      ctx.revert();
+    };
   }, []);
 
   // ── Overlay open ───────────────────────────────────────────────────────

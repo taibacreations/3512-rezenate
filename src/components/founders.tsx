@@ -54,6 +54,9 @@ const Founders = ({ data }: FoundersProps) => {
   const mergeGradientRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let st: ScrollTrigger | null = null;
+    let onLoadingDone: (() => void) | null = null;
+
     const ctx = gsap.context(() => {
       gsap.set(headingRef.current, { autoAlpha: 0, y: 40 });
       gsap.set(card1Ref.current, { autoAlpha: 0, x: -60 });
@@ -62,38 +65,69 @@ const Founders = ({ data }: FoundersProps) => {
 
       const isMobile = window.innerWidth < 768;
 
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: isMobile ? "top 180%" : "top 140%",
-        once: true,
-        onEnter: () => {
-          const tl = gsap.timeline();
-          tl.to(headingRef.current, {
-            autoAlpha: 1,
-            y: 0,
-            duration: 1.1,
-            ease: "expo.out",
-          })
-            .to(
-              card1Ref.current,
-              { autoAlpha: 1, x: 0, duration: 1.3, ease: "expo.out" },
-              "-=0.6",
-            )
-            .to(
-              card2Ref.current,
-              { autoAlpha: 1, x: 0, duration: 1.3, ease: "expo.out" },
-              "-=1.0",
-            )
-            .to(
-              mergeGradientRef.current,
-              { opacity: 1, duration: 1.5, ease: "power2.out" },
-              "-=0.8",
-            );
-        },
-      });
+      const createTrigger = () => {
+        st = ScrollTrigger.create({
+          trigger: sectionRef.current,
+          // ✅ CHANGED: "top 70%" / "top 80%" triggers when the section is nicely in "perfect view"
+          // Previously "top 140%" / "180%" misfired due to layout shifts from the loading screen's fixed body
+          start: isMobile ? "top 80%" : "top 70%",
+          once: true,
+          onEnter: () => {
+            const tl = gsap.timeline();
+            tl.to(headingRef.current, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 1.1,
+              ease: "expo.out",
+            })
+              .to(
+                card1Ref.current,
+                { autoAlpha: 1, x: 0, duration: 1.3, ease: "expo.out" },
+                "-=0.6",
+              )
+              .to(
+                card2Ref.current,
+                { autoAlpha: 1, x: 0, duration: 1.3, ease: "expo.out" },
+                "-=1.0",
+              )
+              .to(
+                mergeGradientRef.current,
+                { opacity: 1, duration: 1.5, ease: "power2.out" },
+                "-=0.8",
+              );
+          },
+        });
+      };
+
+      // ✅ CHANGED: Use the reliable global flag instead of creating trigger immediately
+      if ((window as any).__loadingDone) {
+        createTrigger();
+      } else {
+        onLoadingDone = () => {
+          // Small delay ensures the browser has fully recalculated layout after body unlock
+          setTimeout(() => {
+            ScrollTrigger.refresh(true);
+            createTrigger();
+          }, 150);
+        };
+
+        window.addEventListener("loading-done", onLoadingDone, { once: true });
+
+        // Fallback: in case the event fired a millisecond before this component mounted
+        if ((window as any).__loadingDone) {
+          window.removeEventListener("loading-done", onLoadingDone);
+          createTrigger();
+        }
+      }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (st) st.kill();
+      if (onLoadingDone) {
+        window.removeEventListener("loading-done", onLoadingDone);
+      }
+      ctx.revert();
+    };
   }, []);
 
   return (

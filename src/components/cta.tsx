@@ -45,7 +45,12 @@ const Cta = ({ data }: CtaProps) => {
   // ── Entrance ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!sectionRef.current) return;
+
+    let st: ScrollTrigger | null = null;
+    let onLoadingDone: (() => void) | null = null;
+
     const ctx = gsap.context(() => {
+      // Set initial states immediately
       gsap.set(gradRef.current, { opacity: 0, scale: 1.06 });
       gsap.set(bgWrapRef.current, {
         opacity: 0,
@@ -56,57 +61,90 @@ const Cta = ({ data }: CtaProps) => {
       gsap.set(headingRef.current, { opacity: 0, y: 20, filter: "blur(6px)" });
       gsap.set(paraRef.current, { opacity: 0, y: 14 });
       gsap.set(buttonRef.current, { opacity: 0, y: 16, scale: 0.92 });
+      
       const isMobile = window.innerWidth < 768;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
+      const createTrigger = () => {
+        st = ScrollTrigger.create({
           trigger: sectionRef.current,
-          start: isMobile ? "top 180%" : "top 140%",
+          // ✅ CHANGED: "top 70%" / "top 80%" triggers when the section is nicely in "perfect view"
+          // Previously "top 140%" / "180%" misfired due to layout shifts from the loading screen's fixed body
+          start: isMobile ? "top 80%" : "top 70%",
           once: true,
-        },
-      });
+          onEnter: () => {
+            const tl = gsap.timeline();
+            tl.to(gradRef.current, {
+              opacity: 1,
+              scale: 1,
+              duration: 1.6,
+              ease: "power2.out",
+            })
+              .to(
+                bgWrapRef.current,
+                {
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  rotate: 0,
+                  duration: 1.4,
+                  ease: "power2.out",
+                },
+                "<0.1",
+              )
+              .to(
+                headingRef.current,
+                {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  duration: 1.0,
+                  ease: "expo.out",
+                },
+                "-=1.0",
+              )
+              .to(
+                paraRef.current,
+                { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" },
+                "-=0.5",
+              )
+              .to(
+                buttonRef.current,
+                { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "expo.out" },
+                "-=0.4",
+              );
+          },
+        });
+      };
 
-      tl.to(gradRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 1.6,
-        ease: "power2.out",
-      })
-        .to(
-          bgWrapRef.current,
-          {
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            rotate: 0,
-            duration: 1.4,
-            ease: "power2.out",
-          },
-          "<0.1",
-        )
-        .to(
-          headingRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 1.0,
-            ease: "expo.out",
-          },
-          "-=1.0",
-        )
-        .to(
-          paraRef.current,
-          { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" },
-          "-=0.5",
-        )
-        .to(
-          buttonRef.current,
-          { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "expo.out" },
-          "-=0.4",
-        );
+      // ✅ CHANGED: Use the reliable global flag instead of creating trigger immediately
+      if ((window as any).__loadingDone) {
+        createTrigger();
+      } else {
+        onLoadingDone = () => {
+          // Small delay ensures the browser has fully recalculated layout after body unlock
+          setTimeout(() => {
+            ScrollTrigger.refresh(true);
+            createTrigger();
+          }, 150);
+        };
+
+        window.addEventListener("loading-done", onLoadingDone, { once: true });
+
+        // Fallback: in case the event fired a millisecond before this component mounted
+        if ((window as any).__loadingDone) {
+          window.removeEventListener("loading-done", onLoadingDone);
+          createTrigger();
+        }
+      }
     }, sectionRef);
-    return () => ctx.revert();
+
+    return () => {
+      if (st) st.kill();
+      if (onLoadingDone) {
+        window.removeEventListener("loading-done", onLoadingDone);
+      }
+      ctx.revert();
+    };
   }, []);
 
   // ── Mouse-follow glow ──────────────────────────────────────────────────────

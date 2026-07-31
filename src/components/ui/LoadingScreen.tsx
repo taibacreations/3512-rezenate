@@ -50,7 +50,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     gsap.set(contentRef.current, { opacity: 0, y: 20 });
     gsap.set(spinnerRef.current, { opacity: 0 });
 
-    gsap.to(rotatingImgRef.current, {
+    const rotationTween = gsap.to(rotatingImgRef.current, {
       rotation: 360, duration: 25, ease: "none", repeat: -1, transformOrigin: "center center",
     });
 
@@ -66,6 +66,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     const exitTimer = setTimeout(() => {
       const exitTl = gsap.timeline({
         onComplete: () => {
+          rotationTween.kill();
           document.body.style.position = "";
           document.body.style.top      = "";
           document.body.style.left     = "";
@@ -78,26 +79,48 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       });
 
       exitTl
+        // fade out text, logo, and spinner first — subtle stagger feels less mechanical
         .to(
-          [svgRef.current, logoRef.current, contentRef.current, spinnerRef.current, rotatingImgRef.current],
-          { opacity: 0, duration: 0.4, ease: "power2.in" }
+          [logoRef.current, svgRef.current],
+          { opacity: 0, duration: 0.35, ease: "power2.inOut" }
         )
+        .to(
+          contentRef.current,
+          { opacity: 0, y: -10, duration: 0.4, ease: "power2.inOut" },
+          "<0.05"
+        )
+        .to(
+          spinnerRef.current,
+          { opacity: 0, duration: 0.4, ease: "power2.inOut" },
+          "<0.05"
+        )
+        // the purple shape zooms in smoothly...
+        .to(rotatingImgRef.current, {
+          scale: 1.3,
+          transformOrigin: "center center",
+          duration: 0.9,
+          ease: "power2.out",
+        }, "-=0.15")
+        // ...then glides down toward the bottom of the screen, still breathing outward slightly
+        .to(rotatingImgRef.current, {
+          scale: 1.38,
+          y: () => window.innerHeight * 0.65,
+          transformOrigin: "center center",
+          duration: 1.5,
+          ease: "power4.inOut",
+        }, "-=0.35")
+        // wrapper fades away gently as the shape glides down, revealing the homepage underneath
         .to(wrapRef.current, {
-          scale: 1.08,
-          duration: 0.5,
+          opacity: 0,
+          duration: 0.9,
           ease: "power2.inOut",
-        })
-        .to(wrapRef.current, {
-          clipPath: "circle(0% at 50% 85%)",
-          duration: 1,
-          ease: "power3.inOut",
-        }, "-=0.2");
+        }, "-=0.9");
     }, 3200);
 
     return () => {
       clearTimeout(exitTimer);
       assembleTl.kill();
-      gsap.killTweensOf(rotatingImgRef.current);
+      rotationTween.kill();
       document.body.style.position = "";
       document.body.style.top      = "";
       document.body.style.left     = "";
