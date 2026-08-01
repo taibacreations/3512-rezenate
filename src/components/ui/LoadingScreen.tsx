@@ -253,7 +253,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     <section
       ref={wrapRef}
       style={{ clipPath: "circle(150% at 50% 50%)" }}
-      className="bg-[url(/loading-bg.webp)] bg-cover bg-center w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100]"
+      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100]"
     >
       <div
         ref={rotatingImgRef}
