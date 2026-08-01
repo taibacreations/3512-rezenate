@@ -1,11 +1,9 @@
-// Banner.tsx — Sanity CMS powered (no cache)
 "use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { BannerData } from "@/sanity/lib/queries";
 
-// ── Smooth scroll helper (Lenis-aware) ────────────────────────────────────
 const scrollToSection = (href: string) => {
   const id = href.startsWith("#") ? href.slice(1) : href;
   const el = document.getElementById(id);
@@ -46,10 +44,15 @@ const Banner = ({ data }: BannerProps) => {
   const paraRef       = useRef<HTMLParagraphElement>(null);
   const glowRef       = useRef<HTMLDivElement>(null);
 
-  // ── Entrance ──────────────────────────────────────────────────────────────
+  // While the loader is active it computes a one-time glide target rect for
+  // these hero images. If the mouse-parallax effect below moves them mid-glide,
+  // the ghost lands somewhere the real image no longer is, causing a visible
+  // double-image overlap. Lock parallax until the loader fully finishes.
+  const parallaxLockRef = useRef(true);
+
   useEffect(() => {
     gsap.set([headingRef.current, paraRef.current], { autoAlpha: 0, y: 50 });
-    gsap.set([banner1Ref.current, banner1MobRef.current], { autoAlpha: 0, y: 70, scale: 0.97 });
+    gsap.set([banner1Ref.current, banner1MobRef.current], { autoAlpha: 0 });
     gsap.set(scrollBgRef.current, { autoAlpha: 0, scale: 0.88, y: 24 });
 
     const runEntrance = () => {
@@ -58,7 +61,6 @@ const Banner = ({ data }: BannerProps) => {
         tl
           .to(headingRef.current, { autoAlpha: 1, y: 0, duration: 1.4, ease: "expo.out" })
           .to(paraRef.current,    { autoAlpha: 1, y: 0, duration: 1.2, ease: "expo.out" }, "-=0.85")
-          .to([banner1Ref.current, banner1MobRef.current], { autoAlpha: 1, y: 0, scale: 1, duration: 1.6, ease: "expo.out" }, "-=0.9")
           .to(scrollBgRef.current, { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: "back.out(1.3)" }, "-=0.6")
           .call(() => {
             gsap.to(arrowRef.current,  { y: 8,    duration: 1.4, ease: "sine.inOut", repeat: -1, yoyo: true });
@@ -72,7 +74,36 @@ const Banner = ({ data }: BannerProps) => {
     return () => window.removeEventListener("header-done", runEntrance);
   }, []);
 
-  // ── Mouse-follow glow ─────────────────────────────────────────────────────
+  useEffect(() => {
+    const revealHeroShape = () => {
+      // Smoothly fade in the real banner images as the loader finishes its crossfade
+      gsap.to([banner1Ref.current, banner1MobRef.current], {
+        autoAlpha: 1,
+        duration: 0.5,
+        ease: "power2.inOut"
+      });
+    };
+
+    window.addEventListener("loading-image-landed", revealHeroShape, { once: true });
+    const fallbackTimer = setTimeout(revealHeroShape, 6000);
+
+    return () => {
+      window.removeEventListener("loading-image-landed", revealHeroShape);
+      clearTimeout(fallbackTimer);
+    };
+  }, []);
+
+  // Unlock parallax only once the loader is fully gone, so the hero images
+  // stay perfectly still (matching the loader's precomputed glide target)
+  // for the entire assemble + glide + crossfade sequence.
+  useEffect(() => {
+    const unlockParallax = () => {
+      parallaxLockRef.current = false;
+    };
+    window.addEventListener("loading-done", unlockParallax, { once: true });
+    return () => window.removeEventListener("loading-done", unlockParallax);
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     const glow    = glowRef.current;
@@ -95,12 +126,14 @@ const Banner = ({ data }: BannerProps) => {
     };
   }, []);
 
-  // ── Parallax ──────────────────────────────────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const onMove = (e: MouseEvent) => {
+      // Skip while the loader is still gliding/crossfading into these images.
+      if (parallaxLockRef.current) return;
+
       const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
       gsap.to([banner1Ref.current, banner1MobRef.current], { x: nx * 22, y: ny * 12, duration: 2.2, ease: "power2.out" });
@@ -109,6 +142,7 @@ const Banner = ({ data }: BannerProps) => {
       gsap.to(scrollBgRef.current, { x: nx *  8, y: ny *  5, duration: 2.4, ease: "power2.out" });
     };
     const onLeave = () => {
+      if (parallaxLockRef.current) return;
       gsap.to(
         [banner1Ref.current, banner1MobRef.current, headingRef.current, paraRef.current, scrollBgRef.current],
         { x: 0, y: 0, duration: 2.0, ease: "power2.out" },
@@ -129,19 +163,8 @@ const Banner = ({ data }: BannerProps) => {
       id="home"
       className="md:min-h-[110vh] h-[80vh] bg-[url(/banner.webp)] bg-cover bg-center relative overflow-visible"
     >
-      {/* Glow */}
-      {/* <div
-        ref={glowRef}
-        className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-0 z-10"
-        style={{
-          transform: "translate(-50%, -50%)",
-          background: `radial-gradient(circle, ${accentColor}59 0%, ${accentColor}00 70%)`,
-          filter: "blur(12px)",
-        }}
-      /> */}
-
-      {/* Desktop banner image — hardcoded from /public */}
       <img
+        id="hero-shape-desktop"
         ref={banner1Ref}
         src="/banner1.webp"
         alt="banner"
@@ -149,8 +172,8 @@ const Banner = ({ data }: BannerProps) => {
         className="lg:absolute hidden lg:block 2xl:bottom-[-73vh] xl:bottom-[-60vh] lg:bottom-[-30vh] will-change-transform"
       />
 
-      {/* Mobile banner image — hardcoded from /public */}
       <img
+        id="hero-shape-mobile"
         ref={banner1MobRef}
         src="/banner1-mob.webp"
         alt="banner"
@@ -158,7 +181,6 @@ const Banner = ({ data }: BannerProps) => {
         className="absolute lg:hidden bottom-0 will-change-transform"
       />
 
-      {/* Scroll indicator — smooth scroll on click */}
       <a
         ref={scrollBgRef}
         href="#philosophy"
@@ -182,7 +204,6 @@ const Banner = ({ data }: BannerProps) => {
         </svg>
       </a>
 
-      {/* Text */}
       <div className="2xl:pt-[17vh] xl:pt-[20vh] lg:pt-[22vh] md:pt-[25vh] pt-[22vh] relative z-30">
         <div className="text-center 2xl:max-w-[1050px] lg:max-w-[900px] max-w-[700px] mx-auto px-4">
           <h1
