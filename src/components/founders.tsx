@@ -200,7 +200,7 @@ const Founders = ({ data }: FoundersProps) => {
                 ref={cardRefs[i]}
                 style={{ opacity: 0 }}
                 // Card bg — hardcoded from /public
-                className="bg-white border border-[#DEE6E9] rounded-[29px] md:w-[566px] w-full py-[5vh] flex flex-col items-center text-center shadow-lg"
+                className="bg-[#FAFAFC] border border-[#DEE6E9] rounded-[29px] md:w-[566px] w-full py-[5vh] flex flex-col items-center text-center shadow-lg"
               >
                 {/* Founder photo — from Sanity */}
                 <img

@@ -228,7 +228,7 @@ const Header = ({ data }: HeaderProps) => {
       if (isScrolled && !scrolledRef.current) {
         scrolledRef.current = true;
         gsap.to(header, {
-          backgroundColor: "rgba(255,255,255,0.82)",
+          backgroundColor: "#FAFAFC",
           backdropFilter: "blur(20px)",
           boxShadow: "0 2px 32px rgba(149,100,244,0.10)",
           paddingTop: "16px",

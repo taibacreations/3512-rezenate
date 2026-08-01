@@ -253,7 +253,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     <section
       ref={wrapRef}
       style={{ clipPath: "circle(150% at 50% 50%)" }}
-      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100]"
+      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100] bg-[#FAFAFC]"
     >
       <div
         ref={rotatingImgRef}
@@ -282,7 +282,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         />
         <img
           ref={loaderBannerMobileRef}
-          src="/banner1-mob.webp"
+          src="/banner1-mob.png"
           alt=""
           className="absolute inset-0 w-full h-full object-contain opacity-0 lg:hidden"
         />

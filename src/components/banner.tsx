@@ -169,13 +169,13 @@ const Banner = ({ data }: BannerProps) => {
         src="/banner1.webp"
         alt="banner"
         style={{ opacity: 0 }}
-        className="lg:absolute hidden lg:block 2xl:bottom-[-73vh] xl:bottom-[-60vh] lg:bottom-[-30vh] will-change-transform"
+        className="lg:absolute hidden lg:block 2xl:bottom-[-73vh] xl:bottom-[-60vh] lg:bottom-[-25vh] will-change-transform"
       />
 
       <img
         id="hero-shape-mobile"
         ref={banner1MobRef}
-        src="/banner1-mob.webp"
+        src="/banner1-mob.png"
         alt="banner"
         style={{ opacity: 0 }}
         className="absolute lg:hidden bottom-0 will-change-transform"
@@ -186,7 +186,7 @@ const Banner = ({ data }: BannerProps) => {
         href="#philosophy"
         onClick={(e) => { e.preventDefault(); scrollToSection("#philosophy"); }}
         style={{ opacity: 0 }}
-        className="bg-[url(/scroll-bg1.png)] bg-cover bg-center 2xl:w-[160px] 2xl:h-[166px] w-[130px] h-[140px] md:flex hidden flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 z-30 bottom-[0vh] will-change-transform"
+        className="bg-[url(/scroll-bg1.png)] md:bg-cover bg-contain bg-center 2xl:w-[160px] 2xl:h-[166px] md:w-[130px] md:h-[140px] w-[110px] h-[110px] flex flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 z-30 md:bottom-[0vh] bottom-[-3vh] will-change-transform"
       >
         <svg
           ref={arrowRef}
@@ -195,7 +195,7 @@ const Banner = ({ data }: BannerProps) => {
           height="43"
           viewBox="0 0 18 43"
           fill="none"
-          className="2xl:mt-[0vh] mt-[2vh] 2xl:h-[43px] h-[30px]"
+          className="2xl:mt-[0vh] md:mt-[2vh] 2xl:h-[43px] md:h-[30px] h-[25px]"
         >
           <path
             d="M8.66016 42.5L17.3204 27.5L-9.75728e-05 27.5L8.66016 42.5ZM10.1602 1.5C10.1602 0.671574 9.48859 3.62117e-08 8.66016 0C7.83173 -3.62117e-08 7.16016 0.671574 7.16016 1.5L8.66016 1.5L10.1602 1.5ZM8.66016 29L10.1602 29L10.1602 1.5L8.66016 1.5L7.16016 1.5L7.16016 29L8.66016 29Z"

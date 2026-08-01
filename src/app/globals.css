@@ -190,7 +190,7 @@ html {
   width: 100%;
   height: 107px;
   border-radius: 34px;
-  background: rgba(255, 255, 255, 0.85); /* white rakho, 0.4 se purple tint aa raha tha */
+  background: #FAFAFC; /* white rakho, 0.4 se purple tint aa raha tha */
   backdrop-filter: blur(72.62054443359375px);
   display: flex;
   justify-content: space-between;
