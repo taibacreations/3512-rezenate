@@ -253,7 +253,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     <section
       ref={wrapRef}
       style={{ clipPath: "circle(150% at 50% 50%)" }}
-      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100] bg-[#FAFAFC]"
+      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100] bg-[url-[/banner.webp]] bg-cover bg-center bg-no-repeat"
     >
       <div
         ref={rotatingImgRef}
@@ -263,7 +263,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           maskImage:
             "linear-gradient(to bottom, black var(--mask-stop, 100%), transparent 100%)",
         }}
-        className="lg:w-[1254px] md:w-[900px] md:h-[700px] w-[700px] h-[500px] absolute"
+        className="lg:w-[1254px] lg:h-[900px] md:w-[900px] md:h-[700px] w-[700px] h-[500px] absolute"
       >
         {/* Decorative loading shape — now animatable, fades out as the banners fade in */}
         <img
