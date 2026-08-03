@@ -263,12 +263,12 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           maskImage:
             "linear-gradient(to bottom, black var(--mask-stop, 100%), transparent 100%)",
         }}
-        className="xl:w-[1254px] lg:h-[940px] md:w-[700px] md:h-[700px] w-[500px] h-[450px] absolute md:top-auto top-[15vh]"
+        className="lg:w-[1254px] md:w-[900px] md:h-[700px] w-[700px] h-[500px] absolute"
       >
         {/* Decorative loading shape — now animatable, fades out as the banners fade in */}
         <img
           ref={loadingShapeRef}
-          src="/loading.png"
+          src="/loadings.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-contain"
         />
@@ -288,7 +288,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         />
       </div>
 
-      <div className="w-[1254px] h-[940px] flex flex-col xl:pt-[23.5vh] pt-[30vh] items-center text-center relative z-20 px-4">
+      <div className="w-[1254px] h-[940px] flex flex-col xl:pt-[23.5vh] md:pt-[30vh] items-center text-center relative z-20 px-4 justify-center md:justify-start">
         <div className="flex flex-col justify-center items-center gap-1.5">
           <svg
             ref={svgRef}
@@ -331,7 +331,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
 
         <div
           ref={spinnerRef}
-          className="md:mt-[4vh] mt-[2vh] flex flex-col items-center md:gap-3"
+          className="md:mt-[4vh] flex flex-col items-center md:gap-3"
         >
           <svg
             className="animate-spin lg:w-[83px] h-[83px] md:w-[60px] md:h-[60px] w-[45px] h-[45px]"
