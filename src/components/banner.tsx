@@ -21,6 +21,10 @@ const scrollToSection = (href: string) => {
   }
 };
 
+// Mouse interactions (parallax + glow) are lg-and-up only.
+const isLgUp = () =>
+  typeof window !== "undefined" && window.matchMedia("(min-width: 1200px)").matches;
+
 const FALLBACK = {
   headingPlain:  "Leadership changes everything",
   paragraph:
@@ -104,6 +108,7 @@ const Banner = ({ data }: BannerProps) => {
     return () => window.removeEventListener("loading-done", unlockParallax);
   }, []);
 
+  // Glow follow effect — lg and up only.
   useEffect(() => {
     const section = sectionRef.current;
     const glow    = glowRef.current;
@@ -112,9 +117,20 @@ const Banner = ({ data }: BannerProps) => {
     const quickX = gsap.quickTo(glow, "x", { duration: 1, ease: "power3.out" });
     const quickY = gsap.quickTo(glow, "y", { duration: 1, ease: "power3.out" });
 
-    const handleMove  = (e: MouseEvent) => { const r = section.getBoundingClientRect(); quickX(e.clientX - r.left); quickY(e.clientY - r.top); };
-    const handleEnter = () => gsap.to(glow, { opacity: 0.7, duration: 0.8 });
-    const handleLeave = () => gsap.to(glow, { opacity: 0,   duration: 0.8 });
+    const handleMove = (e: MouseEvent) => {
+      if (!isLgUp()) return;
+      const r = section.getBoundingClientRect();
+      quickX(e.clientX - r.left);
+      quickY(e.clientY - r.top);
+    };
+    const handleEnter = () => {
+      if (!isLgUp()) return;
+      gsap.to(glow, { opacity: 0.7, duration: 0.8 });
+    };
+    const handleLeave = () => {
+      if (!isLgUp()) return;
+      gsap.to(glow, { opacity: 0, duration: 0.8 });
+    };
 
     section.addEventListener("mousemove",  handleMove);
     section.addEventListener("mouseenter", handleEnter);
@@ -126,11 +142,13 @@ const Banner = ({ data }: BannerProps) => {
     };
   }, []);
 
+  // Mouse parallax — lg and up only.
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const onMove = (e: MouseEvent) => {
+      if (!isLgUp()) return;
       // Skip while the loader is still gliding/crossfading into these images.
       if (parallaxLockRef.current) return;
 
@@ -142,6 +160,7 @@ const Banner = ({ data }: BannerProps) => {
       gsap.to(scrollBgRef.current, { x: nx *  8, y: ny *  5, duration: 2.4, ease: "power2.out" });
     };
     const onLeave = () => {
+      if (!isLgUp()) return;
       if (parallaxLockRef.current) return;
       gsap.to(
         [banner1Ref.current, banner1MobRef.current, headingRef.current, paraRef.current, scrollBgRef.current],

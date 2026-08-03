@@ -38,6 +38,13 @@ const Cta = ({ data }: CtaProps) => {
   const buttonFillRef = useRef<HTMLSpanElement>(null);
   const buttonTextRef = useRef<HTMLSpanElement>(null);
 
+  // ── Scroll-to-top refs ───────────────────────────────────────────────────
+  const scrollTopRef = useRef<HTMLButtonElement>(null);
+  const scrollArrowRef = useRef<SVGSVGElement>(null);
+  const progressRingRef = useRef<SVGCircleElement>(null);
+  const RING_RADIUS = 27;
+  const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
   // ── Entrance ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -57,7 +64,7 @@ const Cta = ({ data }: CtaProps) => {
       gsap.set(headingRef.current, { opacity: 0, y: 20, filter: "blur(6px)" });
       gsap.set(paraRef.current, { opacity: 0, y: 14 });
       gsap.set(buttonRef.current, { opacity: 0, y: 16, scale: 0.92 });
-      
+
       const isMobile = window.innerWidth < 768;
 
       const createTrigger = () => {
@@ -232,11 +239,65 @@ const Cta = ({ data }: CtaProps) => {
     };
   }, []);
 
+  // ── Scroll-to-top button (float + hover) ───────────────────────────────────
+  useEffect(() => {
+    const btn = scrollTopRef.current;
+    const arrow = scrollArrowRef.current;
+    if (!btn || !arrow) return;
+
+    const floatTl = gsap.to(arrow, {
+      y: -4,
+      duration: 1.1,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    const handleEnter = () =>
+      gsap.to(btn, { scale: 1.06, duration: 0.3, ease: "power2.out" });
+    const handleLeave = () =>
+      gsap.to(btn, { scale: 1, duration: 0.3, ease: "power2.out" });
+
+    btn.addEventListener("mouseenter", handleEnter);
+    btn.addEventListener("mouseleave", handleLeave);
+    return () => {
+      floatTl.kill();
+      btn.removeEventListener("mouseenter", handleEnter);
+      btn.removeEventListener("mouseleave", handleLeave);
+    };
+  }, []);
+
+  // ── Scroll-progress ring ─────────────────────────────────────────────────
+  useEffect(() => {
+    const ring = progressRingRef.current;
+    if (!ring) return;
+
+    ring.style.strokeDasharray = `${RING_CIRCUMFERENCE}`;
+    ring.style.strokeDashoffset = `${RING_CIRCUMFERENCE}`;
+
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      const offset = RING_CIRCUMFERENCE * (1 - progress);
+      gsap.to(ring, { strokeDashoffset: offset, duration: 0.15, ease: "none", overwrite: true });
+    };
+
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, []);
+
   return (
     <section
       id="cta"
       ref={sectionRef}
-      className="md:min-h-[81.5vh] py-[15vh] relative flex justify-center items-center overflow-hidden"
+      className="md:min-h-[81.5vh] md:py-[15vh] pt-[15vh] pb-[20vh] relative flex justify-center items-center overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
@@ -293,6 +354,86 @@ const Cta = ({ data }: CtaProps) => {
             {buttonText}
           </span>
         </button>
+      </div>
+
+      {/* Scroll to top */}
+      <div className="absolute md:bottom-[5vh] bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center">
+        <svg
+          width="176"
+          height="46"
+          viewBox="0 0 176 46"
+          className="pointer-events-none"
+        >
+          {/* Radius sized so the label wraps the button snugly without letters colliding */}
+          <path id="scrollTopCurve" d="M 8,44 A 80,80 0 0 1 168,44" fill="none" />
+          <text
+            className="fill-[#6D5BD0] font-outfit uppercase"
+            fontSize="10.5"
+            fontWeight={500}
+            letterSpacing="2.5"
+          >
+            <textPath href="#scrollTopCurve" startOffset="50%" textAnchor="middle">
+              Scroll To Top
+            </textPath>
+          </text>
+        </svg>
+
+        <button
+          ref={scrollTopRef}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
+          className="group relative -mt-1 w-[60px] h-[60px] rounded-full flex items-center justify-center"
+        >
+          {/* Base disc */}
+          <span className="absolute inset-[3px] rounded-full border border-[#0B0730]/15 bg-white/80 backdrop-blur-sm shadow-[0_4px_20px_rgba(11,7,48,0.06)] transition-shadow duration-300 group-hover:shadow-[0_6px_26px_rgba(109,91,208,0.18)]" />
+
+          {/* Scroll-progress ring */}
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 60 60"
+            className="absolute inset-0 -rotate-90 pointer-events-none"
+          >
+            <circle
+              cx="30"
+              cy="30"
+              r={RING_RADIUS}
+              fill="none"
+              stroke="#0B0730"
+              strokeOpacity="0.08"
+              strokeWidth="1.5"
+            />
+            <circle
+              ref={progressRingRef}
+              cx="30"
+              cy="30"
+              r={RING_RADIUS}
+              fill="none"
+              stroke="#6D5BD0"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          <svg
+            ref={scrollArrowRef}
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6D5BD0"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="relative z-10"
+          >
+            <path d="M12 19V5M5 12l7-7 7 7" />
+          </svg>
+        </button>
+
+        <span className="mt-3 font-outfit text-[12px] tracking-[0.02em] text-[#0B0730]/50">
+          Back to top
+        </span>
       </div>
     </section>
   );
