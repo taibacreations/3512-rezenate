@@ -130,7 +130,7 @@ const Founders = ({ data }: FoundersProps) => {
     <section
       id="founders"
       ref={sectionRef}
-      className="pb-[8vh] px-2 md:px-6 xl:px-10 pt-[12.5vh] bg-[url(/founder1.png)] bg-cover bg-bottom bg-no-repeat relative overflow-hidden"
+      className="pb-[8vh] px-2 md:px-6 xl:px-10 pt-[12.5vh] bg-[url(/founder1.png)] bg-cover bg-bottom bg-no-repeat relative"
     >
       <img
         src="/founder-blur.png"
@@ -143,30 +143,28 @@ const Founders = ({ data }: FoundersProps) => {
         className="absolute w-full left-0 2xl:bottom-[-19vh] md:bottom-[-15vh] bottom-[-9vh] md:h-[300px] z-30 h-[180px]"
       />
       
-      {/* Merging Gradient Layer at Bottom */}
+      {/* Merging Gradient Layer at Bottom (merges to #FAFAFC) */}
       <div
         ref={mergeGradientRef}
-        className="absolute bottom-0 left-0 right-0 h-[250px] md:h-[350px] xl:h-[450px] pointer-events-none z-0"
+        className="absolute bottom-0 left-0 right-0 h-[300px] md:h-[400px] xl:h-[500px] pointer-events-none z-0"
         style={{
           background: `linear-gradient(to bottom, 
             transparent 0%, 
-            #9564F405 20%, 
-            #9564F410 40%, 
-            #9564F420 60%, 
-            #9564F430 80%, 
-            #9564F440 100%)`,
+            rgba(250, 250, 252, 0.2) 30%, 
+            rgba(250, 250, 252, 0.6) 60%, 
+            #FAFAFC 100%)`,
         }}
       />
 
-      {/* Additional soft blur layer */}
+      {/* Additional soft blur layer (merges to #FAFAFC) */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[200px] md:h-[300px] xl:h-[400px] pointer-events-none z-0"
+        className="absolute top-0 left-0 right-0 h-[200px] md:h-[300px] xl:h-[400px] pointer-events-none z-0"
         style={{
           background: `radial-gradient(ellipse at center bottom, 
-            #9564F4}25 0%, 
-            #9564F415 40%, 
+            #FAFAFC 0%, 
+            rgba(250, 250, 252, 0.5) 50%,
             transparent 100%)`,
-          filter: "blur(40px)",
+          filter: "blur(60px)",
         }}
       />
 

@@ -10,19 +10,6 @@ const FALLBACK = {
   loadingLabel: "Loading",
 };
 
-const HERO_TARGET_DESKTOP = "#hero-shape-desktop";
-const HERO_TARGET_MOBILE = "#hero-shape-mobile";
-
-function getHeroTarget(): HTMLElement | null {
-  const candidates = [
-    document.querySelector<HTMLElement>(HERO_TARGET_DESKTOP),
-    document.querySelector<HTMLElement>(HERO_TARGET_MOBILE),
-  ];
-  return (
-    candidates.find((el) => el && el.getBoundingClientRect().width > 0) ?? null
-  );
-}
-
 interface LoadingScreenProps {
   data?: LoadingData | null;
 }
@@ -39,13 +26,8 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const rotatingImgRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
 
-  // The decorative loading shape, now a real <img> so we can fade it out
-  // independently instead of leaving it stacked as a CSS background.
+  // The decorative loading shape (the "bubble") — test.png
   const loadingShapeRef = useRef<HTMLImageElement>(null);
-
-  // Refs for the inner banner images that will fade in during the glide
-  const loaderBannerDesktopRef = useRef<HTMLImageElement>(null);
-  const loaderBannerMobileRef = useRef<HTMLImageElement>(null);
 
   const [done, setDone] = useState(false);
 
@@ -123,7 +105,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       );
 
     const exitTimer = setTimeout(() => {
-      // Stop rotation before gliding so the fade-in looks stable
+      // Stop rotation before zooming so the motion reads as one continuous push-in
       rotationTween.kill();
       gsap.set(rotatingImgRef.current, { rotation: 0 });
 
@@ -140,6 +122,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         },
       });
 
+      // 1. Fade out logo/svg/text/spinner, leaving just the bubble on screen
       exitTl.to(
         [
           logoRef.current,
@@ -150,88 +133,45 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         { opacity: 0, duration: 0.35, ease: "power2.inOut" },
       );
 
-      const targetEl = getHeroTarget();
       const imgEl = rotatingImgRef.current;
 
-      if (targetEl && imgEl) {
-        const targetRect = targetEl.getBoundingClientRect();
-        const currentRect = imgEl.getBoundingClientRect();
+      if (imgEl) {
+        const rect = imgEl.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
 
-        const scaleTo = targetRect.width / currentRect.width;
-        const deltaX =
-          targetRect.left +
-          targetRect.width / 2 -
-          (currentRect.left + currentRect.width / 2);
-        const deltaY =
-          targetRect.top +
-          targetRect.height / 2 -
-          (currentRect.top + currentRect.height / 2);
+        // Scale enough that the bubble fully swallows the viewport,
+        // with a little overshoot so no edge is visible during the crossfade
+        const scaleNeeded =
+          Math.max(vw / rect.width, vh / rect.height) * 1.4;
 
-        const glideDuration = 1.8;
+        const zoomDuration = 1.4;
 
         exitTl
-          // 1. Glide the container down to the target
+          // 2. Punch the bubble up from its own center — the "zooming in" feel
           .to(
             imgEl,
             {
-              x: `+=${deltaX}`,
-              y: `+=${deltaY}`,
-              scale: scaleTo,
+              scale: scaleNeeded,
               transformOrigin: "center center",
-              duration: glideDuration,
-              ease: "power2.inOut",
+              duration: zoomDuration,
+              ease: "power2.in", // starts slow, accelerates like a dive
             },
             "-=0.1",
           )
-          // 2. SIMULTANEOUSLY crossfade INSIDE the container: the loading.png
-          //    shape fades out while banner1.webp fades in. By the time the
-          //    glide finishes, only the banner image is visible in the
-          //    ghost — nothing left of loading.png to overlap with the real
-          //    Banner image during the final crossfade below.
-          .to(
-            [loaderBannerDesktopRef.current, loaderBannerMobileRef.current],
-            {
-              opacity: 1,
-              duration: glideDuration,
-              ease: "power2.inOut",
-            },
-            "<",
-          )
-          .to(
-            loadingShapeRef.current,
-            {
-              opacity: 0,
-              duration: glideDuration,
-              ease: "power2.inOut",
-            },
-            "<",
-          )
           .call(() => window.dispatchEvent(new Event("loading-image-landed")))
-          // 3. Crossfade the ENTIRE loader overlay out while Banner's real image fades in
-          //    underneath on the same 0.5s window. Both sides now show the same
-          //    banner artwork at the same rect, so this is a clean single-image
-          //    crossfade instead of two different shapes overlapping.
-          .to(wrapRef.current, {
-            opacity: 0,
-            duration: 0.5,
-            ease: "power2.inOut",
-          });
-      } else {
-        exitTl
-          .to(loadingShapeRef.current, {
-            opacity: 0,
-            duration: 0.6,
-            ease: "power2.inOut",
-          })
+          // 3. Once it's filled the screen, dissolve the whole overlay to reveal the homepage
           .to(
             wrapRef.current,
-            {
-              opacity: 0,
-              duration: 0.6,
-              ease: "power2.inOut",
-            },
-            "<",
+            { opacity: 0, duration: 0.5, ease: "power2.inOut" },
+            "-=0.3",
           );
+      } else {
+        exitTl.to(wrapRef.current, {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.inOut",
+        });
       }
     }, 3200);
 
@@ -263,28 +203,14 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           maskImage:
             "linear-gradient(to bottom, black var(--mask-stop, 100%), transparent 100%)",
         }}
-        className="lg:w-[1254px] lg:h-[900px] md:w-[900px] md:h-[700px] w-[700px] h-[500px] absolute"
+        className="lg:w-[1554px] lg:h-[1100px] w-[1200px] h-[1000px] absolute"
       >
-        {/* Decorative loading shape — now animatable, fades out as the banners fade in */}
+        {/* The bubble */}
         <img
           ref={loadingShapeRef}
-          src="/loadings.webp"
+          src="/test.png"
           alt=""
           className="absolute inset-0 w-full h-full object-contain"
-        />
-
-        {/* These inner images fade in during the glide, creating the smooth transition */}
-        <img
-          ref={loaderBannerDesktopRef}
-          src="/banner1.webp"
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain opacity-0 hidden lg:block"
-        />
-        <img
-          ref={loaderBannerMobileRef}
-          src="/banner1-mob.png"
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain opacity-0 lg:hidden"
         />
       </div>
 

@@ -132,7 +132,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       <img src="/philosophy.png" alt="vector" className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full md:block hidden" />
       <img src="/philosophy-mob1.png" alt="vector" className="absolute w-full h-full md:hidden" />
 
-      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[27vh] md:pt-[10vh] pt-[50px] relative z-30">
+      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[10vh] md:pt-[10vh] pt-[50px] relative z-30">
         <div className="xl:max-w-[714px] lg:max-w-[620px] max-w-[550px] relative z-20">
           <h2
             ref={headingRef}

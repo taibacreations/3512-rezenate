@@ -297,7 +297,7 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="md:min-h-[81.5vh] md:py-[15vh] pt-[15vh] pb-[20vh] relative flex justify-center items-center overflow-hidden"
+      className="py-[15vh] relative flex justify-center items-center overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
@@ -357,14 +357,13 @@ const Cta = ({ data }: CtaProps) => {
       </div>
 
       {/* Scroll to top */}
-      <div className="absolute md:bottom-[5vh] bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center">
+      {/* <div className="absolute md:bottom-[5vh] bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center">
         <svg
           width="176"
           height="46"
           viewBox="0 0 176 46"
           className="pointer-events-none"
         >
-          {/* Radius sized so the label wraps the button snugly without letters colliding */}
           <path id="scrollTopCurve" d="M 8,44 A 80,80 0 0 1 168,44" fill="none" />
           <text
             className="fill-[#6D5BD0] font-outfit uppercase"
@@ -384,10 +383,9 @@ const Cta = ({ data }: CtaProps) => {
           aria-label="Scroll to top"
           className="group relative -mt-1 w-[60px] h-[60px] rounded-full flex items-center justify-center"
         >
-          {/* Base disc */}
           <span className="absolute inset-[3px] rounded-full border border-[#0B0730]/15 bg-white/80 backdrop-blur-sm shadow-[0_4px_20px_rgba(11,7,48,0.06)] transition-shadow duration-300 group-hover:shadow-[0_6px_26px_rgba(109,91,208,0.18)]" />
 
-          {/* Scroll-progress ring */}
+
           <svg
             width="60"
             height="60"
@@ -434,7 +432,7 @@ const Cta = ({ data }: CtaProps) => {
         <span className="mt-3 font-outfit text-[12px] tracking-[0.02em] text-[#0B0730]/50">
           Back to top
         </span>
-      </div>
+      </div> */}
     </section>
   );
 };
