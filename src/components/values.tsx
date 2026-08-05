@@ -457,7 +457,7 @@ const Values = ({ data }: ValuesProps) => {
         ref={sectionRef}
         className="xl:min-h-[127vh] min-h-screen relative z-20"
       >
-        <div className="2xl:pt-[8.3vh] xl:pt-[13vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="2xl:pt-[8.3vh] xl:pt-[16vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Heading */}
           <div
             ref={headingRef}

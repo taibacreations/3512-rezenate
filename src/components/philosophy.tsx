@@ -128,7 +128,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-[#FAFAFC]"
     >
       <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10" />
-      <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-42vh] md:bottom-[-16vh] bottom-[-11vh] w-full z-10" />
+      <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-48vh] lg:bottom-[-21vh] md:bottom-[-16vh] bottom-[-11vh] w-full z-10 xl:h-[600px] xl:h-auto" />
       <img src="/philosophy.png" alt="vector" className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full md:block hidden" />
       <img src="/philosophy-mob1.png" alt="vector" className="absolute w-full h-full md:hidden" />
 

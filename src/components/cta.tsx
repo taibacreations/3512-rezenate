@@ -297,7 +297,7 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="py-[15vh] relative flex justify-center items-center overflow-hidden"
+      className="xl:py-[15vh] lg:py-[18vh] py-[15vh] relative flex justify-center items-center overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
