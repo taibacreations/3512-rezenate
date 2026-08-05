@@ -210,7 +210,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           ref={loadingShapeRef}
           src="/test.png"
           alt=""
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-contain md:scale-100 scale-70"
         />
       </div>
 
