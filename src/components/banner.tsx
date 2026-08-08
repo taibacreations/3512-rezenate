@@ -434,7 +434,7 @@ const Banner = ({ data }: BannerProps) => {
       {/* =====================================================
           SCROLL BUTTON
       ====================================================== */}
-      <a
+      {/* <a
         ref={scrollBgRef}
         href="#philosophy"
         onClick={(e) => {
@@ -494,7 +494,7 @@ const Banner = ({ data }: BannerProps) => {
             fill="#9564F4"
           />
         </svg>
-      </a>
+      </a> */}
 
       {/* =====================================================
           HERO CONTENT

@@ -225,16 +225,20 @@ export const CTA_QUERY = `*[_type == "cta"][0]{
   paragraph,
   buttonText,
   buttonLink,
-  accentColor
+  accentColor,
+  email,
+  phone
 }`;
- 
+
 export type CtaData = {
-  headingPlain?:  string;
-  paragraph?:     string;
-  buttonText?:    string;
-  buttonLink?:    string;
+  headingPlain?: string;
+  paragraph?:    string;
+  buttonText?:   string;
+  buttonLink?:   string;
+  email?:        string;
+  phone?:        string;
 };
- 
+
 export async function getCtaData(): Promise<CtaData> {
   return client.fetch<CtaData>(CTA_QUERY, {}, { cache: "no-store" });
 }

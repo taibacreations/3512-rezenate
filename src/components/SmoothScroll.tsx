@@ -1,4 +1,3 @@
-// src/components/SmoothScroll.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -24,24 +23,39 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     lenisRef.current = lenis;
 
-    // Sync Lenis → ScrollTrigger (yahi kaafi hai, proxy nahi chahiye)
+    // Start paused — loading screen is still active
+    lenis.stop();
+
     lenis.on("scroll", ScrollTrigger.update);
 
-    // GSAP ticker drives Lenis RAF
     const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    // Initial refresh after Lenis is ready
-    ScrollTrigger.refresh();
+    // Resume only after loading is fully done
+    const onLoadingDone = () => {
+      lenis.start();
+      // Give browser one frame to repaint before refreshing triggers
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh(true);
+      });
+    };
+
+    if ((window as any).__loadingDone) {
+      // Loading already finished before this mounted
+      lenis.start();
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+    } else {
+      window.addEventListener("loading-done", onLoadingDone, { once: true });
+    }
 
     return () => {
+      window.removeEventListener("loading-done", onLoadingDone);
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;
-      ScrollTrigger.refresh();
     };
   }, []);
 

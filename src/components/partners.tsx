@@ -59,14 +59,13 @@ const getPartnerIcon = (index: number, accentColor: string) => {
         </svg>
       );
     case 3: // Anchor
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="5" r="2" />
-          <path d="M12 7v13" />
-          <path d="M7 13a5 5 0 0 0 10 0" />
-          <path d="M5 13H2l1.5 2M22 13h-3l-1.5 2" />
-        </svg>
-      );
+  return (
+    <svg {...common}>
+      <circle cx="12" cy="4" r="2" />
+      <path d="M12 6v14" />
+      <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
+    </svg>
+  );
     case 4: // Ascend — rising trend arrow
       return (
         <svg {...common}>
@@ -211,7 +210,7 @@ const PartnerCard = ({
 
   return (
     <div
-      className="border border-[#DEE6E9] rounded-[20px] cursor-pointer"
+      className="border border-[#DEE6E9] rounded-[20px] cursor-pointer transition-colors duration-300 hover:border-[#9564F4] hover:shadow-[0_4px_28px_rgba(149,100,244,0.12)]"
       onClick={onClick}
     >
       <div className="partner-border lg:pl-12 pl-6 pr-4 !h-auto !flex-col !items-start py-4">

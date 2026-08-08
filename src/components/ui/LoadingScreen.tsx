@@ -25,8 +25,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const rotatingImgRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
-
-  // The decorative loading shape (the "bubble") — test.png
   const loadingShapeRef = useRef<HTMLImageElement>(null);
 
   const [done, setDone] = useState(false);
@@ -36,12 +34,15 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       window.history.scrollRestoration = "manual";
     }
 
-    const scrollY = window.scrollY;
+    // Always force scroll to top before locking — prevents mid-page refresh overlap
+    window.scrollTo(0, 0);
+
     document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
+    document.body.style.top = "0px";
     document.body.style.left = "0";
     document.body.style.right = "0";
     document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
 
     if (!svgRef.current) return;
     const paths = svgRef.current.querySelectorAll("path");
@@ -59,7 +60,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     gsap.set(contentRef.current, { opacity: 0, y: 20 });
     gsap.set(spinnerRef.current, { opacity: 0 });
     gsap.set(loadingShapeRef.current, { opacity: 1 });
-
     gsap.set(rotatingImgRef.current, {
       "--mask-stop": "100%",
     } as gsap.TweenVars);
@@ -105,7 +105,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       );
 
     const exitTimer = setTimeout(() => {
-      // Stop rotation before zooming so the motion reads as one continuous push-in
       rotationTween.kill();
       gsap.set(rotatingImgRef.current, { rotation: 0 });
 
@@ -116,13 +115,14 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           document.body.style.left = "";
           document.body.style.right = "";
           document.body.style.width = "";
-          window.scrollTo(0, scrollY);
+          document.body.style.overflow = "";
+          window.scrollTo(0, 0);
           setDone(true);
+          (window as any).__loadingDone = true;
           window.dispatchEvent(new Event("loading-done"));
         },
       });
 
-      // 1. Fade out logo/svg/text/spinner, leaving just the bubble on screen
       exitTl.to(
         [
           logoRef.current,
@@ -139,28 +139,22 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         const rect = imgEl.getBoundingClientRect();
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-
-        // Scale enough that the bubble fully swallows the viewport,
-        // with a little overshoot so no edge is visible during the crossfade
         const scaleNeeded =
           Math.max(vw / rect.width, vh / rect.height) * 1.4;
-
         const zoomDuration = 1.4;
 
         exitTl
-          // 2. Punch the bubble up from its own center — the "zooming in" feel
           .to(
             imgEl,
             {
               scale: scaleNeeded,
               transformOrigin: "center center",
               duration: zoomDuration,
-              ease: "power2.in", // starts slow, accelerates like a dive
+              ease: "power2.in",
             },
             "-=0.1",
           )
           .call(() => window.dispatchEvent(new Event("loading-image-landed")))
-          // 3. Once it's filled the screen, dissolve the whole overlay to reveal the homepage
           .to(
             wrapRef.current,
             { opacity: 0, duration: 0.5, ease: "power2.inOut" },
@@ -184,6 +178,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       document.body.style.left = "";
       document.body.style.right = "";
       document.body.style.width = "";
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -205,7 +200,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         }}
         className="lg:w-[1554px] lg:h-[1100px] w-[1200px] h-[1000px] absolute"
       >
-        {/* The bubble */}
         <img
           ref={loadingShapeRef}
           src="/test.png"

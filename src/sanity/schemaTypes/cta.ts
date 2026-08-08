@@ -1,4 +1,3 @@
-// sanity/schemas/cta.ts
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -29,6 +28,18 @@ export default defineType({
       title: "Button Link",
       type: "string",
       initialValue: "#footer",
+    }),
+    defineField({
+      name: "email",
+      title: "Contact Email",
+      type: "string",
+      initialValue: "hello@rezenate.io",
+    }),
+    defineField({
+      name: "phone",
+      title: "Contact Phone",
+      type: "string",
+      initialValue: "07740342645",
     }),
   ],
   preview: {

@@ -36,6 +36,28 @@ const Philosophy = ({ data }: PhilosophyProps) => {
   const para2Ref = useRef<HTMLParagraphElement>(null);
   const para3Ref = useRef<HTMLParagraphElement>(null);
   const quoteBoxRef = useRef<HTMLDivElement>(null);
+  const blurBottomRef = useRef<HTMLImageElement>(null);
+
+  // ── Dynamic bottom position for 915px height screens ─────────────────
+  useEffect(() => {
+    const el = blurBottomRef.current;
+    if (!el) return;
+
+    const apply = () => {
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      // xl breakpoint = 1280px, height exactly 915px
+      if (w >= 1280 && h === 915) {
+        el.style.bottom = "-40vh";
+      } else {
+        el.style.bottom = "";
+      }
+    };
+
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
+  }, []);
 
   // ── Logo assembly loop ────────────────────────────────────────────────
   useEffect(() => {
@@ -78,8 +100,6 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            // ✅ CHANGED: "top 60%" triggers when the section is nicely centered in "perfect view"
-            // (Previously "top 80%" triggered the moment it peeked from the bottom)
             start: isMobile ? "top 70%" : "top 60%",
             once: true,
           },
@@ -92,12 +112,10 @@ const Philosophy = ({ data }: PhilosophyProps) => {
           .fromTo(quoteBoxRef.current, { autoAlpha: 0, x: 50, y: 10 }, { autoAlpha: 1, x: 0, y: 0, duration: 1.1, ease: "expo.out" }, "-=0.8");
       };
 
-      // ✅ CHANGED: Use the reliable global flag instead of checking body styles
       if ((window as any).__loadingDone) {
         createTrigger();
       } else {
         const onLoadingDone = () => {
-          // Small delay ensures the browser has fully recalculated layout after body unlock
           setTimeout(() => {
             ScrollTrigger.refresh(true);
             createTrigger();
@@ -105,8 +123,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         };
 
         window.addEventListener("loading-done", onLoadingDone, { once: true });
-        
-        // Fallback: in case the event fired a millisecond before this component mounted
+
         if ((window as any).__loadingDone) {
           window.removeEventListener("loading-done", onLoadingDone);
           createTrigger();
@@ -127,8 +144,17 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       id="philosophy"
       className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-[#FAFAFC]"
     >
-      <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10" />
-      <img src="/founder-blur.png" alt="blur" className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-48vh] lg:bottom-[-21vh] md:bottom-[-16vh] bottom-[-11vh] w-full z-10 xl:h-[600px] xl:h-auto" />
+      <img
+        src="/founder-blur.png"
+        alt="blur"
+        className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10"
+      />
+      <img
+        ref={blurBottomRef}
+        src="/founder-blur.png"
+        alt="blur"
+        className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-48vh] lg:bottom-[-21vh] md:bottom-[-16vh] bottom-[-11vh] w-full z-10 xl:h-[600px] xl:h-auto"
+      />
       <img src="/philosophy.png" alt="vector" className="absolute 2xl:right-[-10%] right-[-15%] lg:h-auto h-full md:block hidden" />
       <img src="/philosophy-mob1.png" alt="vector" className="absolute w-full h-full md:hidden" />
 
