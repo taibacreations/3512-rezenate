@@ -19,13 +19,13 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const tagline = data?.tagline ?? FALLBACK.tagline;
   const loadingLabel = data?.loadingLabel ?? FALLBACK.loadingLabel;
 
-  const wrapRef = useRef<HTMLElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const spinnerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const rotatingImgRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
-  const loadingShapeRef = useRef<HTMLImageElement>(null);
+  const wrapRef = useRef<HTMLElement | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const spinnerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const bubbleRef = useRef<HTMLDivElement | null>(null);
+  const bubbleImageRef = useRef<HTMLImageElement | null>(null);
+  const logoRef = useRef<HTMLImageElement | null>(null);
 
   const [done, setDone] = useState(false);
 
@@ -34,9 +34,10 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       window.history.scrollRestoration = "manual";
     }
 
-    // Always force scroll to top before locking — prevents mid-page refresh overlap
+    // Always start at top
     window.scrollTo(0, 0);
 
+    // Lock page while loading
     document.body.style.position = "fixed";
     document.body.style.top = "0px";
     document.body.style.left = "0";
@@ -45,69 +46,244 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     document.body.style.overflow = "hidden";
 
     if (!svgRef.current) return;
+
     const paths = svgRef.current.querySelectorAll("path");
+
+    /*
+     * ---------------------------------------------------------
+     * INITIAL STATE
+     * ---------------------------------------------------------
+     */
 
     gsap.set(paths[2], {
       scale: 0.25,
       opacity: 0,
       transformOrigin: "center center",
     });
+
     gsap.set([paths[0], paths[1]], {
       opacity: 0,
       scale: 1,
       transformOrigin: "center center",
     });
-    gsap.set(contentRef.current, { opacity: 0, y: 20 });
-    gsap.set(spinnerRef.current, { opacity: 0 });
-    gsap.set(loadingShapeRef.current, { opacity: 1 });
-    gsap.set(rotatingImgRef.current, {
-      "--mask-stop": "100%",
-    } as gsap.TweenVars);
 
-    const rotationTween = gsap.to(rotatingImgRef.current, {
-      rotation: 360,
-      duration: 25,
-      ease: "none",
-      repeat: -1,
-      transformOrigin: "center center",
+    gsap.set(contentRef.current, {
+      opacity: 0,
+      y: 20,
     });
 
+    gsap.set(spinnerRef.current, {
+      opacity: 0,
+    });
+
+    /*
+     * Bubble starts slightly compressed — gives it room
+     * to breathe and squish in both directions.
+     */
+    gsap.set(bubbleRef.current, {
+      scaleX: 0.92,
+      scaleY: 0.96,
+      x: 0,
+      y: 0,
+      rotation: 0,
+    });
+
+    /*
+     * ---------------------------------------------------------
+     * BUBBLE MOVEMENT
+     *
+     * Real bubble physics:
+     * - drifts with wide range so it's clearly visible
+     * - scaleX/scaleY squish separately (not uniform scale)
+     *   → when moving right it stretches horizontally,
+     *     when moving left it stretches vertically
+     * - slow cycles so users actually see the effect
+     * ---------------------------------------------------------
+     */
+
+    const bubbleFloat = gsap.timeline({
+      repeat: -1,
+      yoyo: true,
+      defaults: {
+        ease: "sine.inOut",
+      },
+    });
+
+    bubbleFloat
+      .to(
+        bubbleRef.current,
+        {
+          x: 42,
+          y: -30,
+          rotation: 4.5,
+          scaleX: 1.07,
+          scaleY: 0.95,   // squish horizontally → stretches sideways like a drifting bubble
+          duration: 4.2,
+        },
+        0,
+      )
+      .to(
+        bubbleRef.current,
+        {
+          x: -36,
+          y: 24,
+          rotation: -4,
+          scaleX: 0.94,
+          scaleY: 1.06,   // squish vertically → elongates like a rising bubble
+          duration: 4.8,
+        },
+        4.2,
+      )
+      .to(
+        bubbleRef.current,
+        {
+          x: 22,
+          y: 34,
+          rotation: 3,
+          scaleX: 1.05,
+          scaleY: 0.96,
+          duration: 4.0,
+        },
+        9.0,
+      )
+      .to(
+        bubbleRef.current,
+        {
+          x: -20,
+          y: -22,
+          rotation: -2.5,
+          scaleX: 0.97,
+          scaleY: 1.04,
+          duration: 4.5,
+        },
+        13.0,
+      );
+
+    /*
+     * Counter-movement on the image inside the bubble
+     * creates a parallax / depth effect — image drifts
+     * opposite to the bubble shell, making it feel 3D.
+     */
+    const bubbleImageFloat = gsap.to(bubbleImageRef.current, {
+      x: -20,
+      y: 14,
+      rotation: -4.5,
+      duration: 6.0,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    /*
+     * ---------------------------------------------------------
+     * LOGO ASSEMBLY
+     * ---------------------------------------------------------
+     */
+
     const assembleTl = gsap.timeline();
+
     assembleTl
       .fromTo(
         paths[2],
-        { x: 30, y: -30, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        {
+          x: 30,
+          y: -30,
+          opacity: 0,
+        },
+        {
+          x: 0,
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out",
+        },
         0,
       )
-      .to(paths[2], { scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 0.5)
+      .to(
+        paths[2],
+        {
+          scale: 1,
+          duration: 0.4,
+          ease: "back.out(1.7)",
+        },
+        0.5,
+      )
       .fromTo(
         paths[1],
-        { x: 50, y: -50, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
+        {
+          x: 50,
+          y: -50,
+          opacity: 0,
+        },
+        {
+          x: 0,
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "back.out(1.7)",
+        },
         0.9,
       )
       .fromTo(
         paths[0],
-        { x: 70, y: -70, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
+        {
+          x: 70,
+          y: -70,
+          opacity: 0,
+        },
+        {
+          x: 0,
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "back.out(1.7)",
+        },
         1.8,
       )
       .to(
         contentRef.current,
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        2.0,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        2,
       )
       .to(
         spinnerRef.current,
-        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        {
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        },
         2.3,
       );
 
-    const exitTimer = setTimeout(() => {
-      rotationTween.kill();
-      gsap.set(rotatingImgRef.current, { rotation: 0 });
+    /*
+     * ---------------------------------------------------------
+     * EXIT
+     *
+     * IMPORTANT:
+     *
+     * No opacity fade on the whole loading screen.
+     *
+     * The bubble expands until it completely covers
+     * the viewport.
+     *
+     * Timer raised to 5000ms so users fully experience
+     * the bubble float before it exits.
+     * ---------------------------------------------------------
+     */
 
+    const exitTimer = setTimeout(() => {
+      bubbleFloat.kill();
+      bubbleImageFloat.kill();
+
+      /*
+       * First stop the text/logo elements.
+       * The bubble itself stays visible.
+       */
       const exitTl = gsap.timeline({
         onComplete: () => {
           document.body.style.position = "";
@@ -116,9 +292,13 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           document.body.style.right = "";
           document.body.style.width = "";
           document.body.style.overflow = "";
+
           window.scrollTo(0, 0);
+
           setDone(true);
+
           (window as any).__loadingDone = true;
+
           window.dispatchEvent(new Event("loading-done"));
         },
       });
@@ -130,49 +310,94 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           contentRef.current,
           spinnerRef.current,
         ],
-        { opacity: 0, duration: 0.35, ease: "power2.inOut" },
+        {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.inOut",
+        },
       );
 
-      const imgEl = rotatingImgRef.current;
+      /*
+       * -------------------------------------------------------
+       * BUBBLE ZOOM
+       *
+       * Instead of fading out:
+       *
+       * bubble -> gets larger -> covers entire screen
+       *
+       * This gives the client the "zoom all the way out"
+       * effect.
+       * -------------------------------------------------------
+       */
 
-      if (imgEl) {
-        const rect = imgEl.getBoundingClientRect();
+      const bubble = bubbleRef.current;
+
+      if (bubble) {
+        const rect = bubble.getBoundingClientRect();
+
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        const scaleNeeded =
-          Math.max(vw / rect.width, vh / rect.height) * 1.4;
-        const zoomDuration = 1.4;
 
-        exitTl
-          .to(
-            imgEl,
-            {
-              scale: scaleNeeded,
-              transformOrigin: "center center",
-              duration: zoomDuration,
-              ease: "power2.in",
-            },
-            "-=0.1",
-          )
-          .call(() => window.dispatchEvent(new Event("loading-image-landed")))
-          .to(
-            wrapRef.current,
-            { opacity: 0, duration: 0.5, ease: "power2.inOut" },
-            "-=0.3",
+        /*
+         * Calculate how large the bubble needs to become
+         * to cover the complete viewport.
+         */
+        const distanceToCorner = Math.sqrt(
+          Math.pow(vw / 2, 2) + Math.pow(vh / 2, 2),
+        );
+
+        const bubbleRadius = Math.max(rect.width, rect.height) / 2;
+
+        const scaleNeeded =
+          (distanceToCorner / bubbleRadius) * 1.25;
+
+        exitTl.to(
+          bubble,
+          {
+            scale: Math.max(scaleNeeded, 4),
+            x: 0,
+            y: 0,
+            rotation: 0,
+            duration: 1.5,
+            ease: "power2.in",
+            transformOrigin: "center center",
+          },
+          "-=0.05",
+        );
+
+        /*
+         * Notify the rest of the website once the bubble
+         * has landed over the viewport.
+         */
+        exitTl.call(() => {
+          window.dispatchEvent(
+            new Event("loading-image-landed"),
           );
+        });
+
+        /*
+         * Remove loading wrapper AFTER the bubble has
+         * already covered the screen.
+         *
+         * No fade.
+         */
+        exitTl.set(wrapRef.current, {
+          display: "none",
+        });
       } else {
-        exitTl.to(wrapRef.current, {
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.inOut",
+        exitTl.set(wrapRef.current, {
+          display: "none",
         });
       }
-    }, 3200);
+    }, 5000);
 
     return () => {
       clearTimeout(exitTimer);
+
       assembleTl.kill();
-      rotationTween.kill();
+      bubbleFloat.kill();
+      bubbleImageFloat.kill();
+
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
@@ -187,29 +412,80 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   return (
     <section
       ref={wrapRef}
-      style={{ clipPath: "circle(150% at 50% 50%)" }}
-      className="w-full min-h-screen flex justify-center items-center fixed inset-0 z-[100] bg-[url-[/banner.webp]] bg-cover bg-center bg-no-repeat"
+      className="fixed inset-0 z-[100] flex min-h-screen w-full items-center justify-center overflow-hidden bg-[url('/banner.webp')] bg-cover bg-center bg-no-repeat"
     >
+      {/*
+       * =====================================================
+       * BUBBLE
+       *
+       * Your supplied test.svg is used here.
+       *
+       * The image is clipped into a circular bubble.
+       * =====================================================
+       */}
       <div
-        ref={rotatingImgRef}
+        ref={bubbleRef}
+        className="
+          absolute
+          left-1/2
+          top-1/2
+          z-10
+          h-[105vh]
+          w-[105vh]
+          -translate-x-1/2
+          -translate-y-1/2
+          overflow-hidden
+          rounded-full
+          will-change-transform
+        "
         style={{
-          WebkitMaskImage:
-            "linear-gradient(to bottom, black var(--mask-stop, 100%), transparent 100%)",
-          maskImage:
-            "linear-gradient(to bottom, black var(--mask-stop, 100%), transparent 100%)",
+          transformOrigin: "center center",
         }}
-        className="lg:w-[1554px] lg:h-[1100px] w-[1200px] h-[1000px] absolute"
       >
         <img
-          ref={loadingShapeRef}
+          ref={bubbleImageRef}
           src="/test.png"
           alt=""
-          className="absolute inset-0 w-full h-full object-contain md:scale-100 scale-70"
+          aria-hidden="true"
+          className="
+            absolute
+            left-1/2
+            top-1/2
+            h-full
+            w-full
+            max-w-none
+            -translate-x-1/2
+            -translate-y-1/2
+            object-cover
+            will-change-transform
+          "
         />
       </div>
 
-      <div className="w-[1254px] h-[940px] flex flex-col xl:pt-[23.5vh] md:pt-[30vh] items-center text-center relative z-20 px-4 justify-center md:justify-start">
-        <div className="flex flex-col justify-center items-center gap-1.5">
+      {/*
+       * =====================================================
+       * CONTENT
+       * =====================================================
+       */}
+      <div
+        className="
+          relative
+          z-20
+          flex
+          h-[940px]
+          w-[1254px]
+          flex-col
+          items-center
+          justify-center
+          px-4
+          text-center
+          md:justify-start
+          md:pt-[30vh]
+          xl:pt-[23.5vh]
+        "
+      >
+        <div className="flex flex-col items-center justify-center gap-1.5">
+          {/* Exact SVG logo code preserved */}
           <svg
             ref={svgRef}
             xmlns="http://www.w3.org/2000/svg"
@@ -217,51 +493,100 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
             height="51"
             viewBox="0 0 51 51"
             fill="none"
-            className="w-[44px] h-[44px]"
+            className="h-[44px] w-[44px]"
           >
             <path
               d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
               fill="#9564F4"
             />
+
             <path
               d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
               fill="#9564F4"
             />
+
             <path
               d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
               fill="#9564F4"
             />
           </svg>
+
           <img
             ref={logoRef}
             src="/logos.webp"
             alt="Rezenate"
-            className="lg:w-[203px] md:w-[170px] w-[140px] h-auto"
+            className="h-auto w-[140px] md:w-[170px] lg:w-[203px]"
           />
         </div>
 
-        <div ref={contentRef} className="md:mt-[6vh] mt-[3vh]">
-          <h2 className="font-toruspro font-normal lg:text-[72px] md:text-[60px] text-[40px] leading-[101%] tracking-[-0.04em] capitalize text-black">
+        <div
+          ref={contentRef}
+          className="mt-[3vh] md:mt-[6vh]"
+        >
+          <h2
+            className="
+              font-toruspro
+              text-[40px]
+              font-normal
+              leading-[101%]
+              tracking-[-0.04em]
+              text-black
+              md:text-[60px]
+              lg:text-[72px]
+            "
+          >
             {headingPlain}
           </h2>
-          <p className="font-outfit lg:text-[24px] md:text-[22px] text-[20px] leading-[115%] text-black mt-[1.5vh]">
+
+          <p
+            className="
+              mt-[1.5vh]
+              font-outfit
+              text-[20px]
+              leading-[115%]
+              text-black
+              md:text-[22px]
+              lg:text-[24px]
+            "
+          >
             {tagline}
           </p>
         </div>
 
         <div
           ref={spinnerRef}
-          className="md:mt-[4vh] flex flex-col items-center md:gap-3"
+          className="
+            mt-[4vh]
+            flex
+            flex-col
+            items-center
+            md:gap-3
+          "
         >
           <svg
-            className="animate-spin lg:w-[83px] h-[83px] md:w-[60px] md:h-[60px] w-[45px] h-[45px]"
+            className="
+              h-[45px]
+              w-[45px]
+              animate-spin
+              md:h-[60px]
+              md:w-[60px]
+              lg:h-[83px]
+              lg:w-[83px]
+            "
             width="83"
             height="83"
             viewBox="0 0 48 48"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="24" cy="24" r="20" stroke="#dec7ff" strokeWidth="3" />
+            <circle
+              cx="24"
+              cy="24"
+              r="20"
+              stroke="#dec7ff"
+              strokeWidth="3"
+            />
+
             <path
               d="M44 24C44 13 35 4 24 4"
               stroke="#9564F4"
@@ -269,7 +594,17 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
               strokeLinecap="round"
             />
           </svg>
-          <p className="font-outfit lg:text-[24px] md:text-[20px] text-[18px] text-black leading-[115%]">
+
+          <p
+            className="
+              font-outfit
+              text-[18px]
+              leading-[115%]
+              text-black
+              md:text-[20px]
+              lg:text-[24px]
+            "
+          >
             {loadingLabel}
           </p>
         </div>
