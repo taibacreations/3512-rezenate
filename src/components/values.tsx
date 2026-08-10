@@ -445,19 +445,19 @@ const Values = ({ data }: ValuesProps) => {
 
   const cardPositions = [
     "right-[3.7%]",
-    "right-[-1%] xl:top-[15vh] 2xl:top-[17vh] top-[14vh]",
-    "right-[3.5%] xl:top-[30vh] 2xl:top-[34vh] top-[28vh]",
-    "right-[-1%] xl:top-[46vh] 2xl:top-[51vh] top-[42vh]",
-    "right-[4%] 2xl:top-[68vh] xl:top-[63vh] top-[58vh]",
+    "right-[-1%] xl:top-[15vh] 2xl:top-[17vh] 3xl:top-[14vh] top-[14vh]",
+    "right-[3.5%] xl:top-[30vh] 2xl:top-[34vh] 3xl:top-[28vh] top-[28vh]",
+    "right-[-1%] xl:top-[46vh] 2xl:top-[51vh] 3xl:top-[42vh] top-[42vh]",
+    "right-[4%] 2xl:top-[68vh] xl:top-[63vh] 3xl:top-[56vh] top-[58vh]",
   ];
 
   return (
     <>
       <section
         ref={sectionRef}
-        className="xl:min-h-[127vh] min-h-screen relative z-20"
+        className="xl:h-[127vh] min-h-screen 3xl:h-screen relative z-20"
       >
-        <div className="2xl:pt-[8.3vh] xl:pt-[20vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="3xl:pt-0 2xl:pt-[8.3vh] xl:pt-[20vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Heading */}
           <div
             ref={headingRef}
@@ -471,7 +471,7 @@ const Values = ({ data }: ValuesProps) => {
 
           <div>
             {/* Ball — hardcoded */}
-            <div className="md:absolute 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 2xl:top-[3%] xl:top-[5%] top-[3%]">
+            <div className="md:absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[5%] top-[3%]">
               <img
                 ref={ballRef}
                 src="/value-ball1.webp"

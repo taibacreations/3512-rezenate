@@ -200,7 +200,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
     <section
       ref={sectionRef}
       id="philosophy"
-      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] relative bg-[#FAFAFC]"
+      className="xl:min-h-screen h-[85vh] 2xl:min-h-[115vh] 3xl:min-h-screen relative bg-[#FAFAFC]"
     >
       <img
         src="/founder-blur.png"
@@ -211,7 +211,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         ref={blurBottomRef}
         src="/founder-blur.png"
         alt="blur"
-        className="absolute left-0 2xl:bottom-[-38vh] xl:bottom-[-460px] lg:bottom-[-21vh] md:bottom-[-21vh] bottom-[-11vh] w-full z-10"
+        className="absolute left-0 3xl:bottom-[-21vh] 2xl:bottom-[-38vh] xl:bottom-[-460px] lg:bottom-[-21vh] md:bottom-[-21vh] bottom-[-11vh] w-full z-10"
       />
       <img
         src="/philosophy.png"

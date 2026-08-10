@@ -13,11 +13,11 @@ import type {
 gsap.registerPlugin(ScrollTrigger);
 
 const CARD_GAPS = [
-  "2xl:gap-[15vw] xl:gap-[18vw] gap-[22vw]",
-  "2xl:gap-[17.2vw] xl:gap-[21vw] lg:gap-[25.5vw] gap-[26vw]",
-  "2xl:gap-[7vw] xl:gap-[7.4vw] lg:gap-[9.5vw] gap-[7vw]",
-  "2xl:gap-[9.6vw] xl:gap-[10.8vw] lg:gap-[13.4vw] gap-[12vw]",
-  "xl:gap-[6vw] lg:gap-[7.7vw] gap-[5vw]",
+  "2xl:gap-[15vw] 3xl:gap-[12vw] xl:gap-[18vw] gap-[22vw]",
+  "2xl:gap-[17.2vw] 3xl:gap-[13.2vw] xl:gap-[21vw] lg:gap-[25.5vw] gap-[26vw]",
+  "2xl:gap-[7vw] 3xl:gap-[5.5vw] xl:gap-[7.4vw] lg:gap-[9.5vw] gap-[7vw]",
+  "2xl:gap-[9.6vw] 3xl:gap-[7.5vw] xl:gap-[10.8vw] lg:gap-[13.4vw] gap-[12vw]",
+  "xl:gap-[6vw] 3xl:gap-[4.7vw] lg:gap-[7.7vw] gap-[5vw]",
 ];
 
 const getPartnerIcon = (index: number, accentColor: string) => {
@@ -342,7 +342,7 @@ const Partners = ({ data }: PartnersProps) => {
     <section
       ref={sectionRef}
       id="how-we-partner"
-      className="xl:min-h-screen xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10"
+      className="xl:min-h-screen 3xl:min-h-[80vh] xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10"
     >
       <div className="border border-gray-300 rounded-full 2xl:w-[1000px] 2xl:h-[1000px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-33%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
       <div>

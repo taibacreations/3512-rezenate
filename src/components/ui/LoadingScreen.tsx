@@ -24,7 +24,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const spinnerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const bubbleCenterRef = useRef<HTMLDivElement | null>(null); // ← pure CSS centering wrapper
-  const bubbleRef = useRef<HTMLDivElement | null>(null);       // ← GSAP animates only this
+  const bubbleRef = useRef<HTMLDivElement | null>(null); // ← GSAP animates only this
   const bubbleImageRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
 
@@ -243,7 +243,12 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       });
 
       exitTl.to(
-        [logoRef.current, svgRef.current, contentRef.current, spinnerRef.current],
+        [
+          logoRef.current,
+          svgRef.current,
+          contentRef.current,
+          spinnerRef.current,
+        ],
         { opacity: 0, duration: 0.25, ease: "power2.inOut" },
       );
 
@@ -347,8 +352,10 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         <div
           ref={bubbleRef}
           className="
-            h-[105vh]
-            w-[105vh]
+            h-[60vh]
+  w-[60vh]
+  md:h-[105vh]
+  md:w-[105vh]
             overflow-hidden
             rounded-full
             will-change-transform

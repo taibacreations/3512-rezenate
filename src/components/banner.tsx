@@ -385,6 +385,7 @@ const Banner = ({ data }: BannerProps) => {
           hidden
           lg:block
           lg:absolute
+          w-full
           2xl:bottom-[-73vh]
           xl:bottom-[-60vh]
           lg:bottom-[-25vh]
