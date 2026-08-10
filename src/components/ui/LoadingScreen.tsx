@@ -23,7 +23,8 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const spinnerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const bubbleRef = useRef<HTMLDivElement | null>(null);
+  const bubbleCenterRef = useRef<HTMLDivElement | null>(null); // ← pure CSS centering wrapper
+  const bubbleRef = useRef<HTMLDivElement | null>(null);       // ← GSAP animates only this
   const bubbleImageRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
 
@@ -34,10 +35,8 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       window.history.scrollRestoration = "manual";
     }
 
-    // Always start at top
     window.scrollTo(0, 0);
 
-    // Lock page while loading
     document.body.style.position = "fixed";
     document.body.style.top = "0px";
     document.body.style.left = "0";
@@ -77,8 +76,13 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     });
 
     /*
-     * Bubble starts slightly compressed — gives it room
-     * to breathe and squish in both directions.
+     * bubbleCenterRef is a pure CSS centering wrapper.
+     * GSAP never touches it — so Tailwind's
+     * -translate-x-1/2 / -translate-y-1/2 on that div
+     * are never overwritten and centering is always correct.
+     *
+     * bubbleRef is what GSAP animates (x, y, scale, rotation).
+     * It starts at 0,0 which is the center of bubbleCenterRef.
      */
     gsap.set(bubbleRef.current, {
       scaleX: 0.92,
@@ -86,18 +90,22 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       x: 0,
       y: 0,
       rotation: 0,
+      transformOrigin: "center center",
+    });
+
+    /*
+     * Image — GSAP takes full ownership of its transform via
+     * xPercent/yPercent so subsequent x/y/rotation tweens
+     * don't lose the -50% centering.
+     */
+    gsap.set(bubbleImageRef.current, {
+      xPercent: -50,
+      yPercent: -50,
     });
 
     /*
      * ---------------------------------------------------------
      * BUBBLE MOVEMENT
-     *
-     * Real bubble physics:
-     * - drifts with wide range so it's clearly visible
-     * - scaleX/scaleY squish separately (not uniform scale)
-     *   → when moving right it stretches horizontally,
-     *     when moving left it stretches vertically
-     * - slow cycles so users actually see the effect
      * ---------------------------------------------------------
      */
 
@@ -117,7 +125,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           y: -30,
           rotation: 4.5,
           scaleX: 1.07,
-          scaleY: 0.95,   // squish horizontally → stretches sideways like a drifting bubble
+          scaleY: 0.95,
           duration: 4.2,
         },
         0,
@@ -129,7 +137,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           y: 24,
           rotation: -4,
           scaleX: 0.94,
-          scaleY: 1.06,   // squish vertically → elongates like a rising bubble
+          scaleY: 1.06,
           duration: 4.8,
         },
         4.2,
@@ -159,11 +167,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         13.0,
       );
 
-    /*
-     * Counter-movement on the image inside the bubble
-     * creates a parallax / depth effect — image drifts
-     * opposite to the bubble shell, making it feel 3D.
-     */
     const bubbleImageFloat = gsap.to(bubbleImageRef.current, {
       x: -20,
       y: 14,
@@ -185,94 +188,37 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     assembleTl
       .fromTo(
         paths[2],
-        {
-          x: 30,
-          y: -30,
-          opacity: 0,
-        },
-        {
-          x: 0,
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: "power2.out",
-        },
+        { x: 30, y: -30, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
         0,
       )
-      .to(
-        paths[2],
-        {
-          scale: 1,
-          duration: 0.4,
-          ease: "back.out(1.7)",
-        },
-        0.5,
-      )
+      .to(paths[2], { scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 0.5)
       .fromTo(
         paths[1],
-        {
-          x: 50,
-          y: -50,
-          opacity: 0,
-        },
-        {
-          x: 0,
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          ease: "back.out(1.7)",
-        },
+        { x: 50, y: -50, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
         0.9,
       )
       .fromTo(
         paths[0],
-        {
-          x: 70,
-          y: -70,
-          opacity: 0,
-        },
-        {
-          x: 0,
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          ease: "back.out(1.7)",
-        },
+        { x: 70, y: -70, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
         1.8,
       )
       .to(
         contentRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-        },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
         2,
       )
       .to(
         spinnerRef.current,
-        {
-          opacity: 1,
-          duration: 0.4,
-          ease: "power2.out",
-        },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
         2.3,
       );
 
     /*
      * ---------------------------------------------------------
      * EXIT
-     *
-     * IMPORTANT:
-     *
-     * No opacity fade on the whole loading screen.
-     *
-     * The bubble expands until it completely covers
-     * the viewport.
-     *
-     * Timer raised to 5000ms so users fully experience
-     * the bubble float before it exits.
      * ---------------------------------------------------------
      */
 
@@ -280,10 +226,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       bubbleFloat.kill();
       bubbleImageFloat.kill();
 
-      /*
-       * First stop the text/logo elements.
-       * The bubble itself stays visible.
-       */
       const exitTl = gsap.timeline({
         onComplete: () => {
           document.body.style.position = "";
@@ -294,63 +236,37 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           document.body.style.overflow = "";
 
           window.scrollTo(0, 0);
-
           setDone(true);
-
           (window as any).__loadingDone = true;
-
           window.dispatchEvent(new Event("loading-done"));
         },
       });
 
       exitTl.to(
-        [
-          logoRef.current,
-          svgRef.current,
-          contentRef.current,
-          spinnerRef.current,
-        ],
-        {
-          opacity: 0,
-          duration: 0.25,
-          ease: "power2.inOut",
-        },
+        [logoRef.current, svgRef.current, contentRef.current, spinnerRef.current],
+        { opacity: 0, duration: 0.25, ease: "power2.inOut" },
       );
-
-      /*
-       * -------------------------------------------------------
-       * BUBBLE ZOOM
-       *
-       * Instead of fading out:
-       *
-       * bubble -> gets larger -> covers entire screen
-       *
-       * This gives the client the "zoom all the way out"
-       * effect.
-       * -------------------------------------------------------
-       */
 
       const bubble = bubbleRef.current;
 
       if (bubble) {
         const rect = bubble.getBoundingClientRect();
-
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
-        /*
-         * Calculate how large the bubble needs to become
-         * to cover the complete viewport.
-         */
         const distanceToCorner = Math.sqrt(
           Math.pow(vw / 2, 2) + Math.pow(vh / 2, 2),
         );
 
         const bubbleRadius = Math.max(rect.width, rect.height) / 2;
+        const scaleNeeded = (distanceToCorner / bubbleRadius) * 1.25;
 
-        const scaleNeeded =
-          (distanceToCorner / bubbleRadius) * 1.25;
-
+        /*
+         * x:0, y:0 snaps bubble back to the center of its CSS
+         * wrapper before it expands — guarantees it covers
+         * the screen from the middle regardless of where the
+         * float animation left it.
+         */
         exitTl.to(
           bubble,
           {
@@ -365,35 +281,18 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           "-=0.05",
         );
 
-        /*
-         * Notify the rest of the website once the bubble
-         * has landed over the viewport.
-         */
         exitTl.call(() => {
-          window.dispatchEvent(
-            new Event("loading-image-landed"),
-          );
+          window.dispatchEvent(new Event("loading-image-landed"));
         });
 
-        /*
-         * Remove loading wrapper AFTER the bubble has
-         * already covered the screen.
-         *
-         * No fade.
-         */
-        exitTl.set(wrapRef.current, {
-          display: "none",
-        });
+        exitTl.set(wrapRef.current, { display: "none" });
       } else {
-        exitTl.set(wrapRef.current, {
-          display: "none",
-        });
+        exitTl.set(wrapRef.current, { display: "none" });
       }
     }, 5000);
 
     return () => {
       clearTimeout(exitTimer);
-
       assembleTl.kill();
       bubbleFloat.kill();
       bubbleImageFloat.kill();
@@ -418,48 +317,63 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
        * =====================================================
        * BUBBLE
        *
-       * Your supplied test.svg is used here.
+       * Two-div pattern — the only reliable way to mix
+       * CSS centering with GSAP transforms:
        *
-       * The image is clipped into a circular bubble.
+       *   bubbleCenterRef  → absolute left-1/2 top-1/2
+       *                      -translate-x-1/2 -translate-y-1/2
+       *                      GSAP never touches this div.
+       *
+       *   bubbleRef        → h/w, clip, rounded-full
+       *                      GSAP animates ONLY this div.
+       *                      No Tailwind translate classes here.
+       *
+       * This eliminates the conflict where GSAP's inline
+       * transform overwrites Tailwind's translate classes
+       * and the bubble ends up off-center.
        * =====================================================
        */}
       <div
-        ref={bubbleRef}
+        ref={bubbleCenterRef}
         className="
           absolute
           left-1/2
           top-1/2
           z-10
-          h-[105vh]
-          w-[105vh]
           -translate-x-1/2
           -translate-y-1/2
-          overflow-hidden
-          rounded-full
-          will-change-transform
         "
-        style={{
-          transformOrigin: "center center",
-        }}
       >
-        <img
-          ref={bubbleImageRef}
-          src="/test.png"
-          alt=""
-          aria-hidden="true"
+        <div
+          ref={bubbleRef}
           className="
-            absolute
-            left-1/2
-            top-1/2
-            h-full
-            w-full
-            max-w-none
-            -translate-x-1/2
-            -translate-y-1/2
-            object-cover
+            h-[105vh]
+            w-[105vh]
+            overflow-hidden
+            rounded-full
             will-change-transform
           "
-        />
+          style={{ transformOrigin: "center center" }}
+        >
+          <img
+            ref={bubbleImageRef}
+            src="/test.png"
+            alt=""
+            aria-hidden="true"
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              h-full
+              w-full
+              max-w-none
+              -translate-x-1/2
+              -translate-y-1/2
+              object-cover
+              will-change-transform
+            "
+          />
+        </div>
       </div>
 
       {/*
@@ -519,10 +433,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
           />
         </div>
 
-        <div
-          ref={contentRef}
-          className="mt-[3vh] md:mt-[6vh]"
-        >
+        <div ref={contentRef} className="mt-[3vh] md:mt-[6vh]">
           <h2
             className="
               font-toruspro
@@ -579,13 +490,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle
-              cx="24"
-              cy="24"
-              r="20"
-              stroke="#dec7ff"
-              strokeWidth="3"
-            />
+            <circle cx="24" cy="24" r="20" stroke="#dec7ff" strokeWidth="3" />
 
             <path
               d="M44 24C44 13 35 4 24 4"

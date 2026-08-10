@@ -391,7 +391,7 @@ const Cta = ({ data }: CtaProps) => {
           {email && phone && <span className="w-px h-4 bg-[#0B0730]/20" />}
           {phone && (
             <a
-              href={`tel:${phone}`}
+              href={`tel:${phone.replace(/\s/g, "")}`}
               className="flex items-center gap-1.5 hover:text-[#6D5BD0] transition-colors duration-300"
             >
               <svg
