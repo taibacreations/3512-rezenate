@@ -307,13 +307,13 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="xl:pt-[15vh] xl:pb-[10vh] lg:py-[18vh] md:pt-[15vh] pt-[10vh] pb-[10vh] relative flex justify-center items-center overflow-hidden"
+      className="lg:pt-[15vh] 2xl:pb-[10vh] lg:pb-[7vh] md:pt-[15vh] pt-[7vh] pb-[5vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
         src="/footer-blur.webp"
         alt=""
-        className="absolute w-full bottom-[-90%] lg:bottom-[-70%] xl:bottom-[-90%] 2xl:bottom-[-70%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
+        className="absolute w-full bottom-[-90%] lg:bottom-[-70%] xl:bottom-[-100%] 2xl:bottom-[-70%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
       />
       <img
         ref={gradRef}
