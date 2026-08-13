@@ -272,9 +272,9 @@ const Header = ({ data }: HeaderProps) => {
       gsap.to(drawer, { x: 0, duration: 0.55, ease: "expo.out" });
       gsap.fromTo(
         closeBtn,
-        { autoAlpha: 0, rotate: -90 },
+        { opacity: 0, rotate: -90 },
         {
-          autoAlpha: 1,
+          opacity: 1,
           rotate: 0,
           duration: 0.4,
           ease: "expo.out",
@@ -283,9 +283,9 @@ const Header = ({ data }: HeaderProps) => {
       );
       gsap.fromTo(
         links,
-        { autoAlpha: 0, x: 24 },
+        { opacity: 0, x: 24 },
         {
-          autoAlpha: 1,
+          opacity: 1,
           x: 0,
           duration: 0.5,
           ease: "expo.out",
@@ -295,8 +295,8 @@ const Header = ({ data }: HeaderProps) => {
       );
       gsap.fromTo(
         cta,
-        { autoAlpha: 0, y: 10 },
-        { autoAlpha: 1, y: 0, duration: 0.45, ease: "expo.out", delay: 0.52 },
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", delay: 0.52 },
       );
       gsap.to(bar1Ref.current, {
         rotation: 45,
@@ -320,20 +320,20 @@ const Header = ({ data }: HeaderProps) => {
       document.body.style.overflow = "";
       lenis?.start(); // resume Lenis once the drawer is closed
       gsap.to(closeBtn, {
-        autoAlpha: 0,
+        opacity: 0,
         rotate: -90,
         duration: 0.2,
         ease: "power2.in",
       });
       gsap.to(overlay, { autoAlpha: 0, duration: 0.3, ease: "power2.in" });
       gsap.to(links, {
-        autoAlpha: 0,
+        opacity: 0,
         x: 16,
         duration: 0.2,
         ease: "power2.in",
         stagger: 0.03,
       });
-      gsap.to(cta, { autoAlpha: 0, duration: 0.15, ease: "power2.in" });
+      gsap.to(cta, { opacity: 0, duration: 0.15, ease: "power2.in" });
       gsap.to(drawer, {
         x: "100%",
         duration: 0.45,
@@ -575,8 +575,10 @@ const Header = ({ data }: HeaderProps) => {
                 if (el) mobileLinksRef.current[i] = el;
               }}
               onClick={(e) => {
-                handleNavClick(e, label, href);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window as any).__lenis?.start(); // resume before scrolling — it's still stopped from the drawer being open
                 setMenuOpen(false);
+                handleNavClick(e, label, href);
               }}
               style={{ opacity: 0 }}
               className={`font-outfit text-[20px] font-medium py-3 border-b border-gray-100 transition-colors duration-200
@@ -591,8 +593,10 @@ const Header = ({ data }: HeaderProps) => {
           <a
             href={ctaHref}
             onClick={(e) => {
-              handleNavClick(e, ctaLabel, ctaHref);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (window as any).__lenis?.start();
               setMenuOpen(false);
+              handleNavClick(e, ctaLabel, ctaHref);
             }}
           >
             <button
