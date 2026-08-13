@@ -163,7 +163,7 @@ const Founders = ({ data }: FoundersProps) => {
         }}
       />
 
-      <div className="relative z-10">
+      <div className="relative z-40">
         {/* Heading */}
         <div
           ref={headingRef}
