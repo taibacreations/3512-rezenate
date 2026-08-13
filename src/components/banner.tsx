@@ -427,7 +427,7 @@ const Banner = ({ data }: BannerProps) => {
           block
           md:hidden
           absolute
-          bottom-0
+          bottom-[-11vh]
           will-change-transform
         "
       />

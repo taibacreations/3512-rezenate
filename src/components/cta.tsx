@@ -307,13 +307,13 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="xl:py-[15vh] lg:py-[18vh] py-[15vh] relative flex justify-center items-center overflow-hidden"
+      className="xl:pt-[15vh] xl:pb-[10vh] lg:py-[18vh] py-[15vh] relative flex justify-center items-center overflow-hidden"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
         src="/footer-blur.webp"
         alt=""
-        className="absolute w-full md:bottom-[-50%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
+        className="absolute w-full md:bottom-[-70%] xl:bottom-[-90%] 2xl:bottom-[-70%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
       />
       <img
         ref={gradRef}
@@ -435,7 +435,18 @@ const Cta = ({ data }: CtaProps) => {
 
         <button
           ref={scrollTopRef}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const lenis = (window as any).__lenis;
+            if (lenis) {
+              lenis.scrollTo(0, {
+                duration: 1.4,
+                easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+              });
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
           aria-label="Scroll to top"
           className="group relative -mt-1 w-[60px] h-[60px] rounded-full flex items-center justify-center"
         >

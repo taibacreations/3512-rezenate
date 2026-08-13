@@ -128,7 +128,7 @@ const Footer = ({ data }: FooterProps) => {
     >
       <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
         {/* Main footer content */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between xl:py-[6vh] lg:py-[5vh] md:py-[4vh] py-[3vh] gap-8 md:gap-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-[3vh] gap-8 md:gap-0">
           
           {/* Left side - Heading & Copyright */}
           <div ref={leftContentRef} className="w-full md:w-auto">

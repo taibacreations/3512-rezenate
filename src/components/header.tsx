@@ -262,8 +262,12 @@ const Header = ({ data }: HeaderProps) => {
     const closeBtn = closeBtnRef.current;
     if (!drawer || !overlay) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lenis = (window as any).__lenis;
+
     if (menuOpen) {
       document.body.style.overflow = "hidden";
+      lenis?.stop(); // pause Lenis so trackpad/wheel can't scroll the page behind the drawer
       gsap.to(overlay, { autoAlpha: 1, duration: 0.35, ease: "power2.out" });
       gsap.to(drawer, { x: 0, duration: 0.55, ease: "expo.out" });
       gsap.fromTo(
@@ -314,6 +318,7 @@ const Header = ({ data }: HeaderProps) => {
       });
     } else {
       document.body.style.overflow = "";
+      lenis?.start(); // resume Lenis once the drawer is closed
       gsap.to(closeBtn, {
         autoAlpha: 0,
         rotate: -90,
@@ -357,6 +362,7 @@ const Header = ({ data }: HeaderProps) => {
     }
     return () => {
       document.body.style.overflow = "";
+      lenis?.start();
     };
   }, [menuOpen]);
 

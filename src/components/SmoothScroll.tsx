@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,11 +18,18 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 2,
+      wheelMultiplier: 1,
+      syncTouch: false,
       infinite: false,
+      autoRaf: false,
     });
 
     lenisRef.current = lenis;
+
+    // Expose globally — header.tsx, banner.tsx and cta.tsx look for this
+    // to route their scrollTo calls through Lenis instead of native scroll
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).__lenis = lenis;
 
     // Start paused — loading screen is still active
     lenis.stop();
@@ -56,6 +64,11 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((window as any).__lenis === lenis) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).__lenis = null;
+      }
     };
   }, []);
 

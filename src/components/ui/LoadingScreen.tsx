@@ -7,7 +7,6 @@ import type { LoadingData } from "@/sanity/lib/queries";
 const FALLBACK = {
   headingPlain: "lead the way",
   tagline: "Leadership that resonates. Impact that lasts.",
-  loadingLabel: "Loading",
 };
 
 interface LoadingScreenProps {
@@ -17,16 +16,15 @@ interface LoadingScreenProps {
 const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
   const tagline = data?.tagline ?? FALLBACK.tagline;
-  const loadingLabel = data?.loadingLabel ?? FALLBACK.loadingLabel;
 
   const wrapRef = useRef<HTMLElement | null>(null);
+  const groupRef = useRef<HTMLDivElement | null>(null); // ← bubble + logo + text, scaled together on exit
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const spinnerRef = useRef<HTMLDivElement | null>(null);
+  const logoWrapRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const bubbleCenterRef = useRef<HTMLDivElement | null>(null); // ← pure CSS centering wrapper
-  const bubbleRef = useRef<HTMLDivElement | null>(null); // ← GSAP animates only this
+  const bubbleRef = useRef<HTMLDivElement | null>(null); // ← GSAP animates only this (float)
   const bubbleImageRef = useRef<HTMLImageElement | null>(null);
-  const logoRef = useRef<HTMLImageElement | null>(null);
 
   const [done, setDone] = useState(false);
 
@@ -71,8 +69,13 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       y: 20,
     });
 
-    gsap.set(spinnerRef.current, {
+    gsap.set(logoWrapRef.current, {
       opacity: 0,
+    });
+
+    gsap.set(groupRef.current, {
+      scale: 1,
+      transformOrigin: "center center",
     });
 
     /*
@@ -81,8 +84,10 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
      * -translate-x-1/2 / -translate-y-1/2 on that div
      * are never overwritten and centering is always correct.
      *
-     * bubbleRef is what GSAP animates (x, y, scale, rotation).
-     * It starts at 0,0 which is the center of bubbleCenterRef.
+     * bubbleRef is what GSAP animates for the idle float
+     * (x, y, scale, rotation). The final exit zoom is applied
+     * to groupRef instead, so the bubble, logo and text all
+     * scale together as one unit.
      */
     gsap.set(bubbleRef.current, {
       scaleX: 0.92,
@@ -93,11 +98,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       transformOrigin: "center center",
     });
 
-    /*
-     * Image — GSAP takes full ownership of its transform via
-     * xPercent/yPercent so subsequent x/y/rotation tweens
-     * don't lose the -50% centering.
-     */
     gsap.set(bubbleImageRef.current, {
       xPercent: -50,
       yPercent: -50,
@@ -179,46 +179,40 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
 
     /*
      * ---------------------------------------------------------
-     * LOGO ASSEMBLY
+     * LOGO ASSEMBLY (same path animation as used elsewhere)
+     * — now plays where the spinner used to sit, below the tagline
      * ---------------------------------------------------------
      */
 
     const assembleTl = gsap.timeline();
 
     assembleTl
+      .to(contentRef.current, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0)
+      .to(logoWrapRef.current, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3)
       .fromTo(
         paths[2],
         { x: 30, y: -30, opacity: 0 },
         { x: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
-        0,
+        0.5,
       )
-      .to(paths[2], { scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 0.5)
+      .to(paths[2], { scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 1.0)
       .fromTo(
         paths[1],
         { x: 50, y: -50, opacity: 0 },
         { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-        0.9,
+        1.4,
       )
       .fromTo(
         paths[0],
         { x: 70, y: -70, opacity: 0 },
         { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-        1.8,
-      )
-      .to(
-        contentRef.current,
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        2,
-      )
-      .to(
-        spinnerRef.current,
-        { opacity: 1, duration: 0.4, ease: "power2.out" },
         2.3,
       );
 
     /*
      * ---------------------------------------------------------
-     * EXIT
+     * EXIT — zoom the whole group (bubble + logo + text) together,
+     * then fade into the landing page
      * ---------------------------------------------------------
      */
 
@@ -242,19 +236,10 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         },
       });
 
-      exitTl.to(
-        [
-          logoRef.current,
-          svgRef.current,
-          contentRef.current,
-          spinnerRef.current,
-        ],
-        { opacity: 0, duration: 0.25, ease: "power2.inOut" },
-      );
-
       const bubble = bubbleRef.current;
+      const group = groupRef.current;
 
-      if (bubble) {
+      if (bubble && group) {
         const rect = bubble.getBoundingClientRect();
         const vw = window.innerWidth;
         const vh = window.innerHeight;
@@ -266,24 +251,36 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         const bubbleRadius = Math.max(rect.width, rect.height) / 2;
         const scaleNeeded = (distanceToCorner / bubbleRadius) * 1.25;
 
-        /*
-         * x:0, y:0 snaps bubble back to the center of its CSS
-         * wrapper before it expands — guarantees it covers
-         * the screen from the middle regardless of where the
-         * float animation left it.
-         */
+        // Snap the bubble back to neutral so the group scales from a
+        // clean, centered state regardless of where the float left it
+        exitTl.to(bubble, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+
+        // Zoom the entire group — bubble, logo and text — as one unit,
+        // so we visually zoom through the logo/text into the bubble
         exitTl.to(
-          bubble,
+          group,
           {
             scale: Math.max(scaleNeeded, 4),
-            x: 0,
-            y: 0,
-            rotation: 0,
-            duration: 1.5,
+            duration: 1.6,
             ease: "power2.in",
             transformOrigin: "center center",
           },
           "-=0.05",
+        );
+
+        // Once the zoom fully covers the screen, fade into the landing page
+        exitTl.to(
+          wrapRef.current,
+          { opacity: 0, duration: 0.4, ease: "power2.out" },
+          "+=0.05",
         );
 
         exitTl.call(() => {
@@ -320,205 +317,132 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     >
       {/*
        * =====================================================
-       * BUBBLE
-       *
-       * Two-div pattern — the only reliable way to mix
-       * CSS centering with GSAP transforms:
-       *
-       *   bubbleCenterRef  → absolute left-1/2 top-1/2
-       *                      -translate-x-1/2 -translate-y-1/2
-       *                      GSAP never touches this div.
-       *
-       *   bubbleRef        → h/w, clip, rounded-full
-       *                      GSAP animates ONLY this div.
-       *                      No Tailwind translate classes here.
-       *
-       * This eliminates the conflict where GSAP's inline
-       * transform overwrites Tailwind's translate classes
-       * and the bubble ends up off-center.
+       * GROUP — bubble + logo + text share one transform origin
+       * so the exit zoom scales all of them together as a unit.
        * =====================================================
        */}
       <div
-        ref={bubbleCenterRef}
-        className="
-          absolute
-          left-1/2
-          top-1/2
-          z-10
-          -translate-x-1/2
-          -translate-y-1/2
-        "
+        ref={groupRef}
+        className="relative flex h-full w-full items-center justify-center will-change-transform"
+        style={{ transformOrigin: "center center" }}
       >
+        {/* BUBBLE */}
         <div
-          ref={bubbleRef}
+          ref={bubbleCenterRef}
           className="
-            h-[60vh]
-  w-[60vh]
-  md:h-[105vh]
-  md:w-[105vh]
-            overflow-hidden
-            rounded-full
-            will-change-transform
+            absolute
+            left-1/2
+            top-1/2
+            z-10
+            -translate-x-1/2
+            -translate-y-1/2
           "
-          style={{ transformOrigin: "center center" }}
         >
-          <img
-            ref={bubbleImageRef}
-            src="/test.png"
-            alt=""
-            aria-hidden="true"
+          <div
+            ref={bubbleRef}
             className="
-              absolute
-              left-1/2
-              top-1/2
-              h-full
-              w-full
-              max-w-none
-              -translate-x-1/2
-              -translate-y-1/2
-              object-cover
+              h-[60vh]
+              w-[60vh]
+              md:h-[105vh]
+              md:w-[105vh]
+              overflow-hidden
+              rounded-full
               will-change-transform
             "
-          />
-        </div>
-      </div>
-
-      {/*
-       * =====================================================
-       * CONTENT
-       * =====================================================
-       */}
-      <div
-        className="
-          relative
-          z-20
-          flex
-          h-[940px]
-          w-[1254px]
-          flex-col
-          items-center
-          justify-center
-          px-4
-          text-center
-          md:justify-start
-          md:pt-[30vh]
-          xl:pt-[23.5vh]
-        "
-      >
-        <div className="flex flex-col items-center justify-center gap-1.5">
-          {/* Exact SVG logo code preserved */}
-          <svg
-            ref={svgRef}
-            xmlns="http://www.w3.org/2000/svg"
-            width="51"
-            height="51"
-            viewBox="0 0 51 51"
-            fill="none"
-            className="h-[44px] w-[44px]"
+            style={{ transformOrigin: "center center" }}
           >
-            <path
-              d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
-              fill="#9564F4"
+            <img
+              ref={bubbleImageRef}
+              src="/test.png"
+              alt=""
+              aria-hidden="true"
+              className="
+                absolute
+                left-1/2
+                top-1/2
+                h-full
+                w-full
+                max-w-none
+                -translate-x-1/2
+                -translate-y-1/2
+                object-cover
+                will-change-transform
+              "
             />
-
-            <path
-              d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
-              fill="#9564F4"
-            />
-
-            <path
-              d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
-              fill="#9564F4"
-            />
-          </svg>
-
-          <img
-            ref={logoRef}
-            src="/logos.webp"
-            alt="Rezenate"
-            className="h-auto w-[140px] md:w-[170px] lg:w-[203px]"
-          />
+          </div>
         </div>
 
-        <div ref={contentRef} className="mt-[3vh] md:mt-[6vh]">
-          <h2
-            className="
-              font-toruspro
-              text-[40px]
-              font-normal
-              leading-[101%]
-              tracking-[-0.04em]
-              text-black
-              md:text-[60px]
-              lg:text-[72px]
-            "
-          >
-            {headingPlain}
-          </h2>
-
-          <p
-            className="
-              mt-[1.5vh]
-              font-outfit
-              text-[20px]
-              leading-[115%]
-              text-black
-              md:text-[22px]
-              lg:text-[24px]
-            "
-          >
-            {tagline}
-          </p>
-        </div>
-
+        {/* CONTENT — centered on the exact same point as the bubble, on every screen */}
         <div
-          ref={spinnerRef}
           className="
-            mt-[4vh]
+            relative
+            z-20
             flex
+            w-full
+            h-full
             flex-col
             items-center
-            md:gap-3
+            justify-center
+            px-4
+            text-center
           "
         >
-          <svg
-            className="
-              h-[45px]
-              w-[45px]
-              animate-spin
-              md:h-[60px]
-              md:w-[60px]
-              lg:h-[83px]
-              lg:w-[83px]
-            "
-            width="83"
-            height="83"
-            viewBox="0 0 48 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="24" cy="24" r="20" stroke="#dec7ff" strokeWidth="3" />
+          <div ref={contentRef}>
+            <h2
+              className="
+                font-toruspro
+                text-[40px]
+                font-normal
+                leading-[101%]
+                tracking-[-0.04em]
+                text-black
+                md:text-[60px]
+                lg:text-[72px]
+              "
+            >
+              {headingPlain}
+            </h2>
 
-            <path
-              d="M44 24C44 13 35 4 24 4"
-              stroke="#9564F4"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </svg>
+            <p
+              className="
+                mt-[1.5vh]
+                font-outfit
+                text-[20px]
+                leading-[115%]
+                text-black
+                md:text-[22px]
+                lg:text-[24px]
+              "
+            >
+              {tagline}
+            </p>
+          </div>
 
-          <p
-            className="
-              font-outfit
-              text-[18px]
-              leading-[115%]
-              text-black
-              md:text-[20px]
-              lg:text-[24px]
-            "
-          >
-            {loadingLabel}
-          </p>
+          {/* Logo mark — same path-assembly animation, now placed where the spinner used to sit */}
+          <div ref={logoWrapRef} className="mt-[4vh] flex flex-col items-center">
+            <svg
+              ref={svgRef}
+              xmlns="http://www.w3.org/2000/svg"
+              width="51"
+              height="51"
+              viewBox="0 0 51 51"
+              fill="none"
+              className="h-[45px] w-[45px] md:h-[60px] md:w-[60px] lg:h-[70px] lg:w-[70px]"
+            >
+              <path
+                d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
+                fill="#9564F4"
+              />
+              <path
+                d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
+                fill="#9564F4"
+              />
+              <path
+                d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
+                fill="#9564F4"
+              />
+            </svg>
+          </div>
         </div>
       </div>
     </section>

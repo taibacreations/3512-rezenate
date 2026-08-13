@@ -12,18 +12,10 @@ import type {
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CARD_GAPS = [
-  "2xl:gap-[15vw] 3xl:gap-[12vw] xl:gap-[18vw] gap-[22vw]",
-  "2xl:gap-[17.2vw] 3xl:gap-[13.2vw] xl:gap-[21vw] lg:gap-[25.5vw] gap-[26vw]",
-  "2xl:gap-[7vw] 3xl:gap-[5.5vw] xl:gap-[7.4vw] lg:gap-[9.5vw] gap-[7vw]",
-  "2xl:gap-[9.6vw] 3xl:gap-[7.5vw] xl:gap-[10.8vw] lg:gap-[13.4vw] gap-[12vw]",
-  "xl:gap-[6vw] 3xl:gap-[4.7vw] lg:gap-[7.7vw] gap-[5vw]",
-];
-
 const getPartnerIcon = (index: number, accentColor: string) => {
   const common = {
-    width: 30,
-    height: 30,
+    width: 22,
+    height: 22,
     viewBox: "0 0 24 24",
     fill: "none" as const,
     stroke: accentColor,
@@ -59,13 +51,13 @@ const getPartnerIcon = (index: number, accentColor: string) => {
         </svg>
       );
     case 3: // Anchor
-  return (
-    <svg {...common}>
-      <circle cx="12" cy="4" r="2" />
-      <path d="M12 6v14" />
-      <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
-    </svg>
-  );
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="4" r="2" />
+          <path d="M12 6v14" />
+          <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
+        </svg>
+      );
     case 4: // Ascend — rising trend arrow
       return (
         <svg {...common}>
@@ -78,10 +70,26 @@ const getPartnerIcon = (index: number, accentColor: string) => {
   }
 };
 
+// Small expand/collapse chevron — the only element that animates on toggle
+const ChevronIcon = ({ accentColor }: { accentColor: string }) => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={accentColor}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
 const ptComponents = {
   block: {
     normal: ({ children }: { children?: React.ReactNode }) => (
-      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-[#0B0730] mt-3 first:mt-0">
+      <p className="font-outfit font-normal xl:text-[18px] text-[16px] leading-[150%] text-[#0B0730] mt-3 first:mt-0">
         {children}
       </p>
     ),
@@ -96,7 +104,7 @@ const Description = ({
   if (!description) return null;
   if (typeof description === "string") {
     return (
-      <p className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[150%] text-[#0B0730]">
+      <p className="font-outfit font-normal xl:text-[18px] lg:text-[16px] leading-[150%] text-[#0B0730]">
         {description}
       </p>
     );
@@ -163,101 +171,103 @@ const PartnerCard = ({
   accentColor: string;
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLDivElement>(null); // New ref for the arrow
+  const innerRef = useRef<HTMLDivElement>(null);
+  const chevronRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
-  // Content expand/collapse animation
+  // Content expand/collapse — measures actual scrollHeight for a smooth,
+  // jank-free animation instead of animating straight to "auto"
   useEffect(() => {
     const el = contentRef.current;
-    if (!el) return;
+    const inner = innerRef.current;
+    if (!el || !inner) return;
+
+    tweenRef.current?.kill();
+
     if (isOpen) {
-      gsap.fromTo(
-        el,
-        { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.5, ease: "power3.inOut" },
-      );
+      const targetHeight = inner.offsetHeight;
+      gsap.set(el, { height: 0, opacity: 0 });
+      tweenRef.current = gsap.to(el, {
+        height: targetHeight,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onComplete: () => {
+          gsap.set(el, { height: "auto" });
+        },
+      });
     } else {
-      gsap.to(el, {
+      gsap.set(el, { height: el.offsetHeight });
+      tweenRef.current = gsap.to(el, {
         height: 0,
         opacity: 0,
-        duration: 0.4,
-        ease: "power3.inOut",
+        duration: 0.45,
+        ease: "power2.inOut",
       });
     }
   }, [isOpen]);
 
-  // Arrow upward extension animation (replaces the 180deg flip)
+  // Chevron — flips down/up to indicate open state
   useEffect(() => {
-    if (!arrowRef.current) return;
-
-    if (isOpen) {
-      // Lifts the icon upwards and scales it slightly to feel like it's "extending up"
-      gsap.to(arrowRef.current, {
-        y: -6,
-        scale: 1.15,
-        duration: 0.4,
-        ease: "power3.out",
-      });
-    } else {
-      // Returns to original position smoothly
-      gsap.to(arrowRef.current, {
-        y: 0,
-        scale: 1,
-        duration: 0.4,
-        ease: "power3.inOut",
-      });
-    }
+    if (!chevronRef.current) return;
+    gsap.to(chevronRef.current, {
+      rotate: isOpen ? 180 : 0,
+      duration: 0.4,
+      ease: "power2.inOut",
+    });
   }, [isOpen]);
 
   return (
     <div
-      className="border border-[#DEE6E9] rounded-[20px] cursor-pointer transition-colors duration-300 hover:border-[#9564F4] hover:shadow-[0_4px_28px_rgba(149,100,244,0.12)]"
+      className={`transition-all duration-300 rounded-2xl cursor-pointer ${
+        isOpen
+          ? "bg-[#EFEBF5] border-l-[3px] border-l-[#9564F4] pl-4 md:pl-6 -ml-[3px] -mt-3 pt-3"
+          : "border-b border-[#DEE6E9] pl-4 md:pl-6 -ml-[3px] -mt-3 pt-3"
+      }`}
       onClick={onClick}
     >
-      <div className="partner-border lg:pl-12 pl-6 pr-4 !h-auto !flex-col !items-start py-4">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center lg:gap-10 md:gap-6 gap-3">
-            <h5
-              className="font-outfit font-normal xl:text-[60px] lg:text-[50px] md:text-[40px] text-[30px] tracking-[-0.04em] leading-[113%] whitespace-nowrap"
-              style={{ color: accentColor }}
-            >
-              {item.num}
-            </h5>
-            <div
-              className="border border-r xl:h-[58px] lg:h-[48px] md:h-[38px] h-[30px]"
-              style={{ borderColor: accentColor }}
-            />
-            <h3 className="font-toruspro font-normal xl:text-[32px] lg:text-[28px] text-[24px] leading-[90%] text-[#0B0730]">
-              {item.title}
-            </h3>
+      <div className="flex md:grid items-center justify-between md:justify-normal md:grid-cols-[260px_1fr_80px] xl:grid-cols-[260px_1fr_80px] lg:grid-cols-[140px_1fr_100px] w-full py-5 pr-4 md:pr-6 gap-4">
+        <div className="flex items-center gap-3 md:gap-12 xl:gap-12 lg:gap-4 min-w-0">
+          <h5
+            className="font-outfit font-normal xl:text-[38px] md:text-[30px] text-[24px] tracking-[-0.04em] leading-[113%] whitespace-nowrap"
+            style={{ color: accentColor }}
+          >
+            {item.num}
+          </h5>
+          <h3 className="font-toruspro font-normal xl:text-[26px] text-[19px] leading-[90%] text-[#0B0730] whitespace-nowrap">
+            {item.title}
+          </h3>
+        </div>
+
+        <h4 className="font-outfit font-normal xl:text-[19px] text-[15px] leading-[130%] text-[#0B0730] hidden md:block whitespace-nowrap">
+          {item.subtitle}
+        </h4>
+
+        <div className="flex flex-col items-center gap-1.5 justify-self-end shrink-0">
+          <div
+            className="w-11 h-11 md:w-[52px] md:h-[52px] rounded-full border flex items-center justify-center"
+            style={{ borderColor: `${accentColor}55` }}
+          >
+            {getPartnerIcon(index, accentColor)}
           </div>
-          <div className={`flex items-center gap-6 ${CARD_GAPS[index] ?? ""}`}>
-            <h4 className="font-outfit font-normal xl:text-[24px] lg:text-[20px] text-[18px] leading-[114%] text-[#0B0730] hidden md:block">
-              {item.subtitle}
-            </h4>
-            <div className="partners-arrow-wrapper flex-shrink-0">
-              <div
-                ref={arrowRef}
-                className="partners-arrow"
-                // Removed the rotate transform entirely to prevent upside-down icons
-              >
-                {getPartnerIcon(index, accentColor)}
-              </div>
-            </div>
+          <div ref={chevronRef} className="flex items-center justify-center">
+            <ChevronIcon accentColor={accentColor} />
           </div>
         </div>
-        <div
-          ref={contentRef}
-          style={{ height: 0, overflow: "hidden", opacity: 0 }}
-        >
-          <div className="pt-4 pb-2 max-w-[820px]">
-            <div
-              className="border-t mb-4"
-              style={{ borderColor: `${accentColor}55` }}
-            />
-            <Description
-              description={item.description as PortableTextBlock[] | string}
-            />
-          </div>
+      </div>
+
+      <div
+        ref={contentRef}
+        style={{ height: 0, overflow: "hidden", opacity: 0 }}
+      >
+        <div ref={innerRef} className="pb-6 pr-4 md:pr-6 max-w-[720px]">
+          <div
+            className="border-t mb-4"
+            style={{ borderColor: `${accentColor}33` }}
+          />
+          <Description
+            description={item.description as PortableTextBlock[] | string}
+          />
         </div>
       </div>
     </div>
@@ -342,26 +352,26 @@ const Partners = ({ data }: PartnersProps) => {
     <section
       ref={sectionRef}
       id="how-we-partner"
-      className="xl:min-h-screen 3xl:min-h-[80vh] xl:py-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10"
+      className="bg-[#F7F6F9] 3xl:min-h-[80vh] 2xl:py-[8vh] xl:pt-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
     >
-      <div className="border border-gray-300 rounded-full 2xl:w-[1000px] 2xl:h-[1000px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-33%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
-      <div>
+      <div className="border border-gray-300 rounded-full 2xl:w-[900px] 2xl:h-[900px] xl:w-[650px] xl:h-[650px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-38%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
+
+      <div className="max-w-[1360px] mx-auto grid lg:grid-cols-[0.8fr_1.5fr] xl:gap-x-14 gap-y-10 items-start relative">
         <div
           ref={headingRef}
           style={{ opacity: 0 }}
-          className="xl:max-w-[878px] max-w-[780px] mx-auto text-center"
+          className="lg:sticky lg:top-[15vh] lg:text-start text-center"
         >
-          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
+          <h2 className="font-toruspro font-normal 2xl:text-[52px] xl:text-[46px] lg:text-[38px] md:text-[34px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
             {headingPlain}
           </h2>
-          <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:text-[20px] text-[16px] leading-[130%] text-[#0B0730] mt-[1.5vh] whitespace-pre-line">
+          <div className="w-18 lg:mx-0 mx-auto h-[2px] bg-[#0B0730] mt-4 mb-5" />
+          <p className="font-outfit 2xl:text-[20px] xl:text-[18px] md:text-[17px] text-[15px] leading-[150%] text-[#0B0730] whitespace-pre-line">
             {subParagraph}
           </p>
         </div>
-        <div
-          ref={cardsRef}
-          className="max-w-[1070px] mx-auto flex flex-col gap-7 w-full mt-[3.5vh]"
-        >
+
+        <div ref={cardsRef} className="flex flex-col w-full">
           {items.map((item, i) => (
             <PartnerCard
               key={item.num}

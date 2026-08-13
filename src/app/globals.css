@@ -58,7 +58,7 @@
 }
 
 body {
-  background: #FAFAFC;
+  background: #F7F6F9;
   color: #0B0730;
 }
 
@@ -221,10 +221,4 @@ html {
     width: 40px !important; 
     height: 40px !important;
   }
-}
-
-
-section, body {
-  scroll-padding-top: 32vh !important;
-  scroll-behavior: smooth !important;
 }

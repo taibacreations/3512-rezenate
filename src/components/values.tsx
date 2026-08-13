@@ -457,7 +457,7 @@ const Values = ({ data }: ValuesProps) => {
         ref={sectionRef}
         className="xl:h-[127vh] min-h-screen 3xl:h-screen relative z-20"
       >
-        <div className="3xl:pt-0 2xl:pt-[8.3vh] xl:pt-[20vh] pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="3xl:pt-0 2xl:pt-[8.3vh] lg:pt-[5vh] md:pt-0 pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Heading */}
           <div
             ref={headingRef}
@@ -471,7 +471,7 @@ const Values = ({ data }: ValuesProps) => {
 
           <div>
             {/* Ball — hardcoded */}
-            <div className="md:absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[5%] top-[3%]">
+            <div className="md:absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[-2%] top-[3%]">
               <img
                 ref={ballRef}
                 src="/value-ball1.webp"
