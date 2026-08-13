@@ -60,6 +60,7 @@
 body {
   background: #F7F6F9;
   color: #0B0730;
+  overflow: hidden;
 }
 
 button,
