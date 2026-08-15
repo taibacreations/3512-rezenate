@@ -44,7 +44,7 @@ const GlobalGlow = () => {
   return (
     <div
       ref={glowRef}
-      className="fixed top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none z-10"
+      className="fixed top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none z-40"
       style={{
         transform: "translate(-50%, -50%)",
         background: `radial-gradient(circle, ${accentColor}99 0%, ${accentColor}66 40%, ${accentColor}00 70%)`,

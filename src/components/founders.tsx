@@ -125,18 +125,19 @@ const Founders = ({ data }: FoundersProps) => {
     <section
       id="founders"
       ref={sectionRef}
-      className="pb-[8vh] px-4 md:px-6 xl:px-10 pt-[12.5vh] bg-[url(/founder1.png)] bg-cover bg-bottom bg-no-repeat relative"
+      className="pb-[8vh] px-4 md:px-6 xl:px-10 pt-[12.5vh] bg-[#F7F6F9] relative"
     >
+      <img src="/founderss.png" alt="vector" className="absolute w-[1650px] left-1/2 -translate-x-1/2" />
       <img
         src="/founder-blur.png"
         alt="blur"
         className="absolute w-full left-0 top-[-11vh] h-[300px]"
       />
-      <img
+      {/* <img
         src="/founder-blur.png"
         alt="blur"
         className="absolute w-full left-0 2xl:bottom-[-19vh] md:bottom-[-15vh] bottom-[-9vh] md:h-[300px] z-30 h-[180px]"
-      />
+      /> */}
 
       {/* Merging Gradient Layer at Bottom (merges to #FAFAFC) */}
       <div

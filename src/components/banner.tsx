@@ -502,7 +502,8 @@ const Banner = ({ data }: BannerProps) => {
       ====================================================== */}
       <div
         className="
-          pt-[30vh]
+          md:pt-[30vh]
+          pt-[40vh]
 
           relative
           z-30

@@ -124,7 +124,7 @@ const Footer = ({ data }: FooterProps) => {
     <section
       ref={sectionRef}
       className="relative w-full z-50"
-      style={{ backgroundColor: "#9564F4" }}
+      style={{ backgroundColor: "#423388" }}
     >
       <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
         {/* Main footer content */}
@@ -134,13 +134,13 @@ const Footer = ({ data }: FooterProps) => {
           <div ref={leftContentRef} className="w-full md:w-auto">
             <h2 
               ref={headingRef}
-              className="font-toruspro font-normal 2xl:text-[56px] xl:text-[48px] lg:text-[42px] md:text-[36px] text-[32px] leading-[113%] tracking-[-0.04em] text-white"
+              className="font-toruspro font-normal text-[28px] leading-[113%] tracking-[-0.04em] text-white"
             >
               {headingPlain}
             </h2>
             <p 
               ref={copyrightRef}
-              className="font-outfit font-normal xl:text-[18px] lg:text-[16px] text-[15px] leading-[150%] text-white/80 mt-3"
+              className="font-outfit font-normal text-[15px] leading-[150%] text-white/80 mt-2"
             >
               {copyrightText}
             </p>
@@ -149,7 +149,7 @@ const Footer = ({ data }: FooterProps) => {
           {/* Vertical Divider - hidden on mobile */}
           <div 
             ref={dividerRef}
-            className="hidden md:block w-px h-[120px] bg-white/30 self-center"
+            className="hidden md:block w-px h-[60px] bg-white/30 self-center"
           />
 
           {/* Right side - Paragraph */}
@@ -159,7 +159,7 @@ const Footer = ({ data }: FooterProps) => {
           >
             <p 
               ref={paraRef}
-              className="font-outfit font-normal xl:text-[20px] lg:text-[18px] text-[16px] leading-[160%] text-white/90"
+              className="font-outfit font-normal text-[14px] leading-[160%] text-white/90"
             >
               {paragraph}
             </p>

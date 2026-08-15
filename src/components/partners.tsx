@@ -172,7 +172,7 @@ const PartnerCard = ({
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const chevronRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   // Content expand/collapse — measures actual scrollHeight for a smooth,
@@ -207,11 +207,11 @@ const PartnerCard = ({
     }
   }, [isOpen]);
 
-  // Chevron — flips down/up to indicate open state
+  // Icon — rotates 90deg anticlockwise when active, chevron stays fixed
   useEffect(() => {
-    if (!chevronRef.current) return;
-    gsap.to(chevronRef.current, {
-      rotate: isOpen ? 180 : 0,
+    if (!iconRef.current) return;
+    gsap.to(iconRef.current, {
+      rotate: isOpen ? -90 : 0,
       duration: 0.4,
       ease: "power2.inOut",
     });
@@ -245,12 +245,13 @@ const PartnerCard = ({
 
         <div className="flex flex-col items-center gap-1.5 justify-self-end shrink-0">
           <div
+            ref={iconRef}
             className="w-11 h-11 md:w-[52px] md:h-[52px] rounded-full border flex items-center justify-center"
             style={{ borderColor: `${accentColor}55` }}
           >
             {getPartnerIcon(index, accentColor)}
           </div>
-          <div ref={chevronRef} className="flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <ChevronIcon accentColor={accentColor} />
           </div>
         </div>
@@ -349,42 +350,45 @@ const Partners = ({ data }: PartnersProps) => {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="how-we-partner"
-      className="bg-[#F7F6F9] 3xl:min-h-[80vh] 2xl:py-[8vh] xl:pt-[8vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
-    >
-      <div className="border border-gray-300 rounded-full 2xl:w-[900px] 2xl:h-[900px] xl:w-[650px] xl:h-[650px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-38%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
+    <div>
+      <svg className="rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,288L60,256C120,224,240,160,360,154.7C480,149,600,203,720,234.7C840,267,960,277,1080,256C1200,235,1320,181,1380,154.7L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+      <section
+        ref={sectionRef}
+        id="how-we-partner"
+        className="bg-[#FAFAFC] 3xl:min-h-[80vh] 2xl:pb-[8vh] lg:mt-[-15vh] md:mt-[-10vh] pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
+      >
+        <div className="border border-gray-300 rounded-full 2xl:w-[900px] 2xl:h-[900px] xl:w-[650px] xl:h-[650px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-38%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
 
-      <div className="max-w-[1360px] mx-auto grid lg:grid-cols-[0.8fr_1.5fr] xl:gap-x-14 gap-y-10 items-start relative">
-        <div
-          ref={headingRef}
-          style={{ opacity: 0 }}
-          className="lg:sticky lg:top-[15vh] lg:text-start text-center"
-        >
-          <h2 className="font-toruspro font-normal 2xl:text-[52px] xl:text-[46px] lg:text-[38px] md:text-[34px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
-            {headingPlain}
-          </h2>
-          <div className="w-18 lg:mx-0 mx-auto h-[2px] bg-[#0B0730] mt-4 mb-5" />
-          <p className="font-outfit 2xl:text-[20px] xl:text-[18px] md:text-[17px] text-[15px] leading-[150%] text-[#0B0730] whitespace-pre-line">
-            {subParagraph}
-          </p>
-        </div>
+        <div className="max-w-[1360px] mx-auto grid lg:grid-cols-[0.8fr_1.5fr] xl:gap-x-14 gap-y-10 items-start relative">
+          <div
+            ref={headingRef}
+            style={{ opacity: 0 }}
+            className="lg:sticky lg:top-[15vh] lg:text-start text-center"
+          >
+            <h2 className="font-toruspro font-normal 2xl:text-[52px] xl:text-[46px] lg:text-[38px] md:text-[34px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
+              {headingPlain}
+            </h2>
+            <div className="w-18 lg:mx-0 mx-auto h-[2px] bg-[#0B0730] mt-4 mb-5" />
+            <p className="font-outfit 2xl:text-[20px] xl:text-[18px] md:text-[17px] text-[15px] leading-[150%] text-[#0B0730] whitespace-pre-line">
+              {subParagraph}
+            </p>
+          </div>
 
-        <div ref={cardsRef} className="flex flex-col w-full">
-          {items.map((item, i) => (
-            <PartnerCard
-              key={item.num}
-              item={item}
-              index={i}
-              isOpen={openIndex === i}
-              onClick={() => setOpenIndex((prev) => (prev === i ? null : i))}
-              accentColor={"#9564F4"}
-            />
-          ))}
+          <div ref={cardsRef} className="flex flex-col w-full relative z-30">
+            {items.map((item, i) => (
+              <PartnerCard
+                key={item.num}
+                item={item}
+                index={i}
+                isOpen={openIndex === i}
+                onClick={() => setOpenIndex((prev) => (prev === i ? null : i))}
+                accentColor={"#9564F4"}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

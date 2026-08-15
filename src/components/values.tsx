@@ -452,12 +452,12 @@ const Values = ({ data }: ValuesProps) => {
   ];
 
   return (
-    <>
+    <div className="bg-[#F7F6F9] relative">
       <section
         ref={sectionRef}
-        className="xl:h-[127vh] min-h-screen 3xl:h-screen relative z-20"
+        className="md:h-[118vh] max-h-[90vh] md:max-h-full 3xl:h-screen relative z-20"
       >
-        <div className="3xl:pt-0 2xl:pt-[8.3vh] lg:pt-[5vh] md:pt-0 pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="3xl:pt-0 mt-[-1vh] 2xl:pt-[8.3vh] lg:pt-[5vh] md:pt-0 pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Heading */}
           <div
             ref={headingRef}
@@ -471,7 +471,7 @@ const Values = ({ data }: ValuesProps) => {
 
           <div>
             {/* Ball — hardcoded */}
-            <div className="md:absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[-2%] top-[3%]">
+            <div className="absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[-2%] md:top-[3%]">
               <img
                 ref={ballRef}
                 src="/value-ball1.webp"
@@ -482,7 +482,7 @@ const Values = ({ data }: ValuesProps) => {
             </div>
 
             {/* Cards */}
-            <div className="relative xl:mt-[8.2vh] mt-[5vh] flex flex-col gap-[2vh] md:block pb-[15vh] md:pb-0">
+            <div className="relative xl:mt-[8.2vh] mt-[5vh] flex flex-col gap-[2vh] md:block pb-[15vh] md:pb-0 md:opacity-100 opacity-80">
               {items.map((v, i) => (
                 <div
                   key={v.id}
@@ -493,9 +493,9 @@ const Values = ({ data }: ValuesProps) => {
                     transition-colors duration-300 hover:border-[#9564F4] hover:shadow-[0_4px_28px_rgba(149,100,244,0.12)]
                     will-change-transform ${cardPositions[i] ?? ""}`}
                 >
-                  <h6 className="font-bold xl:text-[18px] text-[16px] font-mulish absolute right-4.5 top-2">
+                  {/* <h6 className="font-bold xl:text-[18px] text-[16px] font-mulish absolute right-4.5 top-2">
                     {v.id}
-                  </h6>
+                  </h6> */}
                   <div className="flex pl-6 pr-15 xl:gap-6 gap-3">
                     <div
                       className="2xl:w-[76px] 2xl:h-[76px] md:w-[60px] w-[45px] md:h-[50px] h-[50px] 2xl:rounded-[29px] md:rounded-[20px] rounded-[15px] flex justify-center items-center shrink-0"
@@ -605,7 +605,7 @@ const Values = ({ data }: ValuesProps) => {
             <span
               ref={overlayNumRef}
               style={{ opacity: 0, color: "#9564F4" }}
-              className="font-mulish font-bold text-[15px] tracking-[0.28em] block mb-5"
+              className="font-mulish font-bold text-[15px] tracking-[0.28em] hidden mb-5"
             >
               {active.id} / {String(items.length).padStart(2, "0")}
             </span>
@@ -669,7 +669,7 @@ const Values = ({ data }: ValuesProps) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

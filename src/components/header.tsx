@@ -22,9 +22,6 @@ const FALLBACK = {
 };
 
 // ── Scroll offset helper ───────────────────────────────────────────────────
-// Lenis / SmoothScroll ne native scroll override kar diya hota hai,
-// isliye scroll-padding-top kaam nahi karta.
-// Yeh function manually header height ka offset le ke scroll karta hai.
 const scrollToSection = (href: string) => {
   if (!href.startsWith("#")) {
     window.location.href = href;
@@ -36,14 +33,13 @@ const scrollToSection = (href: string) => {
   if (!el) return;
 
   const headerHeight = document.querySelector("header")?.offsetHeight ?? 80;
-  const EXTRA_OFFSET = 32; // extra breathing room
+  const EXTRA_OFFSET = 32;
   const top =
     el.getBoundingClientRect().top +
     window.scrollY -
     headerHeight -
     EXTRA_OFFSET;
 
-  // Lenis global instance use karo agar available ho, warna native
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lenis = (window as any).__lenis;
   if (lenis) {
@@ -79,18 +75,15 @@ const Header = ({ data }: HeaderProps) => {
   const headerRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const wordmarkRef = useRef<HTMLImageElement>(null);
-  const navRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const navMenuRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const mobileLinksRef = useRef<HTMLAnchorElement[]>([]);
-  const mobileCTARef = useRef<HTMLButtonElement>(null);
+  const navLinksRef = useRef<HTMLAnchorElement[]>([]);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const bar1Ref = useRef<HTMLSpanElement>(null);
   const bar2Ref = useRef<HTMLSpanElement>(null);
   const bar3Ref = useRef<HTMLSpanElement>(null);
-  const scrolledRef = useRef(false);
 
   // ── Entrance ──────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -103,10 +96,6 @@ const Header = ({ data }: HeaderProps) => {
     gsap.set(paths, { opacity: 0, y: 10 });
     gsap.set([wordmark, ctaRef.current, hamburgerRef.current], {
       autoAlpha: 0,
-    });
-    gsap.set(navRef.current ? Array.from(navRef.current.children) : [], {
-      autoAlpha: 0,
-      y: -10,
     });
 
     const runEntrance = () => {
@@ -132,17 +121,6 @@ const Header = ({ data }: HeaderProps) => {
             wordmark,
             { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
             "-=0.2",
-          )
-          .to(
-            navRef.current ? Array.from(navRef.current.children) : [],
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.55,
-              ease: "expo.out",
-              stagger: 0.06,
-            },
-            "-=0.25",
           )
           .call(
             () => {
@@ -219,144 +197,97 @@ const Header = ({ data }: HeaderProps) => {
     return () => window.removeEventListener("loading-done", runEntrance);
   }, []);
 
-  // ── Scroll glassmorphism ───────────────────────────────────────────────────
+  // ── Nav menu animations ────────────────────────────────────────────────────
   useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
-    const onScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      if (isScrolled && !scrolledRef.current) {
-        scrolledRef.current = true;
-        gsap.to(header, {
-          backgroundColor: "#FAFAFC",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 2px 32px rgba(149,100,244,0.10)",
-          paddingTop: "16px",
-          paddingBottom: "16px",
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      } else if (!isScrolled && scrolledRef.current) {
-        scrolledRef.current = false;
-        gsap.to(header, {
-          backgroundColor: "rgba(255,255,255,0)",
-          backdropFilter: "blur(0px)",
-          boxShadow: "none",
-          paddingTop: "16px",
-          paddingBottom: "16px",
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // ── Mobile menu ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    const drawer = mobileMenuRef.current;
     const overlay = overlayRef.current;
-    const links = mobileLinksRef.current.filter(Boolean);
-    const cta = mobileCTARef.current;
+    const menu = navMenuRef.current;
+    const links = navLinksRef.current.filter(Boolean);
     const closeBtn = closeBtnRef.current;
-    if (!drawer || !overlay) return;
+    if (!overlay || !menu) return;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const lenis = (window as any).__lenis;
 
     if (menuOpen) {
       document.body.style.overflow = "hidden";
-      lenis?.stop(); // pause Lenis so trackpad/wheel can't scroll the page behind the drawer
-      gsap.to(overlay, { autoAlpha: 1, duration: 0.35, ease: "power2.out" });
-      gsap.to(drawer, { x: 0, duration: 0.55, ease: "expo.out" });
-      gsap.fromTo(
+      lenis?.stop();
+
+      const tl = gsap.timeline();
+      tl.to(overlay, { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+      tl.to(menu, { x: 0, duration: 0.6, ease: "expo.out" }, "-=0.3");
+      tl.fromTo(
         closeBtn,
         { opacity: 0, rotate: -90 },
-        {
-          opacity: 1,
-          rotate: 0,
-          duration: 0.4,
-          ease: "expo.out",
-          delay: 0.3,
-        },
+        { opacity: 1, rotate: 0, duration: 0.4, ease: "power2.out" },
+        "-=0.3",
       );
-      gsap.fromTo(
+      tl.fromTo(
         links,
-        { opacity: 0, x: 24 },
+        { opacity: 0, x: 20 },
         {
           opacity: 1,
           x: 0,
           duration: 0.5,
-          ease: "expo.out",
-          stagger: 0.06,
-          delay: 0.2,
+          ease: "power2.out",
+          stagger: 0.05,
         },
+        "-=0.3",
       );
-      gsap.fromTo(
-        cta,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", delay: 0.52 },
-      );
+
+      // Hamburger → X
       gsap.to(bar1Ref.current, {
         rotation: 45,
         y: 7,
-        duration: 0.35,
+        duration: 0.3,
         ease: "power2.inOut",
       });
       gsap.to(bar2Ref.current, {
         autoAlpha: 0,
-        scaleX: 0,
-        duration: 0.2,
+        duration: 0.15,
         ease: "power2.in",
       });
       gsap.to(bar3Ref.current, {
         rotation: -45,
         y: -7,
-        duration: 0.35,
+        duration: 0.3,
         ease: "power2.inOut",
       });
     } else {
       document.body.style.overflow = "";
-      lenis?.start(); // resume Lenis once the drawer is closed
-      gsap.to(closeBtn, {
+      lenis?.start();
+
+      const tl = gsap.timeline();
+      tl.to(links, {
         opacity: 0,
-        rotate: -90,
+        x: 10,
         duration: 0.2,
         ease: "power2.in",
+        stagger: 0.02,
       });
-      gsap.to(overlay, { autoAlpha: 0, duration: 0.3, ease: "power2.in" });
-      gsap.to(links, {
-        opacity: 0,
-        x: 16,
-        duration: 0.2,
-        ease: "power2.in",
-        stagger: 0.03,
-      });
-      gsap.to(cta, { opacity: 0, duration: 0.15, ease: "power2.in" });
-      gsap.to(drawer, {
-        x: "100%",
-        duration: 0.45,
-        ease: "expo.in",
-        delay: 0.05,
-      });
+      tl.to(
+        closeBtn,
+        { opacity: 0, rotate: 90, duration: 0.2, ease: "power2.in" },
+        "<",
+      );
+      tl.to(menu, { x: "100%", duration: 0.45, ease: "expo.in" }, "-=0.1");
+      tl.to(overlay, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, "-=0.3");
+
       gsap.to(bar1Ref.current, {
         rotation: 0,
         y: 0,
-        duration: 0.35,
+        duration: 0.3,
         ease: "power2.inOut",
       });
       gsap.to(bar2Ref.current, {
         autoAlpha: 1,
-        scaleX: 1,
-        duration: 0.25,
+        duration: 0.2,
         ease: "power2.out",
         delay: 0.1,
       });
       gsap.to(bar3Ref.current, {
         rotation: 0,
         y: 0,
-        duration: 0.35,
+        duration: 0.3,
         ease: "power2.inOut",
       });
     }
@@ -371,27 +302,14 @@ const Header = ({ data }: HeaderProps) => {
     const handle = (e: MouseEvent) => {
       if (
         menuOpen &&
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(e.target as Node)
+        navMenuRef.current &&
+        !navMenuRef.current.contains(e.target as Node)
       )
         setMenuOpen(false);
     };
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, [menuOpen]);
-
-  const onNavEnter = (el: HTMLElement) =>
-    gsap.to(el, { y: -2, duration: 0.25, ease: "power2.out" });
-  const onNavLeave = (el: HTMLElement) =>
-    gsap.to(el, { y: 0, duration: 0.3, ease: "power2.out" });
-  const onCTAEnter = (el: HTMLElement) =>
-    gsap.to(el, { scale: 1.04, duration: 0.3, ease: "power2.out" });
-  const onCTALeave = (el: HTMLElement) =>
-    gsap.to(el, { scale: 1, duration: 0.3, ease: "power2.out" });
-  const onCTAPress = (el: HTMLElement) =>
-    gsap.to(el, { scale: 0.96, duration: 0.12, ease: "power2.in" });
-  const onCTARelease = (el: HTMLElement) =>
-    gsap.to(el, { scale: 1.04, duration: 0.2, ease: "power2.out" });
 
   // ── Scroll spy ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -404,7 +322,6 @@ const Header = ({ data }: HeaderProps) => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Jo section screen pe 40%+ visible ho, usse active karo
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
@@ -416,8 +333,8 @@ const Header = ({ data }: HeaderProps) => {
         }
       },
       {
-        threshold: 0.4, // section ka 40% visible ho
-        rootMargin: "-80px 0px -20% 0px", // header height ka offset
+        threshold: 0.4,
+        rootMargin: "-80px 0px -20% 0px",
       },
     );
 
@@ -425,10 +342,16 @@ const Header = ({ data }: HeaderProps) => {
     return () => observer.disconnect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Nav click handler ──────────────────────────────────────────────────────
   const handleNavClick = (e: React.MouseEvent, label: string, href: string) => {
     e.preventDefault();
     scrollToSection(href);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent, label: string, href: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).__lenis?.start();
+    setMenuOpen(false);
+    handleNavClick(e, label, href);
   };
 
   return (
@@ -476,53 +399,12 @@ const Header = ({ data }: HeaderProps) => {
             />
           </a>
 
-          {/* Desktop nav */}
-          <nav ref={navRef} className="hidden lg:flex items-center">
-            {ALL_NAV.map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                onClick={(e) => handleNavClick(e, label, href)}
-                onMouseEnter={(e) => onNavEnter(e.currentTarget)}
-                onMouseLeave={(e) => onNavLeave(e.currentTarget)}
-                style={{ visibility: "visible", opacity: 0 }}
-                className={`font-outfit font-normal text-[16px] xl:text-[18px] leading-[115%] py-1.5 rounded-full relative group
-                  transition-[background-color,color,box-shadow] duration-300 px-4 xl:px-6
-                  ${
-                    activeLink === label
-                      ? "text-[#FDFCFD] bg-[#9564F4] shadow-[0_4px_20px_rgba(149,100,244,0.35)]"
-                      : "text-black hover:text-[#9564F4]"
-                  }`}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Desktop CTA */}
-          <div ref={ctaRef} className="hidden lg:flex" style={{ opacity: 0 }}>
-            <a
-              href={ctaHref}
-              onClick={(e) => handleNavClick(e, ctaLabel, ctaHref)}
-            >
-              <button
-                className="font-outfit font-normal text-[20px] leading-[114%] w-[140px] xl:w-[159px] h-[40px] xl:h-[45px] flex justify-center items-center rounded-full border border-black transition-[background-color,color,box-shadow] duration-300 hover:bg-black hover:text-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
-                onMouseEnter={(e) => onCTAEnter(e.currentTarget)}
-                onMouseLeave={(e) => onCTALeave(e.currentTarget)}
-                onMouseDown={(e) => onCTAPress(e.currentTarget)}
-                onMouseUp={(e) => onCTARelease(e.currentTarget)}
-              >
-                {ctaLabel}
-              </button>
-            </a>
-          </div>
-
           {/* Hamburger */}
           <button
             ref={hamburgerRef}
             onClick={() => setMenuOpen((v) => !v)}
             style={{ opacity: 0 }}
-            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] relative z-[60]"
+            className="flex flex-col justify-center items-center w-11 h-11 gap-[5px] relative z-[60]"
             aria-label="Toggle menu"
           >
             <span
@@ -544,69 +426,71 @@ const Header = ({ data }: HeaderProps) => {
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden pointer-events-none"
+        className="fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm pointer-events-none"
         style={{ visibility: "hidden", opacity: 0 }}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
       />
 
-      {/* Mobile drawer */}
+      {/* ── Side panel (Desktop) / Full-width (Mobile) ────────────────────── */}
       <div
-        ref={mobileMenuRef}
-        className="fixed top-0 right-0 z-50 h-full w-[80vw] max-w-[320px] bg-white shadow-2xl flex flex-col pt-24 pb-10 px-8 lg:hidden"
+        ref={navMenuRef}
+        className="fixed top-0 right-0 z-[56] h-full md:w-[480px] md:max-w-full max-w-[320px] w-[80vw] bg-white shadow-2xl flex flex-col"
         style={{ transform: "translateX(100%)" }}
       >
+        {/* Close button */}
         <button
           ref={closeBtnRef}
           onClick={() => setMenuOpen(false)}
           style={{ opacity: 0 }}
-          className="absolute top-5 right-5 w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 text-black/50 hover:text-[#9564F4] hover:border-[#9564F4] transition-all duration-200 text-[15px]"
+          className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-black/60 hover:text-black hover:border-black/40 transition-colors"
           aria-label="Close menu"
         >
-          ✕
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
 
-        <nav className="flex flex-col gap-2">
-          {ALL_NAV.map(({ label, href }, i) => (
-            <a
-              key={label}
-              href={href}
-              ref={(el) => {
-                if (el) mobileLinksRef.current[i] = el;
-              }}
-              onClick={(e) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (window as any).__lenis?.start(); // resume before scrolling — it's still stopped from the drawer being open
-                setMenuOpen(false);
-                handleNavClick(e, label, href);
-              }}
-              style={{ opacity: 0 }}
-              className={`font-outfit text-[20px] font-medium py-3 border-b border-gray-100 transition-colors duration-200
-                ${activeLink === label ? "text-[#9564F4]" : "text-black hover:text-[#9564F4]"}`}
-            >
-              {label}
-            </a>
-          ))}
+        {/* Nav links */}
+        <nav className="flex-1 flex flex-col px-8 md:px-12 py-20">
+          {ALL_NAV.map(({ label, href }, i) => {
+            const isActive = activeLink === label;
+            return (
+              <a
+                key={label}
+                href={href}
+                ref={(el) => {
+                  if (el) navLinksRef.current[i] = el;
+                }}
+                onClick={(e) => handleLinkClick(e, label, href)}
+                style={{ opacity: 0 }}
+                className={`group relative py-4 md:py-5 border-b border-black/5 transition-colors duration-300
+                  ${isActive ? "text-[#9564F4]" : "text-black hover:text-[#9564F4]"}`}
+              >
+                <span className="font-outfit font-light text-[20px] md:text-[32px] lg:text-[40px] leading-tight tracking-tight">
+                  {label}
+                </span>
+                {/* Subtle underline on hover */}
+                <span className="absolute bottom-4 md:bottom-5 left-0 right-0 h-[1px] bg-current scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+              </a>
+            );
+          })}
         </nav>
 
-        <div className="mt-auto">
-          <a
-            href={ctaHref}
-            onClick={(e) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (window as any).__lenis?.start();
-              setMenuOpen(false);
-              handleNavClick(e, ctaLabel, ctaHref);
-            }}
-          >
-            <button
-              ref={mobileCTARef}
-              style={{ opacity: 0 }}
-              className="w-full font-outfit text-[18px] h-[48px] rounded-full border border-black transition-all duration-300 hover:bg-black hover:text-white"
+        {/* Footer CTA */}
+        <div className="px-8 md:px-12 pb-10 md:pb-12">
+          <div className="border-t border-black/10 pt-6 md:pt-8">
+            <a
+              href={ctaHref}
+              onClick={(e) => handleLinkClick(e, ctaLabel, ctaHref)}
+              className="block"
             >
-              {ctaLabel}
-            </button>
-          </a>
+              <button className="w-full font-outfit text-[16px] md:text-[17px] h-[52px] rounded-full bg-black text-white hover:bg-[#9564F4] transition-colors duration-300">
+                {ctaLabel}
+              </button>
+            </a>
+          </div>
         </div>
       </div>
     </>

@@ -58,7 +58,7 @@
 }
 
 body {
-  background: #F7F6F9;
+  background: #FAFAFC;
   color: #0B0730;
   overflow: hidden;
 }
@@ -221,5 +221,11 @@ html {
   .partners-arrow {
     width: 40px !important; 
     height: 40px !important;
+  }
+}
+
+@media screen and (min-width:1440px) and (max-width: 1536px) {
+  .wave {
+    margin-top: -50px !important;
   }
 }

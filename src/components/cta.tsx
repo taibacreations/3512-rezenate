@@ -307,7 +307,7 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="lg:pt-[15vh] 2xl:pb-[10vh] lg:pb-[7vh] md:pt-[15vh] pt-[7vh] pb-[5vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden"
+      className="lg:pt-[15vh] 2xl:pb-[10vh] lg:pb-[7vh] md:pt-[15vh] pt-[7vh] pb-[5vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC]"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
