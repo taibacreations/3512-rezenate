@@ -129,7 +129,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       // Ease changed to power3.inOut for a more organic acceleration curve
       exitTl.to(curtainRef.current, {
         scale: 1,
-        duration: 2.4,
+        duration: 1.4,
         ease: "power3.inOut",
       }, "+=0.3");
 

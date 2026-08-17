@@ -455,9 +455,9 @@ const Values = ({ data }: ValuesProps) => {
     <div className="bg-[#F7F6F9] relative">
       <section
         ref={sectionRef}
-        className="md:h-[118vh] max-h-[90vh] md:max-h-full 3xl:h-screen relative z-20"
+        className="md:h-[103vh] max-h-[97vh] 3xl:max-h-[80vh] md:max-h-full 3xl:h-screen relative z-20"
       >
-        <div className="3xl:pt-0 mt-[-1vh] 2xl:pt-[8.3vh] lg:pt-[5vh] md:pt-0 pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
+        <div className="3xl:pt-0 mt-[-1vh] xl:pt-[0vh] lg:pt-[5vh] md:pt-0 pt-[5vh] max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Heading */}
           <div
             ref={headingRef}
@@ -471,7 +471,7 @@ const Values = ({ data }: ValuesProps) => {
 
           <div>
             {/* Ball — hardcoded */}
-            <div className="absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[3%] xl:top-[-2%] md:top-[3%]">
+            <div className="absolute 3xl:left-[23%] 2xl:left-[13.8%] xl:left-[8%] lg:left-[6%] md:left-[3%] 3xl:top-[-3vh] 2xl:top-[-2%] xl:top-[-4%] md:top-[3%]">
               <img
                 ref={ballRef}
                 src="/value-ball1.webp"

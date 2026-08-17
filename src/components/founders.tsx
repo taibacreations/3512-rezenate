@@ -127,7 +127,7 @@ const Founders = ({ data }: FoundersProps) => {
       ref={sectionRef}
       className="pb-[8vh] px-4 md:px-6 xl:px-10 pt-[12.5vh] bg-[#F7F6F9] relative"
     >
-      <img src="/founderss.png" alt="vector" className="absolute w-[1650px] left-1/2 -translate-x-1/2" />
+      <img src="/founderss.png" alt="vector" className="absolute  md:min-w-[1200px] w-[1400px] left-1/2 -translate-x-1/2 z-40" />
       <img
         src="/founder-blur.png"
         alt="blur"

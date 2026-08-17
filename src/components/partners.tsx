@@ -351,11 +351,11 @@ const Partners = ({ data }: PartnersProps) => {
 
   return (
     <div>
-      <svg className="rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,288L60,256C120,224,240,160,360,154.7C480,149,600,203,720,234.7C840,267,960,277,1080,256C1200,235,1320,181,1380,154.7L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>
+      <svg className="relative z-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
       <section
         ref={sectionRef}
         id="how-we-partner"
-        className="bg-[#FAFAFC] 3xl:min-h-[80vh] 2xl:pb-[8vh] lg:mt-[-15vh] md:mt-[-10vh] pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
+        className="bg-[#FAFAFC] 3xl:min-h-[80vh] 2xl:pb-[8vh] lg:mt-[-10vh] md:mt-[-10vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
       >
         <div className="border border-gray-300 rounded-full 2xl:w-[900px] 2xl:h-[900px] xl:w-[650px] xl:h-[650px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-38%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
 
