@@ -120,9 +120,9 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       // Step 2: Fade out group — no zoom
       exitTl.to(groupRef.current, {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.0,
         ease: "power2.inOut",
-      }, "+=0.05");
+      }, "+=0.00");
 
       // Step 3: UPDATED — Slower, smoother circle expansion
       // Duration increased from 1.4s → 2.4s for a more deliberate reveal
