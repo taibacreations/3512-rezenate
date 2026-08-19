@@ -367,7 +367,7 @@ const Partners = ({ data }: PartnersProps) => {
       <section
         ref={sectionRef}
         id="how-we-partner"
-        className="bg-[#FAFAFC] 3xl:min-h-[80vh] 2xl:pb-[8vh] lg:mt-[-10vh] md:mt-[-10vh] md:pt-[10vh] lg:pb-[6vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
+        className="bg-[#FAFAFC] 3xl:min-h-[80vh] lg:mt-[-10vh] md:mt-[-10vh] md:pt-[10vh] pb-[6vh] md:pb-0 pt-[3vh] relative px-4 md:px-6 xl:px-10 overflow-hidden"
       >
         <div className="border border-gray-300 rounded-full 2xl:w-[900px] 2xl:h-[900px] xl:w-[650px] xl:h-[650px] lg:w-[800px] lg:h-[800px] w-[500px] h-[500px] absolute xl:left-[-38%] md:left-[-45%] left-[-70%] lg:top-[-10vh] md:top-0 top-[25vh]" />
 

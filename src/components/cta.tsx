@@ -304,203 +304,119 @@ const Cta = ({ data }: CtaProps) => {
   }, []);
 
   return (
-    <section
-      id="cta"
-      ref={sectionRef}
-      className="md:min-h-[105vh] min-h-[90vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC]"
-    >
-      {/* Decorative images — all hardcoded from /public */}
-      <img
-        src="/footer-blur.webp"
-        alt=""
-        className="absolute w-full md:bottom-[-40%] lg:bottom-[-50%] xl:bottom-[-40%] 2xl:bottom-[-45%] 3xl:bottom-[-30%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
-      />
-      <img
-        ref={gradRef}
-        src="/cta-grad.webp"
-        alt=""
-        className="absolute bottom-0 left-0 pointer-events-none z-30"
-      />
-      <div
-        ref={bgWrapRef}
-        className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-20%] right-0 h-[1484px] 3xl:h-[2000px] w-[831px] z-30"
+    <div>
+      <section
+        id="cta"
+        ref={sectionRef}
+        className="md:min-h-[105vh] min-h-[90vh] md:mt-[-16vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC] z-0"
       >
+        {/* Decorative images — all hardcoded from /public */}
         <img
-          ref={bgRef}
-          src="/cta.webp"
+          src="/footer-blur.webp"
           alt=""
-          className="pointer-events-none h-full w-full hidden md:block"
+          className="absolute w-full md:bottom-[-40%] lg:bottom-[-50%] xl:bottom-[-40%] 2xl:bottom-[-45%] 3xl:bottom-[-30%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
         />
-      </div>
-
-      {/* Content */}
-      <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4 z-40">
-        <h2
-          ref={headingRef}
-          className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
+        <img
+          ref={gradRef}
+          src="/cta-grad.webp"
+          alt=""
+          className="absolute bottom-0 left-0 pointer-events-none z-30"
+        />
+        <div
+          ref={bgWrapRef}
+          className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-20%] right-0 h-[1484px] 3xl:h-[2000px] w-[831px] z-30"
         >
-          {headingPlain}
-        </h2>
-        <p
-          ref={paraRef}
-          className="font-outfit font-normal leading-[115%] 2xl:text-[24px] xl:text-[22px] text-[20px] 2xl:max-w-[451px] xl:max-w-[430px] max-w-[400px] mx-auto mt-[2vh]"
-        >
-          {paragraph}
-        </p>
-
-        <button
-          ref={buttonRef}
-          onClick={() => {
-            if (buttonLink) window.location.href = buttonLink;
-          }}
-          className="relative font-outfit font-normal lg:text-[20px] text-[18px] xl:w-[322px] w-[310px] xl:h-[55px] h-[45px] rounded-full flex justify-center items-center border-2 border-black mt-[3.5vh] overflow-hidden"
-        >
-          <span
-            ref={buttonFillRef}
-            className="absolute inset-0 bg-black rounded-full pointer-events-none"
-            style={{ transform: "scaleY(0)", transformOrigin: "bottom center" }}
+          <img
+            ref={bgRef}
+            src="/cta.webp"
+            alt=""
+            className="pointer-events-none h-full w-full hidden md:block"
           />
-          <span ref={buttonTextRef} className="relative z-10 text-[#0B0730]">
-            {buttonText}
-          </span>
-        </button>
-
-        {/* Contact info */}
-        <div className="flex items-center gap-6 mt-[2vh] font-outfit text-[15px] text-[#0B0730]/60">
-          {email && (
-            <a
-              href={`mailto:${email}`}
-              className="flex items-center gap-1.5 hover:text-[#6D5BD0] transition-colors duration-300"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-              {email}
-            </a>
-          )}
-          {email && phone && <span className="w-px h-4 bg-[#0B0730]/20" />}
-          {phone && (
-            <a
-              href={`tel:${phone.replace(/\s/g, "")}`}
-              className="flex items-center gap-1.5 hover:text-[#6D5BD0] transition-colors duration-300"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.16 6.16l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              {phone.replace(/(\d{5})(\d{6})/, "$1 $2")}
-            </a>
-          )}
         </div>
-      </div>
 
-      {/* Scroll to top */}
-      {/* <div className="absolute md:bottom-[5vh] bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center">
-        <svg
-          width="176"
-          height="46"
-          viewBox="0 0 176 46"
-          className="pointer-events-none"
-        >
-          <path id="scrollTopCurve" d="M 8,44 A 80,80 0 0 1 168,44" fill="none" />
-          <text
-            className="fill-[#6D5BD0] font-outfit uppercase"
-            fontSize="10.5"
-            fontWeight={500}
-            letterSpacing="2.5"
+        {/* Content */}
+        <div className="2xl:max-w-[916px] xl:max-w-[880px] max-w-[750px] mx-auto text-center flex justify-center items-center flex-col relative px-4 z-40">
+          <h2
+            ref={headingRef}
+            className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]"
           >
-            <textPath href="#scrollTopCurve" startOffset="50%" textAnchor="middle">
-              Scroll To Top
-            </textPath>
-          </text>
-        </svg>
-
-        <button
-          ref={scrollTopRef}
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const lenis = (window as any).__lenis;
-            if (lenis) {
-              lenis.scrollTo(0, {
-                duration: 1.4,
-                easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-              });
-            } else {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-          }}
-          aria-label="Scroll to top"
-          className="group relative -mt-1 w-[60px] h-[60px] rounded-full flex items-center justify-center"
-        >
-          <span className="absolute inset-[3px] rounded-full border border-[#0B0730]/15 bg-white/80 backdrop-blur-sm shadow-[0_4px_20px_rgba(11,7,48,0.06)] transition-shadow duration-300 group-hover:shadow-[0_6px_26px_rgba(109,91,208,0.18)]" />
-
-
-          <svg
-            width="60"
-            height="60"
-            viewBox="0 0 60 60"
-            className="absolute inset-0 -rotate-90 pointer-events-none"
+            {headingPlain}
+          </h2>
+          <p
+            ref={paraRef}
+            className="font-outfit font-normal leading-[115%] 2xl:text-[24px] xl:text-[22px] text-[20px] 2xl:max-w-[451px] xl:max-w-[430px] max-w-[400px] mx-auto mt-[2vh]"
           >
-            <circle
-              cx="30"
-              cy="30"
-              r={RING_RADIUS}
-              fill="none"
-              stroke="#0B0730"
-              strokeOpacity="0.08"
-              strokeWidth="1.5"
+            {paragraph}
+          </p>
+
+          <button
+            ref={buttonRef}
+            onClick={() => {
+              if (buttonLink) window.location.href = buttonLink;
+            }}
+            className="relative font-outfit font-normal lg:text-[20px] text-[18px] xl:w-[322px] w-[310px] xl:h-[55px] h-[45px] rounded-full flex justify-center items-center border-2 border-black mt-[3.5vh] overflow-hidden mx-auto"
+          >
+            <span
+              ref={buttonFillRef}
+              className="absolute inset-0 bg-black rounded-full pointer-events-none"
+              style={{
+                transform: "scaleY(0)",
+                transformOrigin: "bottom center",
+              }}
             />
-            <circle
-              ref={progressRingRef}
-              cx="30"
-              cy="30"
-              r={RING_RADIUS}
-              fill="none"
-              stroke="#6D5BD0"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+            <span ref={buttonTextRef} className="relative z-10 text-[#0B0730]">
+              {buttonText}
+            </span>
+          </button>
 
-          <svg
-            ref={scrollArrowRef}
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6D5BD0"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="relative z-10"
-          >
-            <path d="M12 19V5M5 12l7-7 7 7" />
-          </svg>
-        </button>
-
-        <span className="mt-3 font-outfit text-[12px] tracking-[0.02em] text-[#0B0730]/50">
-          Back to top
-        </span>
-      </div> */}
-    </section>
+          {/* Contact info */}
+          <div className="flex items-center gap-6 mt-[2vh] font-outfit text-[15px] text-[#0B0730]/60">
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="flex items-center gap-1.5 hover:text-[#6D5BD0] transition-colors duration-300"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                {email}
+              </a>
+            )}
+            {email && phone && <span className="w-px h-4 bg-[#0B0730]/20" />}
+            {phone && (
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="flex items-center gap-1.5 hover:text-[#6D5BD0] transition-colors duration-300"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.16 6.16l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                {phone.replace(/(\d{5})(\d{6})/, "$1 $2")}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

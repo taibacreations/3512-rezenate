@@ -122,109 +122,82 @@ const Founders = ({ data }: FoundersProps) => {
   }, []);
 
   return (
-    <section
-      id="founders"
-      ref={sectionRef}
-      className="pb-[8vh] px-4 md:px-6 xl:px-10 pt-[12.5vh] bg-[#F7F6F9] relative"
-    >
-      <img src="/founderss.png" alt="vector" className="absolute  md:min-w-[1200px] w-[1400px] left-1/2 -translate-x-1/2 z-40" />
-      <img
-        src="/founder-blur.png"
-        alt="blur"
-        className="absolute w-full left-0 top-[-11vh] h-[300px]"
-      />
-      {/* <img
-        src="/founder-blur.png"
-        alt="blur"
-        className="absolute w-full left-0 2xl:bottom-[-19vh] md:bottom-[-15vh] bottom-[-9vh] md:h-[300px] z-30 h-[180px]"
-      /> */}
+    <div>
+      <svg className="relative" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+      <section
+        id="founders"
+        ref={sectionRef}
+        className="pb-[8vh] px-4 md:px-6 xl:px-10 pt-[8vh] md:pt-0 md:pb-0 bg-[#F7F6F9] relative"
+      >
+        <img
+          src="/founderss.png"
+          alt="vector"
+          className="absolute md:min-w-[1200px] w-[1400px] left-1/2 -translate-x-1/2 z-40"
+        />
 
-      {/* Merging Gradient Layer at Bottom (merges to #FAFAFC) */}
-      <div
-        ref={mergeGradientRef}
-        className="absolute bottom-0 left-0 right-0 h-[300px] md:h-[400px] xl:h-[500px] pointer-events-none z-0"
-        style={{
-          background: `linear-gradient(to bottom, 
-            transparent 0%, 
-            rgba(250, 250, 252, 0.2) 30%, 
-            rgba(250, 250, 252, 0.6) 60%, 
-            #FAFAFC 100%)`,
-        }}
-      />
+        <div className="relative z-40">
+          {/* Heading */}
+          <div
+            ref={headingRef}
+            style={{ opacity: 0 }}
+            className="max-w-[878px] mx-auto text-center"
+          >
+            <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
+              {headingPlain}
+            </h2>
+            <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:lg:text-[20px] text-[18px] leading-[130%] text-[#0B0730] mt-[1.5vh]">
+              {subParagraph}
+            </p>
+          </div>
 
-      {/* Additional soft blur layer (merges to #FAFAFC) */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[200px] md:h-[300px] xl:h-[400px] pointer-events-none z-0"
-        style={{
-          background: `radial-gradient(ellipse at center bottom, 
-            #FAFAFC 0%, 
-            rgba(250, 250, 252, 0.5) 50%,
-            transparent 100%)`,
-          filter: "blur(60px)",
-        }}
-      />
+          {/* Cards */}
+          <div className="flex flex-col md:flex-row justify-center md:gap-8 gap-[3vh] mt-[5vh]">
+            {founders.map((founder, i) => {
+              const photoUrl =
+                founder.photo?.asset?.url ??
+                FALLBACK_PHOTOS[i] ??
+                "/founder-1.png";
 
-      <div className="relative z-40">
-        {/* Heading */}
-        <div
-          ref={headingRef}
-          style={{ opacity: 0 }}
-          className="max-w-[878px] mx-auto text-center"
-        >
-          <h2 className="font-toruspro font-normal 2xl:text-[60px] xl:text-[52px] lg:text-[46px] md:text-[40px] text-[32px] leading-[113%] tracking-[-0.04em] capitalize text-[#0B0730]">
-            {headingPlain}
-          </h2>
-          <p className="font-outfit 2xl:text-[24px] xl:text-[22px] md:lg:text-[20px] text-[18px] leading-[130%] text-[#0B0730] mt-[1.5vh]">
-            {subParagraph}
-          </p>
-        </div>
+              return (
+                <div
+                  key={i}
+                  ref={cardRefs[i]}
+                  style={{ opacity: 0 }}
+                  className="bg-[#FAFAFC] border border-[#DEE6E9] rounded-[22px] md:w-[566px] w-full overflow-hidden shadow-lg"
+                >
+                  {/* Founder photo — inset, rounded, full-width */}
+                  <div className="p-3 md:p-4">
+                    <img
+                      src={photoUrl}
+                      alt={founder.name}
+                      className="w-full h-[260px] md:h-[320px] xl:h-[360px] object-cover rounded-[12px]"
+                    />
+                  </div>
 
-        {/* Cards */}
-        <div className="flex flex-col md:flex-row justify-center md:gap-8 gap-[3vh] mt-[5vh]">
-          {founders.map((founder, i) => {
-            const photoUrl =
-              founder.photo?.asset?.url ??
-              FALLBACK_PHOTOS[i] ??
-              "/founder-1.png";
-
-            return (
-              <div
-                key={i}
-                ref={cardRefs[i]}
-                style={{ opacity: 0 }}
-                className="bg-[#FAFAFC] border border-[#DEE6E9] rounded-[22px] md:w-[566px] w-full overflow-hidden shadow-lg"
-              >
-                {/* Founder photo — inset, rounded, full-width */}
-                <div className="p-3 md:p-4">
-                  <img
-                    src={photoUrl}
-                    alt={founder.name}
-                    className="w-full h-[260px] md:h-[320px] xl:h-[360px] object-cover rounded-[12px]"
-                  />
+                  {/* Text — left aligned */}
+                  <div className="px-6 md:px-10 pb-8 md:pb-10 text-left">
+                    <h3 className="font-toruspro font-semibold 2xl:text-[30px] xl:text-[28px] lg:text-[24px] text-[22px] leading-[100%] text-[#0B0730] mt-[2vh]">
+                      {founder.name}
+                    </h3>
+                    <h4 className="font-outfit italic font-[500] 2xl:text-[22px] xl:text-[20px] lg:text-[19px] text-[17px] leading-[130%] text-[#0B0730] mt-[2vh]">
+                      "{founder.quote}"
+                    </h4>
+                    <hr
+                      className="mt-[2.5vh] w-16 border-t"
+                      style={{ borderColor: "#9564F4" }}
+                    />
+                    <p className="font-outfit font-normal 2xl:text-[19px] xl:text-[18px] lg:text-[17px] text-[16px] leading-[150%] text-[#0B0730] mt-[2.5vh]">
+                      {founder.bio}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Text — left aligned */}
-                <div className="px-6 md:px-10 pb-8 md:pb-10 text-left">
-                  <h3 className="font-toruspro font-semibold 2xl:text-[30px] xl:text-[28px] lg:text-[24px] text-[22px] leading-[100%] text-[#0B0730] mt-[2vh]">
-                    {founder.name}
-                  </h3>
-                  <h4 className="font-outfit italic font-[500] 2xl:text-[22px] xl:text-[20px] lg:text-[19px] text-[17px] leading-[130%] text-[#0B0730] mt-[2vh]">
-                    "{founder.quote}"
-                  </h4>
-                  <hr
-                    className="mt-[2.5vh] w-16 border-t"
-                    style={{ borderColor: "#9564F4" }}
-                  />
-                  <p className="font-outfit font-normal 2xl:text-[19px] xl:text-[18px] lg:text-[17px] text-[16px] leading-[150%] text-[#0B0730] mt-[2.5vh]">
-                    {founder.bio}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <svg className="relative z-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
+    </div>
   );
 };
 
