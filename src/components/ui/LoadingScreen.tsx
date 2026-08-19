@@ -49,100 +49,75 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     // ---------------------------------------------------------
     // INITIAL STATE
     // ---------------------------------------------------------
-    gsap.set(paths[2], {
-      scale: 0.25,
-      opacity: 0,
-      transformOrigin: "center center",
-    });
-    gsap.set([paths[0], paths[1]], {
-      opacity: 0,
-      scale: 1,
-      transformOrigin: "center center",
-    });
+    gsap.set(paths[2], { scale: 0.25, opacity: 0, transformOrigin: "center center" });
+    gsap.set([paths[0], paths[1]], { opacity: 0, scale: 1, transformOrigin: "center center" });
     gsap.set(contentRef.current, { opacity: 0, y: 20 });
     gsap.set(logoWrapRef.current, { opacity: 0 });
-    gsap.set(groupRef.current, {
-      scale: 1,
-      opacity: 1,
-      transformOrigin: "center center",
-    });
+    gsap.set(groupRef.current, { scale: 1, opacity: 1, transformOrigin: "center center" });
+    
     gsap.set(bubbleRef.current, {
-      scaleX: 0.92,
-      scaleY: 0.96,
-      x: 0,
-      y: 0,
+      xPercent: 0,
+      yPercent: 0,
+      scale: 0.94,
       rotation: 0,
       transformOrigin: "center center",
+      force3D: true,
     });
-    gsap.set(bubbleImageRef.current, { xPercent: -50, yPercent: -50 });
+
+    gsap.set(bubbleImageRef.current, {
+      scale: 1,
+      rotation: 0,
+      force3D: true,
+    });
 
     // ---------------------------------------------------------
     // BUBBLE FLOAT — grouped, gentle
     // ---------------------------------------------------------
     const bubbleFloat = gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      defaults: { ease: "sine.inOut" },
+      repeat: -1, 
+      yoyo: true, 
+      defaults: { ease: "sine.inOut", force3D: true }
     });
 
     bubbleFloat
-      .to(
-        bubbleRef.current,
-        {
-          x: 18,
-          y: -14,
-          rotation: 1.5,
-          scaleX: 1.02,
-          scaleY: 0.99,
-          duration: 3.8,
-        },
-        0,
-      )
-      .to(
-        bubbleRef.current,
-        {
-          x: -14,
-          y: 12,
-          rotation: -1.5,
-          scaleX: 0.99,
-          scaleY: 1.02,
-          duration: 4.2,
-        },
-        3.8,
-      )
-      .to(
-        bubbleRef.current,
-        {
-          x: 10,
-          y: 16,
-          rotation: 1.0,
-          scaleX: 1.01,
-          scaleY: 0.99,
-          duration: 3.6,
-        },
-        8.0,
-      )
-      .to(
-        bubbleRef.current,
-        {
-          x: -10,
-          y: -10,
-          rotation: -1.0,
-          scaleX: 0.99,
-          scaleY: 1.01,
-          duration: 4.0,
-        },
-        11.6,
-      );
+      .to(bubbleRef.current, { 
+        x: 18, 
+        y: -14, 
+        rotation: 1.5, 
+        scale: 0.95, 
+        duration: 3.8 
+      }, 0)
+      .to(bubbleRef.current, { 
+        x: -14, 
+        y: 12, 
+        rotation: -1.5, 
+        scale: 0.94, 
+        duration: 4.2 
+      }, 3.8)
+      .to(bubbleRef.current, { 
+        x: 10, 
+        y: 16, 
+        rotation: 1.0, 
+        scale: 0.945, 
+        duration: 3.6 
+      }, 8.0)
+      .to(bubbleRef.current, { 
+        x: -10, 
+        y: -10, 
+        rotation: -1.0, 
+        scale: 0.94, 
+        duration: 4.0 
+      }, 11.6);
 
     const bubbleImageFloat = gsap.to(bubbleImageRef.current, {
-      x: -8,
-      y: 6,
-      rotation: -1.5,
-      duration: 5.5,
-      ease: "sine.inOut",
-      repeat: -1,
+      x: -8, 
+      y: 6, 
+      rotation: -1.5, 
+      duration: 5.5, 
+      ease: "sine.inOut", 
+      repeat: -1, 
       yoyo: true,
+      force3D: true,
     });
 
     // ---------------------------------------------------------
@@ -151,35 +126,12 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
     const assembleTl = gsap.timeline();
 
     assembleTl
-      .to(
-        contentRef.current,
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        0,
-      )
-      .to(
-        logoWrapRef.current,
-        { opacity: 1, duration: 0.4, ease: "power2.out" },
-        0.3,
-      )
-      .fromTo(
-        paths[2],
-        { x: 30, y: -30, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
-        0.5,
-      )
+      .to(contentRef.current, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0)
+      .to(logoWrapRef.current, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3)
+      .fromTo(paths[2], { x: 30, y: -30, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 0.5)
       .to(paths[2], { scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 1.0)
-      .fromTo(
-        paths[1],
-        { x: 50, y: -50, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-        1.4,
-      )
-      .fromTo(
-        paths[0],
-        { x: 70, y: -70, opacity: 0 },
-        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-        2.3,
-      );
+      .fromTo(paths[1], { x: 50, y: -50, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, 1.4)
+      .fromTo(paths[0], { x: 70, y: -70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, 2.3);
 
     // ---------------------------------------------------------
     // EXIT SEQUENCE
@@ -192,13 +144,13 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
 
       // Step 1: Snap bubble to neutral
       exitTl.to(bubbleRef.current, {
-        x: 0,
-        y: 0,
-        rotation: 0,
-        scaleX: 1,
-        scaleY: 1,
-        duration: 0.25,
+        x: 0, 
+        y: 0, 
+        rotation: 0, 
+        scale: 1,
+        duration: 0.25, 
         ease: "power2.out",
+        force3D: true,
       });
 
       // Step 2: Gently fade out bubble + text + logo (~1s total)
@@ -231,6 +183,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         window.dispatchEvent(new Event("loading-done"));
         setDone(true);
       });
+
     }, 5000);
 
     return () => {
@@ -262,17 +215,15 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         {/* BUBBLE */}
         <div
           ref={bubbleCenterRef}
-          className="absolute inset-0 z-10 pointer-events-none"
+          className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
+          style={{ willChange: "auto" }}
         >
           <div
             ref={bubbleRef}
-            className="absolute overflow-hidden rounded-full will-change-transform"
-            style={{
-              inset: 0,
-              margin: "auto",
-              width: "min(110vw, 90vh, 850px)",
-              height: "min(110vw, 90vh, 850px)",
+            className="h-[60vh] w-[60vh] md:h-[105vh] md:w-[105vh] overflow-hidden rounded-full"
+            style={{ 
               transformOrigin: "center center",
+              willChange: "transform",
             }}
           >
             <img
@@ -280,7 +231,10 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
               src="/test.png"
               alt=""
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover will-change-transform"
+              className="h-full w-full object-cover"
+              style={{
+                willChange: "transform",
+              }}
             />
           </div>
         </div>
@@ -296,10 +250,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
             </p>
           </div>
 
-          <div
-            ref={logoWrapRef}
-            className="mt-[4vh] flex flex-col items-center"
-          >
+          <div ref={logoWrapRef} className="mt-[4vh] flex flex-col items-center">
             <svg
               ref={svgRef}
               xmlns="http://www.w3.org/2000/svg"
