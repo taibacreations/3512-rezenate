@@ -25,7 +25,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   const bubbleCenterRef = useRef<HTMLDivElement | null>(null);
   const bubbleRef = useRef<HTMLDivElement | null>(null);
   const bubbleImageRef = useRef<HTMLImageElement | null>(null);
-  const curtainRef = useRef<HTMLDivElement | null>(null);
 
   const [done, setDone] = useState(false);
 
@@ -60,17 +59,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
       transformOrigin: "center center",
     });
     gsap.set(bubbleImageRef.current, { xPercent: -50, yPercent: -50 });
-
-    /*
-     * UPDATED CURTAIN INITIAL STATE
-     * Circle starts as a tiny dot exactly at bottom-center of viewport
-     * transformOrigin: "center center" ensures perfect 360° expansion
-     */
-    gsap.set(curtainRef.current, {
-      scale: 0,
-      opacity: 1,
-      transformOrigin: "center center",
-    });
 
     // ---------------------------------------------------------
     // BUBBLE FLOAT — grouped, gentle
@@ -117,38 +105,24 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         duration: 0.25, ease: "power2.out",
       });
 
-      // Step 2: Fade out group — no zoom
+      // Step 2: Gently fade out bubble + text + logo (~1s total)
       exitTl.to(groupRef.current, {
         opacity: 0,
-        duration: 0.0,
+        duration: 1,
         ease: "power2.inOut",
-      }, "+=0.00");
+      });
 
-      // Step 3: UPDATED — Slower, smoother circle expansion
-      // Duration increased from 1.4s → 2.4s for a more deliberate reveal
-      // Ease changed to power3.inOut for a more organic acceleration curve
-      exitTl.to(curtainRef.current, {
-        scale: 1,
-        duration: 1.4,
-        ease: "power3.inOut",
-      }, "+=0.3");
+      // Step 3: Hide loading section — reveals Banner section underneath.
+      // Same bg image (/banner.webp) on both, so this is a seamless swap, no flash.
+      exitTl.set(wrapRef.current, { display: "none" });
 
-      // Step 4: Fire events — banner + header animate in
+      // Step 4: Fire event — Banner's purple shape rises from bottom into
+      // position; once it lands, Banner itself fires the heading/para entrance.
       exitTl.call(() => {
         window.dispatchEvent(new Event("loading-image-landed"));
       });
 
-      // Step 5: Hide loading section behind curtain
-      exitTl.set(wrapRef.current, { display: "none" });
-
-      // Step 6: Short hold then fade out quickly — page revealed
-      exitTl.to(curtainRef.current, {
-        opacity: 0,
-        duration: 0.35,
-        ease: "power2.in",
-      }, "+=0.05");
-
-      // Step 7: Cleanup
+      // Step 5: Cleanup
       exitTl.call(() => {
         document.body.style.position = "";
         document.body.style.top = "";
@@ -161,8 +135,6 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         window.dispatchEvent(new Event("loading-done"));
         setDone(true);
       });
-
-      exitTl.set(curtainRef.current, { display: "none" });
 
     }, 5000);
 
@@ -183,106 +155,73 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
   if (done) return null;
 
   return (
-    <>
-      {/*
-       * UPDATED PURPLE CIRCLE CURTAIN
-       *
-       * CHANGES MADE:
-       * 1. Size: 300vmax × 300vmax → guarantees a PERFECT circle on all aspect ratios
-       *    (vmax uses the larger viewport dimension, so width always equals height)
-       * 2. Position: bottom: 0, left: 50%, translate(-50%, 50%)
-       *    → Circle's CENTER sits exactly at the bottom edge of the screen
-       *    → Expands as a full 360° circle from that point
-       * 3. transformOrigin: "center center" → ensures uniform radial expansion
-       * 4. Scale target covers entire screen: 300vmax radius easily covers
-       *    even ultrawide displays when scaled to 1
-       */}
+    <section
+      ref={wrapRef}
+      className="fixed inset-0 z-[100] flex min-h-screen w-full items-center justify-center overflow-hidden bg-[url('/banner.webp')] bg-cover bg-center bg-no-repeat"
+    >
       <div
-        ref={curtainRef}
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: "50%",
-          transform: "translate(-50%, 50%) scale(0)",
-          width: "300vmax",
-          height: "300vmax",
-          borderRadius: "50%",
-          backgroundColor: "#9564F4",
-          zIndex: 200,
-          pointerEvents: "none",
-          willChange: "transform, opacity",
-          transformOrigin: "center center",
-        }}
-      />
-
-      <section
-        ref={wrapRef}
-        className="fixed inset-0 z-[100] flex min-h-screen w-full items-center justify-center overflow-hidden bg-[url('/banner.webp')] bg-cover bg-center bg-no-repeat"
+        ref={groupRef}
+        className="relative flex h-full w-full items-center justify-center will-change-transform"
+        style={{ transformOrigin: "center center" }}
       >
+        {/* BUBBLE */}
         <div
-          ref={groupRef}
-          className="relative flex h-full w-full items-center justify-center will-change-transform"
-          style={{ transformOrigin: "center center" }}
+          ref={bubbleCenterRef}
+          className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
         >
-          {/* BUBBLE */}
           <div
-            ref={bubbleCenterRef}
-            className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+            ref={bubbleRef}
+            className="h-[60vh] w-[60vh] md:h-[105vh] md:w-[105vh] overflow-hidden rounded-full will-change-transform"
+            style={{ transformOrigin: "center center" }}
           >
-            <div
-              ref={bubbleRef}
-              className="h-[60vh] w-[60vh] md:h-[105vh] md:w-[105vh] overflow-hidden rounded-full will-change-transform"
-              style={{ transformOrigin: "center center" }}
-            >
-              <img
-                ref={bubbleImageRef}
-                src="/test.png"
-                alt=""
-                aria-hidden="true"
-                className="absolute left-1/2 top-1/2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover will-change-transform"
-              />
-            </div>
-          </div>
-
-          {/* CONTENT */}
-          <div className="relative z-20 flex w-full h-full flex-col items-center justify-center px-4 text-center">
-            <div ref={contentRef}>
-              <h2 className="font-toruspro text-[40px] font-normal leading-[101%] tracking-[-0.04em] text-black md:text-[60px] lg:text-[72px]">
-                {headingPlain}
-              </h2>
-              <p className="mt-[1.5vh] font-outfit text-[20px] leading-[115%] text-black md:text-[22px] lg:text-[24px]">
-                {tagline}
-              </p>
-            </div>
-
-            <div ref={logoWrapRef} className="mt-[4vh] flex flex-col items-center">
-              <svg
-                ref={svgRef}
-                xmlns="http://www.w3.org/2000/svg"
-                width="51"
-                height="51"
-                viewBox="0 0 51 51"
-                fill="none"
-                className="h-[45px] w-[45px] md:h-[60px] md:w-[60px] lg:h-[70px] lg:w-[70px]"
-              >
-                <path
-                  d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
-                  fill="#9564F4"
-                />
-                <path
-                  d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
-                  fill="#9564F4"
-                />
-                <path
-                  d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
-                  fill="#9564F4"
-                />
-              </svg>
-            </div>
+            <img
+              ref={bubbleImageRef}
+              src="/test.png"
+              alt=""
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover will-change-transform"
+            />
           </div>
         </div>
-      </section>
-    </>
+
+        {/* CONTENT */}
+        <div className="relative z-20 flex w-full h-full flex-col items-center justify-center px-4 text-center">
+          <div ref={contentRef}>
+            <h2 className="font-toruspro text-[40px] font-normal leading-[101%] tracking-[-0.04em] text-black md:text-[60px] lg:text-[72px]">
+              {headingPlain}
+            </h2>
+            <p className="mt-[1.5vh] font-outfit text-[20px] leading-[115%] text-black md:text-[22px] lg:text-[24px]">
+              {tagline}
+            </p>
+          </div>
+
+          <div ref={logoWrapRef} className="mt-[4vh] flex flex-col items-center">
+            <svg
+              ref={svgRef}
+              xmlns="http://www.w3.org/2000/svg"
+              width="51"
+              height="51"
+              viewBox="0 0 51 51"
+              fill="none"
+              className="h-[45px] w-[45px] md:h-[60px] md:w-[60px] lg:h-[70px] lg:w-[70px]"
+            >
+              <path
+                d="M50.1239 1.90735e-06H0L2.49058 2.50577C9.0288 9.08386 17.9205 12.7828 27.1952 12.7828H37.0313V22.6809C37.0313 31.9189 40.701 40.7785 47.2333 47.3107L50.1239 50.2014V1.90735e-06Z"
+                fill="#9564F4"
+              />
+              <path
+                d="M32.0737 17.9733H0.078125L8.36888 26.2641C11.2451 29.1403 15.146 30.7561 19.2135 30.7561C19.2135 34.9228 20.8687 38.9189 23.8151 41.8652L32.0737 50.1239V17.9733Z"
+                fill="#9564F4"
+              />
+              <path
+                d="M14.1772 50.1239V35.9467H0L14.1772 50.1239Z"
+                fill="#9564F4"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

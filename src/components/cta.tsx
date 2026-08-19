@@ -307,13 +307,13 @@ const Cta = ({ data }: CtaProps) => {
     <section
       id="cta"
       ref={sectionRef}
-      className="lg:pt-[15vh] 2xl:pb-[10vh] lg:pb-[7vh] md:pt-[15vh] pt-[7vh] pb-[5vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC]"
+      className="md:min-h-[105vh] min-h-[90vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC]"
     >
       {/* Decorative images — all hardcoded from /public */}
       <img
         src="/footer-blur.webp"
         alt=""
-        className="absolute w-full bottom-[-90%] lg:bottom-[-70%] xl:bottom-[-100%] 2xl:bottom-[-70%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
+        className="absolute w-full md:bottom-[-40%] lg:bottom-[-50%] xl:bottom-[-40%] 2xl:bottom-[-45%] 3xl:bottom-[-30%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
       />
       <img
         ref={gradRef}
@@ -323,7 +323,7 @@ const Cta = ({ data }: CtaProps) => {
       />
       <div
         ref={bgWrapRef}
-        className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-20%] right-0 h-[1284px] w-[831px] z-30"
+        className="absolute top-[-42%] 2xl:right-0 xl:right-[-10%] lg:right-[-25%] md:right-[-20%] right-0 h-[1484px] 3xl:h-[2000px] w-[831px] z-30"
       >
         <img
           ref={bgRef}

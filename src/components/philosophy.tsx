@@ -207,16 +207,10 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         alt="blur"
         className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10"
       />
-      {/* <img
-        ref={blurBottomRef}
-        src="/founder-blur.png"
-        alt="blur"
-        className="absolute left-0 3xl:bottom-[-21vh] 2xl:bottom-[-38vh] xl:bottom-[-460px] lg:bottom-[-21vh] md:bottom-[-21vh] bottom-[-11vh] w-full z-10"
-      /> */}
       <img
         src="/philosophy.png"
         alt="vector"
-        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden opacity-50"
+        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden"
       />
       <img
         src="/philosophy-mob1.png"
@@ -227,7 +221,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[10vh] md:pt-[10vh] lg:pt-[-15vh] pt-[50px] relative z-30">
         <div className="relative z-20 bg-white/40 backdrop-blur-md rounded-[20px] p-5 md:bg-transparent md:backdrop-blur-none md:rounded-none md:p-0 md:flex md:items-start md:justify-between md:gap-10 xl:gap-20">
           {/* Left column — heading + body */}
-          <div className="xl:max-w-[720px] lg:max-w-[560px] max-w-[550px]">
+          <div className="2xl:max-w-[720px] xl:max-w-[550px] lg:max-w-[450px] md:max-w-[400px] max-w-[550px]">
             <h2
               ref={headingRef}
               style={{ opacity: 0 }}
@@ -258,39 +252,6 @@ const Philosophy = ({ data }: PhilosophyProps) => {
               >
                 {para3}
               </p>
-            </div>
-          </div>
-
-          {/* Right column — quote */}
-          <div
-            ref={quoteBoxRef}
-            style={{ opacity: 0 }}
-            className="mt-[5vh] mr-[25%] md:max-w-[220px] xl:max-w-[340px] shrink-0"
-          > 
-            <svg
-              width="56"
-              height="42"
-              viewBox="0 0 48 36"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="mb-4 xl:w-[56px] w-[42px] h-auto"
-            >
-              <path
-                d="M0 36V20C0 8.954 8.954 0 20 0V8C13.373 8 8 13.373 8 20V22H20V36H0Z"
-                fill="#9564F4"
-              />
-              <path
-                d="M28 36V20C28 8.954 36.954 0 48 0V8C41.373 8 36 13.373 36 20V22H48V36H28Z"
-                fill="#9564F4"
-              />
-            </svg>
-            <div className="max-w-[368px]">
-              <h5 className="font-outfit 2xl:text-[26px] xl:text-[24px] text-[18px] leading-[114%] font-normal text-[#0B0730]">
-                {quoteText}
-              </h5>
-              <h4 className="font-outfit font-semibold 2xl:text-[22px] text-[16px] leading-[114%] text-[#0B0730] mt-[1vh]">
-                — {quoteAuthor}
-              </h4>
             </div>
           </div>
         </div>

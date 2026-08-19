@@ -423,10 +423,10 @@ const Header = ({ data }: HeaderProps) => {
         </div>
       </header>
 
-      {/* Overlay */}
+      {/* Overlay — frosted purple blur */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm pointer-events-none"
+        className="fixed inset-0 z-[55] bg-[#9564F4]/25 pointer-events-none"
         style={{ visibility: "hidden", opacity: 0 }}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
@@ -435,7 +435,7 @@ const Header = ({ data }: HeaderProps) => {
       {/* ── Side panel (Desktop) / Full-width (Mobile) ────────────────────── */}
       <div
         ref={navMenuRef}
-        className="fixed top-0 right-0 z-[56] h-full md:w-[480px] md:max-w-full max-w-[320px] w-[80vw] bg-white shadow-2xl flex flex-col"
+        className="fixed top-0 right-0 z-[56] h-full md:w-[380px] md:max-w-full max-w-[280px] w-[75vw] bg-white shadow-2xl flex flex-col"
         style={{ transform: "translateX(100%)" }}
       >
         {/* Close button */}
@@ -453,7 +453,7 @@ const Header = ({ data }: HeaderProps) => {
         </button>
 
         {/* Nav links */}
-        <nav className="flex-1 flex flex-col px-8 md:px-12 py-20">
+        <nav className="flex-1 flex flex-col px-6 md:px-9 py-14">
           {ALL_NAV.map(({ label, href }, i) => {
             const isActive = activeLink === label;
             return (
@@ -465,28 +465,28 @@ const Header = ({ data }: HeaderProps) => {
                 }}
                 onClick={(e) => handleLinkClick(e, label, href)}
                 style={{ opacity: 0 }}
-                className={`group relative py-4 md:py-5 border-b border-black/5 transition-colors duration-300
+                className={`group relative py-3 md:py-3.5 border-b border-black/5 transition-colors duration-300
                   ${isActive ? "text-[#9564F4]" : "text-black hover:text-[#9564F4]"}`}
               >
-                <span className="font-outfit font-light text-[20px] md:text-[32px] lg:text-[40px] leading-tight tracking-tight">
+                <span className="font-outfit font-light text-[17px] md:text-[24px] lg:text-[28px] leading-tight tracking-tight">
                   {label}
                 </span>
                 {/* Subtle underline on hover */}
-                <span className="absolute bottom-4 md:bottom-5 left-0 right-0 h-[1px] bg-current scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                <span className="absolute bottom-3 md:bottom-3.5 left-0 right-0 h-[1px] bg-current scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
               </a>
             );
           })}
         </nav>
 
         {/* Footer CTA */}
-        <div className="px-8 md:px-12 pb-10 md:pb-12">
-          <div className="border-t border-black/10 pt-6 md:pt-8">
+        <div className="px-6 md:px-9 pb-8 md:pb-10">
+          <div className="border-t border-black/10 pt-5 md:pt-6">
             <a
               href={ctaHref}
               onClick={(e) => handleLinkClick(e, ctaLabel, ctaHref)}
               className="block"
             >
-              <button className="w-full font-outfit text-[16px] md:text-[17px] h-[52px] rounded-full bg-black text-white hover:bg-[#9564F4] transition-colors duration-300">
+              <button className="w-full font-outfit text-[15px] md:text-[16px] h-[46px] rounded-full bg-black text-white hover:bg-[#9564F4] transition-colors duration-300">
                 {ctaLabel}
               </button>
             </a>

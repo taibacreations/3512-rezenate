@@ -58,13 +58,25 @@ const getPartnerIcon = (index: number, accentColor: string) => {
           <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
         </svg>
       );
-    case 4: // Ascend — rising trend arrow
-      return (
-        <svg {...common}>
-          <path d="M3 17c3-1 5-6 8-6s4 5 7 2" />
-          <path d="M14.5 12.5l4-1.5 1 4" />
-        </svg>
-      );
+    case 4: // Ascend — custom mark (4 curved blades with star center)
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        width: 22,
+        height: 22,
+        backgroundColor: accentColor,
+        WebkitMaskImage: "url(/ascend.svg)",
+        maskImage: "url(/ascend.svg)",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+      }}
+    />
+  );
     default:
       return null;
   }
@@ -211,7 +223,7 @@ const PartnerCard = ({
   useEffect(() => {
     if (!iconRef.current) return;
     gsap.to(iconRef.current, {
-      rotate: isOpen ? -90 : 0,
+      rotate: isOpen ? 90 : 0,
       duration: 0.4,
       ease: "power2.inOut",
     });
