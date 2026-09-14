@@ -308,7 +308,7 @@ const Cta = ({ data }: CtaProps) => {
       <section
         id="cta"
         ref={sectionRef}
-        className="md:min-h-[85vh] min-h-[60vh] md:mt-[-16vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible 2xl:overflow-hidden bg-[#FAFAFC] z-0"
+        className="md:min-h-[85vh] min-h-[60vh] md:mt-[-16vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible bg-[#FAFAFC] z-0"
       >
         {/* Decorative images — all hardcoded from /public */}
         <img

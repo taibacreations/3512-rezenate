@@ -394,8 +394,8 @@ const Banner = ({ data }: BannerProps) => {
           lg:block
           lg:absolute
           w-full
-          2xl:bottom-[-73vh]
-          xl:bottom-[-500px]
+          2xl:bottom-[-77vh]
+          xl:bottom-[-530px]
           lg:bottom-[-340px]
           will-change-transform
         "
@@ -446,6 +446,7 @@ const Banner = ({ data }: BannerProps) => {
       <div
         className="
           md:pt-[30vh]
+          lg:pt-[23vh]
           xl:pt-[25vh]
           2xl:pt-[30vh]
           min-h-screen
@@ -458,7 +459,7 @@ const Banner = ({ data }: BannerProps) => {
           className="
             text-center
             2xl:max-w-[1050px]
-            lg:max-w-[900px]
+            xl:max-w-[900px]
             max-w-[700px]
             mx-auto
             px-4
@@ -472,7 +473,8 @@ const Banner = ({ data }: BannerProps) => {
               font-normal
 
               2xl:text-[100px]
-              lg:text-[80px]
+              xl:text-[80px]
+              lg:text-[70px]
               md:text-[60px]
               text-[40px]
 
