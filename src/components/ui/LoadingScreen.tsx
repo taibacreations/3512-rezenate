@@ -213,7 +213,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
         style={{ transformOrigin: "center center" }}
       >
         {/* BUBBLE */}
-        <div
+        {/* <div
           ref={bubbleCenterRef}
           className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
           style={{ willChange: "auto" }}
@@ -237,7 +237,7 @@ const LoadingScreen = ({ data }: LoadingScreenProps) => {
               }}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* CONTENT */}
         <div className="relative z-20 flex w-full h-full flex-col items-center justify-center px-4 text-center">

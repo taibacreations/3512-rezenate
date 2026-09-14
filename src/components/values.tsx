@@ -145,6 +145,22 @@ const CardIcon = ({
   return <>{FALLBACK_ICONS[index]?.(accentColor)}</>;
 };
 
+// ── Small expand indicator — same chevron used in the Partners section ─────
+const ChevronIcon = ({ accentColor }: { accentColor: string }) => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={accentColor}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
 // ── Fallback data ──────────────────────────────────────────────────────────
 const FALLBACK_ITEMS: ValueItem[] = [
   {
@@ -452,7 +468,7 @@ const Values = ({ data }: ValuesProps) => {
   ];
 
   return (
-    <div className="bg-[#F7F6F9] relative">
+    <div className="bg-[#F7F6F9] relative overflow-visible z-20">
       <section
         ref={sectionRef}
         className="md:h-[103vh] max-h-[97vh] 3xl:max-h-[80vh] md:max-h-full 3xl:h-screen relative z-20"
@@ -496,7 +512,7 @@ const Values = ({ data }: ValuesProps) => {
                   {/* <h6 className="font-bold xl:text-[18px] text-[16px] font-mulish absolute right-4.5 top-2">
                     {v.id}
                   </h6> */}
-                  <div className="flex pl-6 pr-15 xl:gap-6 gap-3">
+                  <div className="flex pl-6 pr-15 xl:gap-6 gap-3 relative w-full">
                     <div
                       className="2xl:w-[76px] 2xl:h-[76px] md:w-[60px] w-[45px] md:h-[50px] h-[50px] 2xl:rounded-[29px] md:rounded-[20px] rounded-[15px] flex justify-center items-center shrink-0"
                       style={{ backgroundColor: `#9564F41F` }}
@@ -510,6 +526,11 @@ const Values = ({ data }: ValuesProps) => {
                       <p className="font-mulish font-normal 2xl:text-[18px] md:text-[16px] text-[14px] text-[#0B0730] leading-[115%] xl:leading-[25px]">
                         {v.desc}
                       </p>
+                    </div>
+
+                    {/* Expand indicator — matches Partners section chevron */}
+                    <div className="absolute right-4.5 top-1/2 -translate-y-1/2 shrink-0">
+                      <ChevronIcon accentColor={"#9564F4"} />
                     </div>
                   </div>
                 </div>
@@ -536,13 +557,13 @@ const Values = ({ data }: ValuesProps) => {
           </div>
 
           {/* Close Button */}
-          <button
+          {/* <button
             onClick={closeOverlay}
             aria-label="Close"
-            className="absolute top-7 right-9 z-20 w-9 h-9 flex items-center justify-center rounded-full border border-[#DEE6E9] text-[#0B0730] hover:text-[#9564F4] hover:border-[#9564F4] transition-all duration-200 text-[15px] bg-white/80 backdrop-blur-sm"
+            className="absolute top-7 z-[999] right-9 w-9 h-9 flex items-center justify-center rounded-full border border-[#DEE6E9] text-[#0B0730] hover:text-[#9564F4] hover:border-[#9564F4] transition-all duration-200 text-[15px] bg-white/80 backdrop-blur-sm cursor-pointer"
           >
             ✕
-          </button>
+          </button> */}
 
           {/* ── Premium Navigation Arrows ── */}
           <button

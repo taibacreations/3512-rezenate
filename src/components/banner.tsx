@@ -370,8 +370,8 @@ const Banner = ({ data }: BannerProps) => {
       ref={sectionRef}
       id="home"
       className="
-        md:min-h-[110vh]
-        h-[100vh]
+      md:h-auto
+      h-[95vh]
         bg-[url(/banner.webp)]
         bg-cover
         bg-center
@@ -395,8 +395,8 @@ const Banner = ({ data }: BannerProps) => {
           lg:absolute
           w-full
           2xl:bottom-[-73vh]
-          xl:bottom-[-60vh]
-          lg:bottom-[-25vh]
+          xl:bottom-[-500px]
+          lg:bottom-[-340px]
           will-change-transform
         "
       />
@@ -416,7 +416,7 @@ const Banner = ({ data }: BannerProps) => {
           md:block
           lg:hidden
           absolute
-          bottom-0
+          bottom-[-130px]
           will-change-transform
         "
       />
@@ -428,14 +428,14 @@ const Banner = ({ data }: BannerProps) => {
       <img
         id="hero-shape-mobile"
         ref={banner2MobRef}
-        src="/banner2-mob.png"
+        src="/banner-mob.png"
         alt="banner"
         style={{ opacity: 0 }}
         className="
           block
           md:hidden
           absolute
-          bottom-[-11vh]
+          bottom-[0]
           will-change-transform
         "
       />
@@ -446,6 +446,8 @@ const Banner = ({ data }: BannerProps) => {
       <div
         className="
           md:pt-[30vh]
+          xl:pt-[25vh]
+          2xl:pt-[30vh]
           min-h-screen
           flex justify-center md:justify-start items-center md:items-start
           relative
@@ -517,6 +519,17 @@ const Banner = ({ data }: BannerProps) => {
           </p>
         </div>
       </div>
+      <svg
+        className="relative z-10 m-0 md:mt-[-250px] mt-[-100px] md:h-auto"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 320"
+      >
+        <path
+          fill="#FAFAFC"
+          fill-opacity="1"
+          d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+        ></path>
+      </svg>
     </section>
   );
 };

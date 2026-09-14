@@ -202,15 +202,15 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       id="philosophy"
       className=" relative bg-[#FAFAFC]"
     >
-      <img
+      {/* <img
         src="/founder-blur.png"
         alt="blur"
         className="absolute left-0 2xl:top-[-38vh] xl:top-[-32vh] lg:top-[-28vh] md:top-[-20vh] top-[-8vh] w-full z-10"
-      />
+      /> */}
       <img
-        src="/philosophy.png"
+        src="/philosophys.webp"
         alt="vector"
-        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden"
+        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden 2xl:top-[-130px] z-10"
       />
       <img
         src="/philosophy-mob1.png"
@@ -218,7 +218,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
         className="absolute w-full h-full md:hidden"
       />
 
-      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[10vh] md:pt-[10vh] lg:pt-[-15vh] pt-[50px] relative z-30">
+      <div className="max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4 xl:pt-[0vh] md:pt-[0vh] lg:pt-[-15vh] pt-[50px] md:mt-0 mt-[100px] relative z-30">
         <div className="relative z-20 bg-white/40 backdrop-blur-md rounded-[20px] p-5 md:bg-transparent md:backdrop-blur-none md:rounded-none md:p-0 md:flex md:items-start md:justify-between md:gap-10 xl:gap-20">
           {/* Left column — heading + body */}
           <div className="2xl:max-w-[720px] xl:max-w-[550px] lg:max-w-[450px] md:max-w-[400px] max-w-[550px]">
@@ -256,7 +256,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
           </div>
         </div>
       </div>
-      <svg className="relative" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+      <svg className="relative z-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#F7F6F9" fill-opacity="1" d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
     </section>
   );
 };
