@@ -394,7 +394,7 @@ const Banner = ({ data }: BannerProps) => {
           lg:block
           lg:absolute
           w-full
-          2xl:bottom-[-77vh]
+          2xl:bottom-[-80vh]
           xl:bottom-[-530px]
           lg:bottom-[-340px]
           will-change-transform
@@ -448,7 +448,7 @@ const Banner = ({ data }: BannerProps) => {
           md:pt-[30vh]
           lg:pt-[23vh]
           xl:pt-[25vh]
-          2xl:pt-[30vh]
+          2xl:pt-[27vh]
           min-h-screen
           flex justify-center md:justify-start items-center md:items-start
           relative
