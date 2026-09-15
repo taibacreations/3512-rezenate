@@ -311,11 +311,11 @@ const Cta = ({ data }: CtaProps) => {
         className="md:min-h-[85vh] min-h-[60vh] md:mt-[-16vh] relative flex justify-center items-center overflow-hidden lg:overflow-visible bg-[#FAFAFC] z-0"
       >
         {/* Decorative images — all hardcoded from /public */}
-        <img
+        {/* <img
           src="/footer-blur.webp"
           alt=""
           className="absolute w-full md:bottom-[-40%] lg:bottom-[-60%] xl:bottom-[-55%] 2xl:bottom-[-45%] 3xl:bottom-[-30%] bottom-[-10%] left-0 z-40 lg:h-[700px] h-[550px] hidden md:block"
-        />
+        /> */}
         <img
           ref={gradRef}
           src="/cta-grad.webp"

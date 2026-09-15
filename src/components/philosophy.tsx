@@ -210,7 +210,7 @@ const Philosophy = ({ data }: PhilosophyProps) => {
       <img
         src="/philosophys.webp"
         alt="vector"
-        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden 2xl:top-[-130px] z-10"
+        className="absolute 2xl:right-[-10%] right-[-15%] h-full md:block hidden 2xl:top-[-100px] bottom-0 z-10"
       />
       <img
         src="/philosophy-mob1.png"

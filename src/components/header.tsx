@@ -426,7 +426,7 @@ const Header = ({ data }: HeaderProps) => {
       {/* Overlay — frosted purple blur */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[55] bg-[#9564F4]/25 pointer-events-none"
+        className="fixed inset-0 z-[55] bg-[#9564F4]/25 pointer-events-none backdrop-blur-xs"
         style={{ visibility: "hidden", opacity: 0 }}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"

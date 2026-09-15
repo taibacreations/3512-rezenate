@@ -386,17 +386,24 @@ const Banner = ({ data }: BannerProps) => {
       <img
         id="hero-shape-desktop"
         ref={banner1Ref}
-        src="/banner1.webp"
+        src="/bannerss.webp"
         alt="banner"
         style={{ opacity: 0 }}
         className="
           hidden
-          lg:block
-          lg:absolute
+          md:block
+          md:absolute
           w-full
-          2xl:bottom-[-80vh]
-          xl:bottom-[-530px]
-          lg:bottom-[-340px]
+          3xl:h-[900px]
+          2xl:h-[730px]
+          xl:h-[530px]
+          lg:h-[450px]
+          h-[380px]
+          3xl:bottom-[80px]
+          2xl:bottom-[20px]
+          xl:bottom-[35px]
+          lg:bottom-[40px]
+          bottom-[40px]
           will-change-transform
         "
       />
@@ -405,7 +412,7 @@ const Banner = ({ data }: BannerProps) => {
           TABLET IMAGE
           md -> below lg
       ====================================================== */}
-      <img
+      {/* <img
         id="hero-shape-tablet"
         ref={banner1MobRef}
         src="/banner1-mob.png"
@@ -416,10 +423,10 @@ const Banner = ({ data }: BannerProps) => {
           md:block
           lg:hidden
           absolute
-          bottom-[-130px]
+          bottom-[-30px]
           will-change-transform
         "
-      />
+      /> */}
 
       {/* =====================================================
           MOBILE IMAGE
@@ -435,7 +442,7 @@ const Banner = ({ data }: BannerProps) => {
           block
           md:hidden
           absolute
-          bottom-[0]
+          -bottom-1
           will-change-transform
         "
       />
@@ -447,8 +454,8 @@ const Banner = ({ data }: BannerProps) => {
         className="
           md:pt-[30vh]
           lg:pt-[23vh]
-          xl:pt-[25vh]
-          2xl:pt-[27vh]
+          xl:pt-[21vh]
+          2xl:pt-[23vh]
           min-h-screen
           flex justify-center md:justify-start items-center md:items-start
           relative
@@ -480,7 +487,7 @@ const Banner = ({ data }: BannerProps) => {
 
               text-[#0B0730]
 
-              leading-[101%]
+              leading-[90%]
 
               will-change-transform
 
@@ -522,7 +529,7 @@ const Banner = ({ data }: BannerProps) => {
         </div>
       </div>
       <svg
-        className="relative z-10 m-0 md:mt-[-250px] mt-[-100px] md:h-auto"
+        className="relative z-10 m-0 xl:mt-[-120px] mt-[-100px] md:h-auto"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1440 320"
       >
