@@ -423,11 +423,16 @@ const Header = ({ data }: HeaderProps) => {
         </div>
       </header>
 
-      {/* Overlay — frosted purple blur */}
+      {/* Overlay — light silver + subtle lavender frosted glass */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[55] bg-[#9564F4]/25 pointer-events-none backdrop-blur-xs"
-        style={{ visibility: "hidden", opacity: 0 }}
+        className="fixed inset-0 z-[55] pointer-events-none backdrop-blur-sm backdrop-saturate-[0.8]"
+        style={{
+          visibility: "hidden",
+          opacity: 0,
+          background:
+            "linear-gradient(135deg, rgba(236, 236, 242, 0.45) 0%, rgba(222, 216, 238, 0.38) 100%)",
+        }}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
       />

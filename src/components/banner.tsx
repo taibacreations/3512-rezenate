@@ -396,8 +396,8 @@ const Banner = ({ data }: BannerProps) => {
           w-full
           3xl:h-[900px]
           2xl:h-[730px]
-          xl:h-[530px]
-          lg:h-[450px]
+          xl:h-[450px]
+          lg:h-[400px]
           h-[380px]
           3xl:bottom-[80px]
           2xl:bottom-[20px]
@@ -453,8 +453,8 @@ const Banner = ({ data }: BannerProps) => {
       <div
         className="
           md:pt-[30vh]
-          lg:pt-[23vh]
-          xl:pt-[21vh]
+          lg:pt-[27vh]
+          xl:pt-[25vh]
           2xl:pt-[23vh]
           min-h-screen
           flex justify-center md:justify-start items-center md:items-start
