@@ -71,6 +71,7 @@ const Header = ({ data }: HeaderProps) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Home");
+  const [scrolled, setScrolled] = useState(false);
 
   const headerRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -297,6 +298,14 @@ const Header = ({ data }: HeaderProps) => {
     };
   }, [menuOpen]);
 
+  // ── Header background on scroll ───────────────────────────────────────────
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // ── Outside click ──────────────────────────────────────────────────────────
   useEffect(() => {
     const handle = (e: MouseEvent) => {
@@ -361,6 +370,20 @@ const Header = ({ data }: HeaderProps) => {
         style={{ paddingTop: "16px", paddingBottom: "16px" }}
         className="fixed top-0 left-0 right-0 z-50"
       >
+        {/* Blurred bar — fades in on scroll (same blur as menu overlay) */}
+        <div
+          aria-hidden="true"
+          className={`absolute inset-0 -z-10 pointer-events-none transition-opacity duration-500 ease-out ${
+            scrolled ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(236, 236, 242, 0.45) 0%, rgba(222, 216, 238, 0.38) 100%)",
+            backdropFilter: "blur(4px) saturate(0.8)",
+            WebkitBackdropFilter: "blur(4px) saturate(0.8)",
+          }}
+        />
+
         <div className="flex items-center justify-between max-w-[1480px] mx-auto xl:px-10 md:px-6 px-4">
           {/* Logo */}
           <a

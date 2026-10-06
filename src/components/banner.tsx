@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { BannerData } from "@/sanity/lib/queries";
 
@@ -40,7 +40,23 @@ const FALLBACK = {
   headingPlain: "Leadership changes everything",
 
   paragraph:
-    "We partner with organisations and leaders to attract, assess and support exceptional leadership that creates lasting impact.",
+    "We partner with organisations and leaders to attract,\nassess and support exceptional leadership\nthat creates lasting impact.",
+};
+
+// Paragraph lines: uses line breaks from Sanity if present,
+// otherwise applies the client's requested breaks automatically.
+const getParagraphLines = (text: string) => {
+  if (text.includes("\n")) {
+    return text
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+  }
+  return text
+    .replace(/,\s*assess/, ",\nassess")
+    .replace(/\s+that creates/, "\nthat creates")
+    .split("\n")
+    .map((l) => l.trim());
 };
 
 interface BannerProps {
@@ -51,6 +67,7 @@ const Banner = ({ data }: BannerProps) => {
   const headingPlain = data?.headingPlain ?? FALLBACK.headingPlain;
 
   const paragraph = data?.paragraph ?? FALLBACK.paragraph;
+  const paragraphLines = getParagraphLines(paragraph);
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -382,6 +399,8 @@ const Banner = ({ data }: BannerProps) => {
       {/* =====================================================
           DESKTOP IMAGE
           1200px and above
+          object-contain keeps the shape's original proportions
+          (no stretching, no oversized crop), bottom-aligned.
       ====================================================== */}
       <img
         id="hero-shape-desktop"
@@ -394,6 +413,8 @@ const Banner = ({ data }: BannerProps) => {
           md:block
           md:absolute
           w-full
+          object-contain
+          object-bottom
           3xl:h-[900px]
           2xl:h-[730px]
           xl:h-[450px]
@@ -453,9 +474,9 @@ const Banner = ({ data }: BannerProps) => {
       <div
         className="
           md:pt-[30vh]
-          lg:pt-[27vh]
-          xl:pt-[25vh]
-          2xl:pt-[23vh]
+          lg:pt-[30vh]
+          xl:pt-[27vh]
+          2xl:pt-[27vh]
           min-h-screen
           flex justify-center md:justify-start items-center md:items-start
           relative
@@ -487,11 +508,11 @@ const Banner = ({ data }: BannerProps) => {
 
               text-[#0B0730]
 
-              leading-[90%]
+              leading-[102%]
 
               will-change-transform
 
-              tracking-[-0.04em]
+              tracking-[-0.015em]
             "
           >
             {headingPlain}
@@ -512,10 +533,10 @@ const Banner = ({ data }: BannerProps) => {
 
               text-[#0B0730]
 
-              leading-[115%]
+              leading-[125%]
 
               w-full
-              max-w-[578px]
+              max-w-[640px]
 
               mx-auto
 
@@ -524,7 +545,16 @@ const Banner = ({ data }: BannerProps) => {
               will-change-transform
             "
           >
-            {paragraph}
+            {paragraphLines.map((line, i) => (
+              <Fragment key={i}>
+                {i > 0 && (
+                  <>
+                    <br className="hidden md:block" />{" "}
+                  </>
+                )}
+                {line}
+              </Fragment>
+            ))}
           </p>
         </div>
       </div>
@@ -535,7 +565,7 @@ const Banner = ({ data }: BannerProps) => {
       >
         <path
           fill="#FAFAFC"
-          fill-opacity="1"
+          fillOpacity="1"
           d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
         ></path>
       </svg>
