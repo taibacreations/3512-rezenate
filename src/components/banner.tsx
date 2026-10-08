@@ -453,20 +453,21 @@ const Banner = ({ data }: BannerProps) => {
           MOBILE IMAGE
           below md
       ====================================================== */}
-      <img
-        id="hero-shape-mobile"
-        ref={banner2MobRef}
-        src="/banner-mob.png"
-        alt="banner"
-        style={{ opacity: 0 }}
-        className="
-          block
-          md:hidden
-          absolute
-          -bottom-1
-          will-change-transform
-        "
-      />
+      <div className="block md:hidden absolute inset-x-0 top-0 bottom-[-2px] overflow-hidden pointer-events-none">
+        <img
+          id="hero-shape-mobile"
+          ref={banner2MobRef}
+          src="/banner-mob.png"
+          alt="banner"
+          style={{ opacity: 0 }}
+          className="
+      block
+      absolute
+      -bottom-1
+      will-change-transform
+    "
+        />
+      </div>
 
       {/* =====================================================
           HERO CONTENT
