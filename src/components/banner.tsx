@@ -559,7 +559,7 @@ const Banner = ({ data }: BannerProps) => {
         </div>
       </div>
       <svg
-        className="relative z-10 m-0 xl:mt-[-120px] mt-[-100px] md:h-auto"
+        className="hidden md:block relative z-10 m-0 xl:mt-[-120px] mt-[-100px] md:h-auto"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1440 320"
       >
@@ -567,6 +567,25 @@ const Banner = ({ data }: BannerProps) => {
           fill="#FAFAFC"
           fillOpacity="1"
           d="M0,192L48,165.3C96,139,192,85,288,101.3C384,117,480,203,576,218.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+        ></path>
+      </svg>
+
+      {/* =====================================================
+          MOBILE WAVE (below md)
+          Single smooth curve, pinned to the section bottom so it
+          sits exactly over the mobile image edge. Stretches to any
+          phone width without getting bumpy.
+      ====================================================== */}
+      <svg
+        className="block md:hidden absolute left-0 bottom-[-6px] w-full h-[90px] z-10 pointer-events-none"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 400 90"
+        preserveAspectRatio="none"
+      >
+        <path
+          fill="#FAFAFC"
+          fillOpacity="1"
+          d="M0,48 C70,18 140,14 210,38 C280,62 340,60 400,30 L400,90 L0,90 Z"
         ></path>
       </svg>
     </section>
